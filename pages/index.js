@@ -104,7 +104,7 @@ function UI() {
 
       <main className={styles.main}>
         <p className={styles.description}>
-          <strong>mint your hot take{' '}</strong>
+          <strong>mint your take{' '}</strong>
         </p>
 
         <p className={styles.description}>
