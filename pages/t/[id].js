@@ -69,7 +69,11 @@ function UI() {
     useEffect(() => {
         const loadTake = async () => {
             // Get the take ID from the URL.
-            const takeId = window.location.pathname.split('/').pop()
+            
+            // the URL looks like:
+            // http://localhost:3000/t/this-is-such-a-meme-123123
+            // we need to extract the 123123
+            let takeId = window.location.pathname.split("/").pop().split('-').pop()
             
             // Handle non-existent take.
             const takeCount = await takeItContractV1.takeCount()

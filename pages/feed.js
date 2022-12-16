@@ -127,6 +127,9 @@ function UI() {
     return ui
 }
 
+const slugify = require('slugify')
+
+
 const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/0xc343497721e61fd96b1e3c6e6debe5c2450d563c/${take.id}`
     
@@ -144,7 +147,7 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div>
-            <Link href={`/take/${take.id}`}>
+            <Link href={`/t/${slugify(take.description)}-${take.id}`}>
                 {take.takeURI && (
                     <div className={styles.mockTakeImg}>
                         <span>{take.description}</span>

@@ -46,6 +46,8 @@ UI
 */
 
 const compose = (...fns) => x => fns.reduceRight((y, f) => f(y), x);
+const slugify = require('slugify')
+
 
 function UI() {
   const [take, setTake] = useState('')
@@ -89,7 +91,7 @@ function UI() {
     const event = receipt.events.find(e => e.event === 'Transfer')
     const tokenId = event.args.tokenId
     // redirect to take page
-    window.location.href = `/take/${tokenId}`
+    window.location.href = `/t/${slugify(take)}-${tokenId}`
   }
 
   const ui = (
