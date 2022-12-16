@@ -134,8 +134,8 @@ function UI() {
                 </p>
 
                 <p>
-                    <button className={styles.takeItBtn} onClick={remix}>like</button>
-                    <button className={styles.takeItBtn} onClick={remix}>remix</button>
+                    <button disabled={true} className={styles.takeItBtn} onClick={remix}>like (wip)</button>
+                    <button disabled={true} className={styles.takeItBtn} onClick={remix}>remix (wip)</button>
                 </p>
 
                 {/* <p className={styles.description}>
