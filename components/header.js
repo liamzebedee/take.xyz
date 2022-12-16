@@ -34,10 +34,10 @@ export default function Header() {
     return <header className={styles.header}>
         <div className={styles.menu}>
             <ul>
-                <li className={isHome && styles.menuLiActive}>
+                <li className={isHome ? styles.menuLiActive : undefined}>
                     <Link href="/">home</Link>
                 </li>
-                <li className={isFeed && styles.menuLiActive}>
+                <li className={isFeed ? styles.menuLiActive : undefined}>
                     <Link href="/feed">feed</Link>
                 </li>
             </ul>

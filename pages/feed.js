@@ -48,7 +48,7 @@ const wagmiClient = createClient({
 UI
 */
 
-import takeABI from '../abis/take.json'
+import {TakeABI} from '../abis/index.js'
 import Link from 'next/link';
 import Header from '../components/header';
 
@@ -62,7 +62,7 @@ function UI() {
     // Contract.
     const takeItContractV1 = getContract({
         address: '0xC343497721e61FD96B1E3C6e6DeBE5C2450d563c',
-        abi: takeABI,
+        abi: TakeABI,
         signerOrProvider: provider
     })
 

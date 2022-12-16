@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-abi": "cat contracts/out/Take.sol/Take.json | jq .abi > abis/Take.json"
+    "sync-abi": "cat contracts/out/Take.sol/Take.json | jq .abi > abis/Take.json | node abis/generate-index.js"
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^0.8.1",
