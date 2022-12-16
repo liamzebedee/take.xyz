@@ -116,7 +116,7 @@ function UI() {
                 )}
 
                 <div className={styles.takesGrid}>
-                    {takes.map(take => <TakeBox take={take}/>)}
+                    {takes.map(take => <TakeBox key={take.id} take={take}/>)}
                 </div>
             </main>
 
