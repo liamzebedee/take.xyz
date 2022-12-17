@@ -20,7 +20,7 @@ const slugify = require('slugify')
 
 function UI() {
   const [take, setTake] = useState('')
-  const debouncedTake = useDebounce(take, 97)
+  const debouncedTake = useDebounce(take, 150)
   const [canTakeIt, setCanTakeIt] = useState(false)
 
   const account = useAccount()

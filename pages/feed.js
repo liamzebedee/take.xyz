@@ -179,7 +179,7 @@ function UI() {
     const fetchTakes = async () => {
         const takeCount = await takeItContractV1.totalSupply()
         const from = takeCount
-        const takeIds = Array.from(Array(10).keys())
+        const takeIds = Array.from(Array(15).keys())
             .map(i => BigNumber.from(from).sub(i).toNumber())
             .reverse()
             .filter(i => i > -1)
@@ -212,7 +212,7 @@ function UI() {
         if (account.isConnected) {
             fetchTakes()
         }
-    }, [account.isConnected])
+    }, [account.isConnected, fetchTakes])
 
     const ui = (
         <div className={styles.containerFeed}>

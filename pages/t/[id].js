@@ -1,13 +1,14 @@
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styles from '../../styles/Home.module.css';
-
+const slugify = require('slugify')
+import truncateEthAddress from 'truncate-eth-address';
 
 /*
 Rainbow & wagmi
 */
 
-import { useAccount } from 'wagmi';
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { getContract, getProvider } from '@wagmi/core';
 import { useEnsName } from 'wagmi';
 import Header from '../../components/header';
@@ -19,12 +20,56 @@ import { AppLayout } from '../../components/layout';
 import { fetchTake2 } from '../../lib/chain';
 // import useSigner
 import { useSigner } from 'wagmi';
+import { ethers } from 'ethers';
 
 /*
 UI
 */
 
-const compose = (...fns) => x => fns.reduceRight((y, f) => f(y), x);
+const SendButton = ({ takeId, takeOwner }) => {
+    const [toAddress, setToAddress] = useState(null)
+
+    const account = useAccount()
+    const { data: signer } = useSigner()
+    const { config } = usePrepareContractWrite({
+        address: TakeV3Address,
+        abi: TakeABI,
+        signerOrProvider: signer,
+        functionName: 'transferFrom',
+        args: [account.address, toAddress, takeId],
+        enabled: account.address && toAddress && takeId,
+    })
+
+    const { data, write, isLoading: isWriteLoading } = useContractWrite(config)
+    const { isLoading: isTxLoading, isSuccess: isTxSuccess, data: txReceipt } = useWaitForTransaction({
+        hash: data && data.hash,
+    })
+    
+
+    // Send the take to an ethereum address.
+    const sendNft = useCallback(async (from) => {
+        // prompt for the address to send to
+        const address = prompt('Enter the address to send to')
+        setToAddress(address)
+        write()
+    }, [write])
+
+    const isOwner = takeOwner === account.address
+
+    // useEffect(() => {
+    //     if (!toAddress) return
+    //     // now fkn send it
+    // }, [toAddress, write])
+
+    return (
+        <button 
+            disabled={!isOwner || (isWriteLoading || isTxLoading)}
+            className={styles.takeItBtn} 
+            onClick={() => sendNft(account.address)}>
+            send
+        </button>
+    )
+}
 
 function UI() {
     const [take, setTake] = useState({})
@@ -93,14 +138,6 @@ function UI() {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
-    // Send the take to an ethereum address.
-    const sendNft = async (from) => {
-        // prompt for the address to send to
-        const address = prompt('Enter the address to send to')
-
-        // now fkn send it
-        await takeItContractV1Write.transferFrom(from, address, take.id)
-    }
 
 
     // Remixing is enabled if the take contains [xx] or [yy] template vars,
@@ -112,14 +149,15 @@ function UI() {
         )
 
     // Load the .eth name for the author.
-    const { data: ownerEns } = useEnsName({
-        address: take.owner,
-        chainId: 1,
-    })
-    const { data: authorEns } = useEnsName({
-        address: take.author,
-        chainId: 1,
-    })
+    // TODO.
+    // const { data: ownerEns } = useEnsName({
+    //     address: take.owner,
+    //     chainId: 1,
+    // })
+    // const { data: authorEns } = useEnsName({
+    //     address: take.author,
+    //     chainId: 1,
+    // })
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
@@ -153,7 +191,7 @@ function UI() {
 
                 <p>
                     {/* {authorEns || take.author} */}
-                    taken by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a>
+                    owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a>
                     {/* collected by <a href={openseaUrl}><strong>{ownerEns || take.owner}</strong></a> */}
                 </p>
 
@@ -162,7 +200,7 @@ function UI() {
                     {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
                     {/* a button for sending a take NFT to an address */}
-                    <button disabled={false} className={styles.takeItBtn} onClick={() => sendNft(account.address)}>send</button>
+                    <SendButton takeId={take.id} takeOwner={take.owner} />
                 </p>
 
                 <h3>remixed from</h3>
@@ -192,8 +230,6 @@ function UI() {
     return ui
 }
 
-const slugify = require('slugify')
-import truncateEthAddress from 'truncate-eth-address';
 
 
 export const TakeBox = ({ take }) => {
