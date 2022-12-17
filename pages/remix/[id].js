@@ -1,47 +1,18 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import styles from '../../styles/Home.module.css'
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import styles from '../../styles/Home.module.css';
 
 
 /*
 Rainbow & wagmi
 */
-import '@rainbow-me/rainbowkit/styles.css';
-
-import {
-    ConnectButton,
-    getDefaultWallets,
-    RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, WagmiConfig, useSigner } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { getContract, getProvider } from '@wagmi/core'
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
+import { useAccount, useSigner } from 'wagmi';
+import { getContract } from '@wagmi/core';
 import Header from '../../components/header';
 import { TakeABI } from '../../abis';
 import { useRouter } from 'next/router';
 import { TakeV2Address } from '../../lib/config';
-
-
-const { chains, provider } = configureChains(
-    [polygon, mainnet],
-    [
-        publicProvider()
-    ]
-);
-
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
+import { AppLayout } from '../../components/layout';
 
 
 /*
@@ -215,14 +186,6 @@ function UI() {
     return ui
 }
 
-export default function Home() {
-    return (
 
-        <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider modalSize="compact" chains={chains}>
-                <UI />
-            </RainbowKitProvider>
-        </WagmiConfig>
-
-    )
-}
+UI.layout = AppLayout
+export default UI

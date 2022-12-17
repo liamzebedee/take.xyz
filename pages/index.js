@@ -1,47 +1,13 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { AppLayout } from '../components/layout';
+import styles from '../styles/Home.module.css';
 
-
-/*
-Rainbow & wagmi
-*/
-import '@rainbow-me/rainbowkit/styles.css';
-
-import {
-  ConnectButton,
-  getDefaultWallets,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, WagmiConfig, useSigner } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { getContract, getProvider } from '@wagmi/core'
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
+import { useAccount, useSigner } from 'wagmi';
+import { getContract } from '@wagmi/core';
 import Header from '../components/header';
 import { TakeV2Address } from '../lib/config';
 import { TakeABI } from '../abis';
-
-
-const { chains, provider } = configureChains(
-  [polygon, mainnet],
-  [
-    publicProvider()
-  ]
-);
-
-const { connectors } = getDefaultWallets({
-  appName: 'take',
-  chains
-});
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider
-})
-
 
 /*
 UI
@@ -49,7 +15,6 @@ UI
 
 const compose = (...fns) => x => fns.reduceRight((y, f) => f(y), x);
 const slugify = require('slugify')
-
 
 function UI() {
   const [take, setTake] = useState('')
@@ -139,14 +104,5 @@ function UI() {
     return ui
 }
 
-export default function Home() {
-  return (
-
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider modalSize="compact"  chains={chains}>
-        <UI/>
-      </RainbowKitProvider>
-    </WagmiConfig>
-
-  )
-}
+UI.layout = AppLayout
+export default UI

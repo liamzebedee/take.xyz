@@ -1,7 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import styles from '../styles/Home.module.css';
 
 
 /*
@@ -10,18 +9,15 @@ Rainbow & wagmi
 import '@rainbow-me/rainbowkit/styles.css';
 
 import {
-    ConnectButton,
-    getDefaultWallets,
-    RainbowKitProvider,
+    getDefaultWallets
 } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, WagmiConfig, useSigner } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { getContract, getProvider } from '@wagmi/core'
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { configureChains, createClient, useAccount, useSigner } from 'wagmi';
+import { mainnet, polygon } from 'wagmi/chains';
+import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 import { BigNumber } from 'ethers';
-import { useEnsName } from 'wagmi'
-import truncateEthAddress from 'truncate-eth-address'
+import { useEnsName } from 'wagmi';
+import truncateEthAddress from 'truncate-eth-address';
 
 
 
@@ -48,10 +44,123 @@ const wagmiClient = createClient({
 UI
 */
 
-import {TakeABI} from '../abis/index.js'
+import { TakeABI } from '../abis/index.js';
 import Link from 'next/link';
 import Header from '../components/header';
 import { TakeV2Address } from '../lib/config';
+import { AppLayout } from '../components/layout';
+
+import { multicall } from '@wagmi/core'
+
+async function fetchTakesBatch({ takeIds, takeItContractV1, takeId, provider }) {
+    const { address } = takeItContractV1
+    const abi = TakeABI
+
+    const functions = (['tokenURI', 'ownerOf', 'getTakeRefs', 'getTakeAuthor'])
+    const contracts = takeIds
+        .map(takeId => functions
+            .map(functionName => ({
+                abi,
+                address,
+                functionName,
+                args: [takeId]
+            }))
+        )
+        .flat()
+    
+    // console.log(contracts)
+
+    const data = await multicall({
+        contracts,
+    })
+    console.log(data)
+
+    // Now we have to parse the data.
+    // Process in batches of functions.length.
+    const takes = data
+        .reduce((acc, val, i) => {
+            const index = Math.floor(i / functions.length)
+            if (!acc[index]) {
+                acc[index] = []
+            }
+            acc[index].push(val)
+            return acc
+        }, [])
+        .map(([
+            takeURI,
+            owner,
+            refsIdsBN,
+            author
+        ], i) => {
+            console.log(takeURI)
+            const takeId = takeIds[i]
+            const json = atob(takeURI.substring(29))
+            const tokenURIJsonBlob = JSON.parse(json)
+            const refIds = refsIdsBN.map(id => id.toNumber()).filter(id => id > 0)
+
+            return {
+                id: takeId,
+                owner,
+                takeURI,
+                refIds,
+                ...tokenURIJsonBlob,
+            }
+        });
+
+    console.log(takes)
+    return takes
+}
+
+async function fetchTake2({ takeItContractV1, takeId, provider }) {
+    const { address } = takeItContractV1
+    const abi = TakeABI
+
+    const contracts = ['tokenURI', 'ownerOf', 'getTakeRefs', 'getTakeAuthor'].map(functionName => ({
+        abi,
+        address,
+        functionName,
+        args: [takeId]
+    }))
+
+    const data = await multicall({
+        contracts,
+    })
+
+    const [
+        takeURI,
+        owner,
+        refsIdsBN,
+        author
+    ] = data
+    const json = atob(takeURI.substring(29))
+    const tokenURIJsonBlob = JSON.parse(json)
+    const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
+
+    return {
+        id: takeId,
+        owner,
+        takeURI,
+        refIds,
+        ...tokenURIJsonBlob,
+    }
+}
+
+async function fetchTake(takeItContractV1, takeId) {
+    const takeURI = await takeItContractV1.tokenURI(takeId)
+    const owner = await takeItContractV1.ownerOf(takeId)
+    const json = atob(takeURI.substring(29))
+    const tokenURIJsonBlob = JSON.parse(json)
+    const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
+    const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
+
+    return {
+        id: takeId,
+        owner,
+        takeURI,
+        refIds,
+        ...tokenURIJsonBlob,
+    }
+}
 
 function UI() {
     const [takes, setTakes] = useState([])
@@ -76,24 +185,27 @@ function UI() {
             .reverse()
             .filter(i => i > -1)
             .filter(i => i < takeCount)
-        console.log(takeIds)
+            .reverse()
 
-        const takes = await Promise.all(takeIds.reverse().map(async (takeId) => {
-            const takeURI = await takeItContractV1.tokenURI(takeId)
-            const owner = await takeItContractV1.ownerOf(takeId)
-            const json = atob(takeURI.substring(29))
-            const tokenURIJsonBlob = JSON.parse(json)
-            const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
-            const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
+        const takes = await fetchTakesBatch({ takeIds, takeItContractV1, provider })
 
-            return {
-                id: takeId,
-                owner,
-                takeURI,
-                refIds,
-                ...tokenURIJsonBlob,
-            }
-        }))
+        // const takes = await Promise.all(takeIds.map(async (takeId) => {
+        //     return await fetchTake2({ takeItContractV1, takeId, provider })
+        //     // const takeURI = await takeItContractV1.tokenURI(takeId)
+        //     // const owner = await takeItContractV1.ownerOf(takeId)
+        //     // const json = atob(takeURI.substring(29))
+        //     // const tokenURIJsonBlob = JSON.parse(json)
+        //     // const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
+        //     // const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
+
+        //     // return {
+        //     //     id: takeId,
+        //     //     owner,
+        //     //     takeURI,
+        //     //     refIds,
+        //     //     ...tokenURIJsonBlob,
+        //     // }
+        // }))
         setTakes(takes)
     }
 
@@ -182,17 +294,5 @@ const TakeBox = ({ take }) => {
     </div>
 }
 
-export default function Home() {
-
-    return (
-
-
-        <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider modalSize="compact" chains={chains}>
-                <UI />
-            </RainbowKitProvider>
-        </WagmiConfig>
-
-    )
-
-}
+UI.layout = AppLayout
+export default UI

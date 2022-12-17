@@ -1,7 +1,6 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import styles from '../../styles/Home.module.css'
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import styles from '../../styles/Home.module.css';
 
 
 /*
@@ -9,41 +8,15 @@ Rainbow & wagmi
 */
 import '@rainbow-me/rainbowkit/styles.css';
 
-import {
-    ConnectButton,
-    getDefaultWallets,
-    RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, WagmiConfig, useSigner } from 'wagmi';
-import { mainnet, polygon, optimism, arbitrum } from 'wagmi/chains';
-import { getContract, getProvider } from '@wagmi/core'
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
-import { useEnsName } from 'wagmi'
+import { useAccount } from 'wagmi';
+import { getContract, getProvider } from '@wagmi/core';
+import { useEnsName } from 'wagmi';
 import Header from '../../components/header';
 import { useRouter } from 'next/router';
 import { TakeV2Address } from '../../lib/config';
 import { TakeABI } from '../../abis';
 import Link from 'next/link';
-
-
-const { chains, provider } = configureChains(
-    [polygon, mainnet],
-    [
-        publicProvider()
-    ]
-);
-
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
+import { AppLayout } from '../../components/layout';
 
 
 /*
@@ -189,9 +162,9 @@ function UI() {
                 </p>
 
                 <p>
-                    <button disabled={true} className={styles.takeItBtn} onClick={remix}>like (wip)</button>
+                    {/* <button disabled={true} className={styles.takeItBtn} onClick={remix}>like (wip)</button> */}
                     {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
-                    <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>retake</button>
+                    <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
                 </p>
 
                 <h3>remixed from</h3>
@@ -267,13 +240,5 @@ export const TakeBox = ({ take }) => {
 }
 
 
-export default function Home() {
-    return (
-        <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider modalSize="compact" chains={chains}>
-                <UI />
-            </RainbowKitProvider>
-        </WagmiConfig>
-
-    )
-}
+UI.layout = AppLayout
+export default UI

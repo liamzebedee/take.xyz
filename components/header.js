@@ -53,7 +53,7 @@ export default function Header() {
             </ul>
         </div>
         <div className={styles.account}>
-            <ConnectButton chainStatus="none" />
+            <ConnectButton chainStatus="name" />
         </div>
     </header>
 }
