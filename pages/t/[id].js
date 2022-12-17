@@ -20,6 +20,7 @@ import { AppLayout } from '../../components/layout';
 import { fetchTake2 } from '../../lib/chain';
 // import useSigner
 import { useSigner } from 'wagmi';
+import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
 
 /*
@@ -32,6 +33,7 @@ const SendButton = ({ takeId, takeOwner }) => {
     const account = useAccount()
     const { data: signer } = useSigner()
     const { config } = usePrepareContractWrite({
+        chainId: polygon.id,
         address: TakeV3Address,
         abi: TakeABI,
         signerOrProvider: signer,
@@ -150,14 +152,14 @@ function UI() {
 
     // Load the .eth name for the author.
     // TODO.
-    // const { data: ownerEns } = useEnsName({
-    //     address: take.owner,
-    //     chainId: 1,
-    // })
-    // const { data: authorEns } = useEnsName({
-    //     address: take.author,
-    //     chainId: 1,
-    // })
+    const { data: ownerEns } = useEnsName({
+        address: take.owner,
+        chainId: 1,
+    })
+    const { data: authorEns } = useEnsName({
+        address: take.author,
+        chainId: 1,
+    })
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
@@ -190,9 +192,15 @@ function UI() {
                 </div>
 
                 <p>
-                    {/* {authorEns || take.author} */}
-                    owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a>
-                    {/* collected by <a href={openseaUrl}><strong>{ownerEns || take.owner}</strong></a> */}
+                    {/* owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a> */}
+                    { take.author && (
+                        <span>minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.author)}</strong></a><br /></span>
+                    )}
+                    {take.owner && (
+                        <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
+                    )}
+                    
+                    
                 </p>
 
                 <p>

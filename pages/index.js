@@ -10,6 +10,7 @@ import { TakeV3Address } from '../lib/config';
 import { TakeABI } from '../abis';
 import { useDebounce } from '../components/util';
 import { ethers } from 'ethers';
+import { polygon } from 'wagmi/chains';
 
 /*
 UI
@@ -41,6 +42,7 @@ function UI() {
 
   // Mint the take on click.
   const { config: mintConfig } = usePrepareContractWrite({
+    chainId: polygon.id,
     address: TakeV3Address,
     abi: TakeABI,
     signerOrProvider: signer,

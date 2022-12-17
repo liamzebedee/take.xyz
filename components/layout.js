@@ -21,7 +21,7 @@ import { useNetwork } from 'wagmi'
 import { useEffect  } from 'react'
 
 const { chains, provider } = configureChains(
-    [polygon],
+    [polygon, mainnet],
     [
         publicProvider()
     ]
