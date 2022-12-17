@@ -20,6 +20,8 @@ import { getContract, getProvider } from '@wagmi/core'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import Header from '../components/header';
+import { TakeV2Address } from '../lib/config';
+import { TakeABI } from '../abis';
 
 
 const { chains, provider } = configureChains(
@@ -72,26 +74,29 @@ function UI() {
   // Mint the take on click.
   // const provider = getProvider()
   const takeItContractV1 = getContract({
-    address: '0xC343497721e61FD96B1E3C6e6DeBE5C2450d563c',
-    abi: [
-      "function mint(string memory _take) public",
-      "event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)"
-    ],
+    address: TakeV2Address,
+    abi: TakeABI,
     signerOrProvider: signer
   })
   const takeIt = async () => {
-    const tx = await takeItContractV1.mint(take)
-    const receipt = await tx.wait()
-    console.log(receipt)
-    // extract ERC721 mint event from receipt
-    // 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
-    // const event = receipt.events[0]
-    // decode hex tokenId arg into tokenId number
-    // const tokenId = parseInt(event.args[2])
-    const event = receipt.events.find(e => e.event === 'Transfer')
-    const tokenId = event.args.tokenId
-    // redirect to take page
-    window.location.href = `/t/${slugify(take)}-${tokenId}`
+    try {
+      const tx = await takeItContractV1.mint(take, [0,0,0])
+      const receipt = await tx.wait()
+      console.log(receipt)
+      // extract ERC721 mint event from receipt
+      // 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+      // const event = receipt.events[0]
+      // decode hex tokenId arg into tokenId number
+      // const tokenId = parseInt(event.args[2])
+      const event = receipt.events.find(e => e.event === 'Transfer')
+      const tokenId = event.args.id
+      // redirect to take page
+      window.location.href = `/t/${slugify(take)}-${tokenId}`
+      
+    } catch (err) {
+      console.error(err)
+      return
+    }
   }
 
   const ui = (

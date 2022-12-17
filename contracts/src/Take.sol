@@ -30,13 +30,22 @@ contract Take {
     struct Take {
         string text;
         address author;
+        uint256[3] refs;
     }
 
     mapping(uint256 => Take) public takes;
-    uint256 public takeCount;
+    uint256 public totalSupply;
+
+    function getTakeAuthor(uint256 tokenId) public view returns (address) {
+        return takes[tokenId].author;
+    }
 
     function getTakeText(uint256 tokenId) public view returns (string memory) {
         return takes[tokenId].text;
+    }
+
+    function getTakeRefs(uint256 tokenId) public view returns (uint256[3] memory) {
+        return takes[tokenId].refs;
     }
 
     function getTakeLines(string memory take) public view returns (string[8] memory) {
@@ -148,15 +157,19 @@ contract Take {
     }
 
     // Mint function.
-    function mint(string memory take) public {
+    function mint(string memory take, uint256[3] memory refs) public {
         // Get the next token ID.
-        uint256 id = takeCount;
+        uint256 id = totalSupply;
 
         // Increment the next token ID.
-        takeCount++;
+        totalSupply++;
+
+        // Verify each ref take ID is valid ie. below the total supply.
+        bool isRefsValid = refs[0] < totalSupply && refs[1] < totalSupply && refs[2] < totalSupply;
+        require(isRefsValid, "INVALID_REFS");
 
         // Store the take.
-        takes[id] = Take(take, msg.sender);
+        takes[id] = Take(take, msg.sender, refs);
 
         _safeMint(msg.sender, id);
     }
@@ -193,10 +206,8 @@ contract Take {
 
 
     constructor() {
-        takes[0] = Take({
-            text: "The first take.",
-            author: msg.sender
-        });
+        uint256[3] memory refs;
+        mint("The first take.", refs);
     }
 
     /*//////////////////////////////////////////////////////////////

@@ -51,6 +51,7 @@ UI
 import {TakeABI} from '../abis/index.js'
 import Link from 'next/link';
 import Header from '../components/header';
+import { TakeV2Address } from '../lib/config';
 
 function UI() {
     const [takes, setTakes] = useState([])
@@ -61,14 +62,14 @@ function UI() {
     
     // Contract.
     const takeItContractV1 = getContract({
-        address: '0xC343497721e61FD96B1E3C6e6DeBE5C2450d563c',
+        address: TakeV2Address,
         abi: TakeABI,
         signerOrProvider: provider
     })
 
     // Fetch the latest 10 takes.
     const fetchTakes = async () => {
-        const takeCount = await takeItContractV1.takeCount()
+        const takeCount = await takeItContractV1.totalSupply()
         const from = takeCount
         const takeIds = Array.from(Array(10).keys())
             .map(i => BigNumber.from(from).sub(i).toNumber())
@@ -80,12 +81,16 @@ function UI() {
         const takes = await Promise.all(takeIds.reverse().map(async (takeId) => {
             const takeURI = await takeItContractV1.tokenURI(takeId)
             const owner = await takeItContractV1.ownerOf(takeId)
-            const json = atob(takeURI.substring(29));
-            const tokenURIJsonBlob = JSON.parse(json);
+            const json = atob(takeURI.substring(29))
+            const tokenURIJsonBlob = JSON.parse(json)
+            const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
+            const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
+
             return {
                 id: takeId,
                 owner,
                 takeURI,
+                refIds,
                 ...tokenURIJsonBlob,
             }
         }))
@@ -158,7 +163,12 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div className={styles.takeMeta}>
-            collected by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a>
+            <div>collected by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a></div>
+            <div>
+            {take.refIds.length > 0 && (
+                <span>remixes #{take.refIds[0]}</span>
+            )}
+            </div>
         </div>
 
         {/* <p>

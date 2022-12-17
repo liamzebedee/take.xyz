@@ -5,7 +5,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /* height: 100vh; */
 }
 
 .containerFeed {
@@ -264,4 +264,8 @@
 .mockTakeImg:hover {
   cursor: pointer;
   background: #E31C79;
+}
+
+.var {
+  color: #ff2a8d;
 }

@@ -139,6 +139,25 @@ module.exports = {
         {
             "inputs": [
                 {
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getTakeAuthor",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "string",
                     "name": "take",
                     "type": "string"
@@ -150,6 +169,25 @@ module.exports = {
                     "internalType": "string[8]",
                     "name": "",
                     "type": "string[8]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getTakeRefs",
+            "outputs": [
+                {
+                    "internalType": "uint256[3]",
+                    "name": "",
+                    "type": "uint256[3]"
                 }
             ],
             "stateMutability": "view",
@@ -204,6 +242,11 @@ module.exports = {
                     "internalType": "string",
                     "name": "take",
                     "type": "string"
+                },
+                {
+                    "internalType": "uint256[3]",
+                    "name": "refs",
+                    "type": "uint256[3]"
                 }
             ],
             "name": "mint",
@@ -332,19 +375,6 @@ module.exports = {
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "takeCount",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -382,6 +412,19 @@ module.exports = {
                     "internalType": "string",
                     "name": "",
                     "type": "string"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "totalSupply",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",
