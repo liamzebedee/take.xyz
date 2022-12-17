@@ -17,11 +17,11 @@ import { publicProvider } from 'wagmi/providers/public';
 import Header from '../components/header';
 import { TakeV2Address } from '../lib/config';
 import { TakeABI } from '../abis';
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
 import { useEffect  } from 'react'
 
 const { chains, provider } = configureChains(
-    [polygon, mainnet],
+    [polygon],
     [
         publicProvider()
     ]
@@ -29,7 +29,7 @@ const { chains, provider } = configureChains(
 
 const { connectors } = getDefaultWallets({
     appName: 'take',
-    chains: [polygon, mainnet]
+    chains: [polygon]
 });
 
 const wagmiClient = createClient({
@@ -49,16 +49,34 @@ export const AppLayout = ({ children }) => {
 }
 
 const Body = ({ children }) => {
-    const { chain } = useNetwork()
-    const { chains, error, isLoading, pendingChainId, switchNetwork } =
-        useSwitchNetwork()
+    // check isConnected
+    // const { isConnected } = useAccount()
+    // const { chain } = useNetwork()
+    // // const x = useNetwork()
+    // const { chains, error, isLoading, pendingChainId, switchNetwork } =
+    //     useSwitchNetwork()
 
+    // console.log(x)
+    // console.log(switchNetwork)
+    
+    // // switch to polygon if not already on it
+    // useEffect(() => {
+    //     if (chain?.id !== polygon.id || pendingChainId !== polygon.id) {
+    //         switchNetwork(polygon)
+    //     }
+    // }, [chain, switchNetwork])
+
+
+    // const { chain } = useNetwork()
+    
     // switch to polygon if not already on it
-    useEffect(() => {
-        // if (chain?.id !== polygon.id || pendingChainId !== polygon.id) {
-        //     switchNetwork(polygon)
-        // }
-    }, [chain, switchNetwork])
+    // useEffect(() => {
+    //     if (chain?.id !== polygon.id || pendingChainId !== polygon.id) {
+    //         switchNetwork(polygon)
+    //     }
+    // }, [chain, switchNetwork])
 
-    return children
+    return <>
+        {children}
+    </>
 }
