@@ -153,7 +153,7 @@ function UI() {
         chainId: 1,
     })
 
-    const openseaUrl = `https://opensea.io/assets/matic/0xc343497721e61fd96b1e3c6e6debe5c2450d563c/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
 
     const isARemixedTake = take.refs && take.refs.length > 0
 
@@ -225,7 +225,7 @@ const slugify = require('slugify')
 
 
 export const TakeBox = ({ take }) => {
-    const openseaUrl = `https://opensea.io/assets/matic/0xc343497721e61fd96b1e3c6e6debe5c2450d563c/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
 
     // Load the .eth name for the author.
     const { data: authorEns, isError, isLoading } = useEnsName({

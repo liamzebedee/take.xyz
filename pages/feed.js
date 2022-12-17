@@ -136,7 +136,7 @@ const slugify = require('slugify')
 
 
 const TakeBox = ({ take }) => {
-    const openseaUrl = `https://opensea.io/assets/matic/0xc343497721e61fd96b1e3c6e6debe5c2450d563c/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
     
     // Load the .eth name for the author.
     const { data: authorEns, isError, isLoading } = useEnsName({
