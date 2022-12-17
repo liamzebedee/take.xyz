@@ -6,18 +6,19 @@ import styles from '../../styles/Home.module.css';
 /*
 Rainbow & wagmi
 */
-import '@rainbow-me/rainbowkit/styles.css';
 
 import { useAccount } from 'wagmi';
 import { getContract, getProvider } from '@wagmi/core';
 import { useEnsName } from 'wagmi';
 import Header from '../../components/header';
 import { useRouter } from 'next/router';
-import { TakeV2Address } from '../../lib/config';
+import { TakeV3Address } from '../../lib/config';
 import { TakeABI } from '../../abis';
 import Link from 'next/link';
 import { AppLayout } from '../../components/layout';
-
+import { fetchTake2 } from '../../lib/chain';
+// import useSigner
+import { useSigner } from 'wagmi';
 
 /*
 UI
@@ -30,11 +31,23 @@ function UI() {
     const account = useAccount()
 
     const provider = getProvider()
+    
+
+
+    const { data: signer } = useSigner()
     const takeItContractV1 = getContract({
-        address: TakeV2Address,
+        address: TakeV3Address,
         abi: TakeABI,
         signerOrProvider: provider
     })
+
+    // get a version of the conract which isn't read only
+    const takeItContractV1Write = getContract({
+        address: TakeV3Address,
+        abi: TakeABI,
+        signerOrProvider: signer
+    })
+
 
     // Load the take.
     const router = useRouter()
@@ -53,39 +66,11 @@ function UI() {
             }
 
             // Load the take.
-            const takeURI = await takeItContractV1.tokenURI(takeId)
-            const owner = await takeItContractV1.ownerOf(takeId)
-            const author = await takeItContractV1.getTakeAuthor(takeId)
-            const refsIds = await takeItContractV1.getTakeRefs(takeId)
-            const refs = await Promise.all(refsIds.filter(refId => refId.toNumber() > 0).map(async refId => {
-                const id = refId.toNumber()
-                
-                const takeURI = await takeItContractV1.tokenURI(id)
-                const author = await takeItContractV1.getTakeAuthor(id)
-
-                const json = atob(takeURI.substring(29));
-                const tokenURIJsonBlob = JSON.parse(json);
-                
-                return {
-                    id,
-                    owner,
-                    takeURI,
-                    author,
-                    ...tokenURIJsonBlob,
-                }
-            }))
-            
-            const json = atob(takeURI.substring(29));
-            const tokenURIJsonBlob = JSON.parse(json);
-            console.log(tokenURIJsonBlob)
+            const take = await fetchTake2({ takeItContractV1, takeId, provider })
             
             setTake({
                 id: takeId,
-                owner,
-                takeURI,
-                author,
-                refs,
-                ...tokenURIJsonBlob,
+                ...take,
             })
         }
 
@@ -108,6 +93,16 @@ function UI() {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
+    // Send the take to an ethereum address.
+    const sendNft = async (from) => {
+        // prompt for the address to send to
+        const address = prompt('Enter the address to send to')
+
+        // now fkn send it
+        await takeItContractV1Write.transferFrom(from, address, take.id)
+    }
+
+
     // Remixing is enabled if the take contains [xx] or [yy] template vars,
     // or it is a remix of another take.
     const canRemix = take.takeURI 
@@ -126,7 +121,7 @@ function UI() {
         chainId: 1,
     })
 
-    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
     const isARemixedTake = take.refs && take.refs.length > 0
 
@@ -157,7 +152,8 @@ function UI() {
                 </div>
 
                 <p>
-                    taken by <a href={openseaUrl}><strong>{authorEns || take.author}</strong></a>
+                    {/* {authorEns || take.author} */}
+                    taken by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a>
                     {/* collected by <a href={openseaUrl}><strong>{ownerEns || take.owner}</strong></a> */}
                 </p>
 
@@ -165,6 +161,8 @@ function UI() {
                     {/* <button disabled={true} className={styles.takeItBtn} onClick={remix}>like (wip)</button> */}
                     {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
+                    {/* a button for sending a take NFT to an address */}
+                    <button disabled={false} className={styles.takeItBtn} onClick={() => sendNft(account.address)}>send</button>
                 </p>
 
                 <h3>remixed from</h3>
@@ -195,10 +193,11 @@ function UI() {
 }
 
 const slugify = require('slugify')
+import truncateEthAddress from 'truncate-eth-address';
 
 
 export const TakeBox = ({ take }) => {
-    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
     // Load the .eth name for the author.
     const { data: authorEns, isError, isLoading } = useEnsName({

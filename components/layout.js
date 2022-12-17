@@ -15,7 +15,7 @@ import { getContract, getProvider } from '@wagmi/core'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import Header from '../components/header';
-import { TakeV2Address } from '../lib/config';
+import { TakeV3Address } from '../lib/config';
 import { TakeABI } from '../abis';
 import { useNetwork } from 'wagmi'
 import { useEffect  } from 'react'

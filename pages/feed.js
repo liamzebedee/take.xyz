@@ -6,7 +6,6 @@ import styles from '../styles/Home.module.css';
 /*
 Rainbow & wagmi
 */
-import '@rainbow-me/rainbowkit/styles.css';
 
 import {
     getDefaultWallets
@@ -47,7 +46,7 @@ UI
 import { TakeABI } from '../abis/index.js';
 import Link from 'next/link';
 import Header from '../components/header';
-import { TakeV2Address } from '../lib/config';
+import { TakeV3Address } from '../lib/config';
 import { AppLayout } from '../components/layout';
 
 import { multicall } from '@wagmi/core'
@@ -171,7 +170,7 @@ function UI() {
     
     // Contract.
     const takeItContractV1 = getContract({
-        address: TakeV2Address,
+        address: TakeV3Address,
         abi: TakeABI,
         signerOrProvider: provider
     })
@@ -248,7 +247,7 @@ const slugify = require('slugify')
 
 
 const TakeBox = ({ take }) => {
-    const openseaUrl = `https://opensea.io/assets/matic/${TakeV2Address}/${take.id}`
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     
     // Load the .eth name for the author.
     const { data: authorEns, isError, isLoading } = useEnsName({

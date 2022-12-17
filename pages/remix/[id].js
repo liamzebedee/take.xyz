@@ -11,7 +11,7 @@ import { getContract } from '@wagmi/core';
 import Header from '../../components/header';
 import { TakeABI } from '../../abis';
 import { useRouter } from 'next/router';
-import { TakeV2Address } from '../../lib/config';
+import { TakeV3Address } from '../../lib/config';
 import { AppLayout } from '../../components/layout';
 
 
@@ -79,7 +79,7 @@ function UI() {
     // Mint the take on click.
     // const provider = getProvider()
     const takeItContractV1 = getContract({
-        address: TakeV2Address,
+        address: TakeV3Address,
         abi: TakeABI,
         signerOrProvider: signer
     })

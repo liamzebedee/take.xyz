@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react';
 import { AppLayout } from '../components/layout';
 import styles from '../styles/Home.module.css';
 
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useContractWrite, usePrepareContractWrite, useSigner, useWaitForTransaction } from 'wagmi';
 import { getContract } from '@wagmi/core';
 import Header from '../components/header';
-import { TakeV2Address } from '../lib/config';
+import { TakeV3Address } from '../lib/config';
 import { TakeABI } from '../abis';
+import { useDebounce } from '../components/util';
+import { ethers } from 'ethers';
 
 /*
 UI
@@ -18,6 +20,7 @@ const slugify = require('slugify')
 
 function UI() {
   const [take, setTake] = useState('')
+  const debouncedTake = useDebounce(take, 97)
   const [canTakeIt, setCanTakeIt] = useState(false)
 
   const account = useAccount()
@@ -37,32 +40,45 @@ function UI() {
   }, [account, take])
 
   // Mint the take on click.
-  // const provider = getProvider()
-  const takeItContractV1 = getContract({
-    address: TakeV2Address,
+  const { config: mintConfig } = usePrepareContractWrite({
+    address: TakeV3Address,
     abi: TakeABI,
-    signerOrProvider: signer
+    signerOrProvider: signer,
+    functionName: 'mint',
+    args: [debouncedTake, [0, 0, 0]],
+    enabled: canTakeIt,
   })
-  const takeIt = async () => {
-    try {
-      const tx = await takeItContractV1.mint(take, [0,0,0])
-      const receipt = await tx.wait()
-      console.log(receipt)
-      // extract ERC721 mint event from receipt
-      // 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
-      // const event = receipt.events[0]
-      // decode hex tokenId arg into tokenId number
-      // const tokenId = parseInt(event.args[2])
-      const event = receipt.events.find(e => e.event === 'Transfer')
-      const tokenId = event.args.id
-      // redirect to take page
-      window.location.href = `/t/${slugify(take)}-${tokenId}`
+
+  const { data, write, isLoading: isWriteLoading } = useContractWrite(mintConfig)
+  const { isLoading: isTxLoading, isSuccess: isTxSuccess, data: txReceipt } = useWaitForTransaction({
+    hash: data && data.hash,
+  })
+
+  useEffect(() => {
+    async function redirectOnMint() {
+      const iface = new ethers.utils.Interface(TakeABI);
+      const logs = txReceipt.logs
+        .map((log) => {
+          try {
+            return iface.parseLog(log)
+          } catch (e) {
+            return null
+          }
+        })
+        .filter((log) => log !== null)
+
+      // Extract ERC721 Mint event.
+      const log = logs.find(log => log.name === 'Transfer');
+      const tokenId = log.args.id
       
-    } catch (err) {
-      console.error(err)
-      return
+      // Redirect to take page
+      window.location.href = `/t/${slugify(debouncedTake)}-${tokenId}`
     }
-  }
+
+    if (isTxSuccess) {
+      redirectOnMint()
+    }
+  }, [signer, isTxSuccess])
 
   const ui = (
     <div className={styles.container}>
@@ -84,7 +100,9 @@ function UI() {
         </p>
 
         <div className={styles.grid}>
-          <button disabled={!canTakeIt} className={styles.takeItBtn} onClick={takeIt}>take it</button>
+          <button disabled={!write || isWriteLoading || isTxLoading || !canTakeIt} className={styles.takeItBtn} onClick={() => write()}>
+            {isTxLoading ? 'minting...' : 'mint'}
+          </button>
         </div>
       </main>
 
@@ -100,8 +118,7 @@ function UI() {
     </div>
   )
 
-
-    return ui
+  return ui
 }
 
 UI.layout = AppLayout
