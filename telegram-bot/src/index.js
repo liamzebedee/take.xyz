@@ -1,8 +1,13 @@
 const TG = require('telegram-bot-api')
 const slugify = require('slugify')
 
-const { TELEGRAM_TOKEN } = process.env
-const CHAT_ID = "-801845949"
+let { TELEGRAM_TOKEN, CHAT_ID } = process.env
+
+if(process.env.NODE_ENV != 'production') {
+    const CHAT_ID_TEST = "-801845949"
+    CHAT_ID = CHAT_ID_TEST
+}
+
 const TAKE_APP_BASE_URL = "https://take-xyz.vercel.app"
 printTelegramBotInfo()
 
@@ -103,7 +108,7 @@ async function listenToNewTakes({ api }) {
     const last5 = events.slice(-5)
     last5.forEach(async event => {
         const takeId = event.args.id.toNumber()
-        console.log(await getNewTakeAnnouncement({ Take, takeId: lastTakeId }))
+        // console.log(await getNewTakeAnnouncement({ Take, takeId: lastTakeId }))
     })
 
     // Print a non-template take.
@@ -112,21 +117,21 @@ async function listenToNewTakes({ api }) {
     // console.log(await getNewTakeAnnouncement({ Take, takeId: 39 }))
     
 
-    api.sendMessage({
-        chat_id: CHAT_ID,
-        parse_mode: 'HTML',
-        text: await getNewTakeAnnouncement({ Take, takeId: 0 }),
-    })
+    // Take.
+    // await processNewTake({ api, Take, takeId: 0 })
 
-    api.sendMessage({
-        chat_id: CHAT_ID,
-        parse_mode: 'HTML',
-        text: await getNewTakeAnnouncement({ Take, takeId: 39 }),
-    })
+    // // Template.
+    // // https://take-xyz.vercel.app/t/take-is-xx-23
+    // await processNewTake({ api, Take, takeId: 23 })
+    
+    // // Remix.
+    // await processNewTake({ api, Take, takeId: 39 })
 
     // Now listen to the Take contract for new takes.
-    // Take.on('Transfer', async (from, to, tokenId) => {
-    //     console.log(`New take: ${tokenId}`)
+    Take.on('Transfer', async (from, to, id) => {
+        console.log(`New take: ${id}`)
+        await processNewTake({ api, Take, takeId: id })
+    })
 
     //     // // Load the take.
     //     // const take = await fetchTake({ takeContract: take, takeId: tokenId })
@@ -139,7 +144,20 @@ async function listenToNewTakes({ api }) {
     // })
 }
 
-async function getNewTakeAnnouncement({ Take, takeId }) {
+async function processNewTake({ api, Take, takeId }) {
+    try {
+        const msg = await getNewTakeAnnouncements({ Take, takeId })
+        await api.sendMessage({
+            chat_id: CHAT_ID,
+            parse_mode: 'HTML',
+            text: msg.buf,
+        })
+    } catch(ex) {
+        console.log(ex)
+    }
+}
+
+async function getNewTakeAnnouncements({ Take, takeId }) {
     // Load the take.
     const take = await fetchTake({ takeContract: Take, takeId })
     // Load any takes we have remixed.
@@ -152,59 +170,58 @@ async function getNewTakeAnnouncement({ Take, takeId }) {
     // Detect if take is template.
     const isTemplate = (take.description.includes('[xx]') || take.description.includes('[yy]'))
     const isRemix = refs.length > 0
-    let msg
 
     const takeShortUrl = `${TAKE_APP_BASE_URL}/t/-${takeId}`
     const takeLongUrl = `${TAKE_APP_BASE_URL}/t/${slugify(take.description)}-${takeId}`
 
-    // take is currently building a telegram bot
-    // nakamofo.eth remixed himself
+    class Msg {
+        buf = ''
+        write(line = '') {
+            this.buf += line + '\n'
+        }
+    }
+    let msg = new Msg
 
-
-
+    const author = await getENSUsername(take.author)
     if (isTemplate) {
         // msg = `new template - <a href="${takeLongUrl}">${take.description}</a>`
-        msg = `<b>${take.description}</b> <a href="${takeLongUrl}">[remix]</a>`
+        // msg.write("<b>New template!</b>")
+        msg.write(`new template from ${author} - <b>${take.description}</b>\n<a href="${takeLongUrl}">remix</a>`)
+        // msg.write(`<a href="${takeLongUrl}">take/${take.id}</a>`)
+
     } else if (isRemix) {
         // Resolve ens names:
         // - author of take
         // - author of og take
-        const author = await getENSUsername(take.author)
         const authorOg = await getENSUsername(refs[0].author)
         const ogTake = refs[0]
+        
+        // URL.
         const ogTakeLongUrl = `${TAKE_APP_BASE_URL}/t/${slugify(ogTake.description)}-${ogTake.id}`
         const selfRemix = author === authorOg
-        
-        const remixed = `<a href="${takeLongUrl}">remixed</a>`
-        const remixBio = selfRemix ? `himself` : `${remixed} ${authorOg}`
-        const link = `<a href="${takeLongUrl}">link</a>`
 
-        msg += `${author} remixed ${authorOg}!`
-        msg += "\n"
-        msg = `<b>${take.description}</b> <a href="${ogTakeLongUrl}">[remix]</a>`
-        // msg += ` by ${authorOg}`
-        // msg += `remix of #${refs[0].id} by ${authorOg}`
+        msg.write(`new remix from ${author} - <b>${take.description}</b>\n<a href="${takeLongUrl}">link</a>`)
 
-        // msg += `by ${author}, remixes ${authorOg}`
-        // msg += `#${takeId} - remix of ${authorOg} #${refs[0].id}`
+        // let msg2 = Message()
+        // msg2.write(`<b>${author} remixed ${authorOg}'s take!</b>`)
 
-        // take is currently building a tg bot
-        // by nakamofo, remixes nakamofo
+        // msgs.push(msg2)
+        // msg.write(`<b> ${take.description}</b>`)
 
-        // msg += `${author} ${remixed} ${selfRemix ? 'themself' : }`
-
-        // msg = `${take.description}\nremixed by ${author} (<a href="${takeLongUrl}">link</a>))`
-        // msg = `take is currently building a telegram bot\nremixed by ${author} (<a href="${takeLongUrl}">link</a>))`
-        // msg = `${author} remixed ${authorOg}'s - <a href="${takeLongUrl}">${take.description}</a>`
-        // msg = [`${author} remixed ${authorOg}`, `<a href="${takeLongUrl}">${take.description}</a>`]
+        // msg.write(`<b>${author} remixed ${authorOg}!</b>`)
+        // msg.write(`${take.description}`)
+        // msg.write(`<a href="${takeLongUrl}">[remix]</a>`)
     } else {
-        msg = `<b>${take.description}</b> <a href="${takeLongUrl}">[remix]</a>`
+        msg.write(`new take from ${author} - <b>${take.description}</b>\n<a href="${takeLongUrl}">link</a>`)
+
+        // msg.write("<b>New take!</b>")
+        // msg.write(`${take.description}`)
+        // msg.write(`<a href="${takeLongUrl}">[take]</a>`)
     }
+
+    // msgs.push(msg)
     
     return msg
-
-    // let message = `new template!\n`
-    // message += 
 }
 
 

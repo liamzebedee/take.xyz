@@ -171,6 +171,12 @@ function UI() {
                 <title>take</title>
                 <meta name="description" content="hot takes" />
                 <link rel="icon" href="/favicon.ico" />
+
+                {/* Why the hell do we need this? */}
+                {/* https://take-xyz.vercel.app/t/rachel-and-ross-were-on-a-break-28 */ }
+                {/* <meta property="og:title" content={} />
+                <meta property="og:description" content="Get from SEO newbie to SEO pro in 8 simple steps." />
+                <meta property="og:image" content="https://ahrefs.com/blog/wp-content/uploads/2019/12/fb-how-to-become-an-seo-expert.png" /> */}
             </Head>
 
             <Header/>
@@ -199,8 +205,6 @@ function UI() {
                     {take.owner && (
                         <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
                     )}
-                    
-                    
                 </p>
 
                 <p>
@@ -277,8 +281,8 @@ export const TakeBox = ({ take }) => {
         </p> */}
 
         {/* <p className={styles.description}>
-                    {take.text}
-                </p> */}
+            {take.text}
+        </p> */}
     </div>
 }
 

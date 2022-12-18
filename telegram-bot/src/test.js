@@ -10,7 +10,7 @@
 //         .split(/(\[xx\]|\[yy\])/)
 //         .map(span => {
 //             if (span === "[xx]" || span === "[yy]") {
-//                 return { type: "template", value: span }
+//                 return { type: "template", template: span, value: "" }
 //             } else {
 //                 return { type: "text", value: span }
 //             }
@@ -30,7 +30,8 @@
 //         let isInsideTemplate
 
 //         const next = () => {
-//             // isInsideTemplate = 
+//             // check if we are currently inside a template span.
+//             if(i)
 //         }
 //     }
 
@@ -39,9 +40,21 @@
 //     // If we don't find a template span, then we need to add the next bit of the take to the output.
 //     let output = ""
 //     let isInsideTemplate = false
+//     let spans = templateSpans
+//     let currentSpan = spans.shift()
+
 //     for (let i = 0; i < take.length; i++) {
 //         const char = take[i]
+//         // when have we exited a template span?
 
+//         if(currentSpan.type === "template") {
+//             currentSpan.value += char
+
+//             if(currentSpan.begin === i) {
+//             } else {
+//                 currentSpan.begin = i
+//             }
+//         }
 //     } 
 
 // }
