@@ -16,10 +16,20 @@ if (!TELEGRAM_TOKEN) {
     throw new Error('TELEGRAM_TOKEN is not set')
 }
 
+// Create a Polygon RPC provider.
+let provider, ensProvider
+
 async function main() {
     const api = new TG({
         token: TELEGRAM_TOKEN
     })
+    
+    provider = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_KEY_MATIC)
+    ensProvider = new ethers.providers.AlchemyProvider('homestead', process.env.ALCHEMY_KEY_HOMESTEAD)
+
+    await provider.getBlock('latest')
+    await ensProvider.getBlock('latest')
+
     // printTakeDeploymentInfo()
     listenToNewTakes({ api })
 }
@@ -62,9 +72,6 @@ async function fetchTake({ takeContract: Take, takeId }) {
 }
 
 
-// Create a Polygon RPC provider.
-const provider = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_KEY_MATIC)
-const ensProvider = new ethers.providers.AlchemyProvider('homestead', process.env.ALCHEMY_KEY_HOMESTEAD)
 const getENSUsername = async (address) => {
     try {
         return await ensProvider.lookupAddress(address)
@@ -102,12 +109,12 @@ async function listenToNewTakes({ api }) {
     console.log(`Last take: ${lastTakeId}`)
     
     // Get the last 5 and print them.
-    console.log(`Last 5 takes:`)
-    const last5 = events.slice(-5)
-    last5.forEach(async event => {
-        const takeId = event.args.id.toNumber()
-        // console.log(await getNewTakeAnnouncement({ Take, takeId: lastTakeId }))
-    })
+    // console.log(`Last 5 takes:`)
+    // const last5 = events.slice(-5)
+    // last5.forEach(async event => {
+    //     const takeId = event.args.id.toNumber()
+    //     // console.log(await getNewTakeAnnouncement({ Take, takeId: lastTakeId }))
+    // })
 
     // Print a non-template take.
     // console.log(await getNewTakeAnnouncement({ Take, takeId: 0 }))
@@ -115,21 +122,22 @@ async function listenToNewTakes({ api }) {
     // console.log(await getNewTakeAnnouncement({ Take, takeId: 39 }))
     
 
-    if(process.env.NODE_ENV !== 'production') {
-        // Take.
-        await processNewTake({ api, Take, takeId: 0 })
+    // if(process.env.NODE_ENV !== 'production') {
+    //     // Take.
+    //     await processNewTake({ api, Take, takeId: 0 })
     
-        // Template.
-        // https://take-xyz.vercel.app/t/take-is-xx-23
-        await processNewTake({ api, Take, takeId: 23 })
+    //     // Template.
+    //     // https://take-xyz.vercel.app/t/take-is-xx-23
+    //     await processNewTake({ api, Take, takeId: 23 })
         
-        // Remix.
-        await processNewTake({ api, Take, takeId: 39 })
-    }
+    //     // Remix.
+    //     await processNewTake({ api, Take, takeId: 39 })
+    // }
 
     // Process missed take ID's.
-    const lastProcessedTake = 63
-    for (let i = lastProcessedTake; i < lastTakeId; i++) {
+    const lastProcessedTake = process.env.LASTTAKE || totalTakes
+    for (let i = lastProcessedTake; i < totalTakes; i++) {
+        console.log(`processing missed take: ${i}`)
         await processNewTake({ api, Take, takeId: i })
     }
 
@@ -172,7 +180,14 @@ async function processNewTake({ api, Take, takeId }) {
 
 async function getNewTakeAnnouncements({ Take, takeId }) {
     // Load the take.
-    const take = await fetchTake({ takeContract: Take, takeId })
+    let take
+    try {
+        take = await fetchTake({ takeContract: Take, takeId })
+    } catch(err) {
+        console.log(err)
+        return
+    }
+
     // Load any takes we have remixed.
     const refs = await Promise.all(take.refIds.map(id => fetchTake({ takeContract: Take, takeId: id })))
 
