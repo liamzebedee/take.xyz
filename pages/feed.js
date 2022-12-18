@@ -21,7 +21,7 @@ import truncateEthAddress from 'truncate-eth-address';
 
 
 const { chains, provider } = configureChains(
-    [polygon, mainnet],
+    [polygon],
     [
         publicProvider()
     ]
