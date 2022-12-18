@@ -274,7 +274,7 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div className={styles.takeMeta}>
-            <div>collected by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a></div>
+            <div>collected by <a href={openseaUrl}><strong>{take.owner && (authorEns || truncateEthAddress(take.owner))}</strong></a></div>
             <div>
             {take.refIds.length > 0 && (
                 <span>remixes #{take.refIds[0]}</span>
