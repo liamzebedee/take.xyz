@@ -1,0 +1,23 @@
+{
+  "name": "telegram-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "node build/telegram-bot/src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@yuva1422/telegram.js": "^1.0.5",
+    "ethers": "^5.7.2",
+    "slugify": "^1.6.5",
+    "telegram-bot-api": "^2.0.1",
+    "truncate-eth-address": "^1.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
