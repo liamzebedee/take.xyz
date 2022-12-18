@@ -50,6 +50,7 @@ import { TakeV3Address } from '../lib/config';
 import { AppLayout } from '../components/layout';
 
 import { multicall } from '@wagmi/core'
+import { parseTakeURI } from '../lib/chain';
 
 async function fetchTakesBatch({ takeIds, takeItContractV1, takeId, provider }) {
     const { address } = takeItContractV1
@@ -93,8 +94,8 @@ async function fetchTakesBatch({ takeIds, takeItContractV1, takeId, provider }) 
         ], i) => {
             console.log(takeURI)
             const takeId = takeIds[i]
-            const json = atob(takeURI.substring(29))
-            const tokenURIJsonBlob = JSON.parse(json)
+            
+            const tokenURIJsonBlob = parseTakeURI(takeURI)
             const refIds = refsIdsBN.map(id => id.toNumber()).filter(id => id > 0)
 
             return {
