@@ -63,10 +63,8 @@ async function fetchTake({ takeContract: Take, takeId }) {
 
 
 // Create a Polygon RPC provider.
-const provider = new ethers.providers.JsonRpcProvider(
-    'https://polygon-rpc.com'
-)
-const ensProvider = new ethers.providers.InfuraProvider()
+const provider = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_KEY_MATIC)
+const ensProvider = new ethers.providers.AlchemyProvider('homestead', process.env.ALCHEMY_KEY_HOMESTEAD)
 const getENSUsername = async (address) => {
     try {
         return await ensProvider.lookupAddress(address)
@@ -117,20 +115,35 @@ async function listenToNewTakes({ api }) {
     // console.log(await getNewTakeAnnouncement({ Take, takeId: 39 }))
     
 
-    // Take.
-    // await processNewTake({ api, Take, takeId: 0 })
-
-    // // Template.
-    // // https://take-xyz.vercel.app/t/take-is-xx-23
-    // await processNewTake({ api, Take, takeId: 23 })
+    if(process.env.NODE_ENV !== 'production') {
+        // Take.
+        await processNewTake({ api, Take, takeId: 0 })
     
-    // // Remix.
-    // await processNewTake({ api, Take, takeId: 39 })
+        // Template.
+        // https://take-xyz.vercel.app/t/take-is-xx-23
+        await processNewTake({ api, Take, takeId: 23 })
+        
+        // Remix.
+        await processNewTake({ api, Take, takeId: 39 })
+    }
+
+    // Process missed take ID's.
+    const lastProcessedTake = 63
+    for (let i = lastProcessedTake; i < lastTakeId; i++) {
+        await processNewTake({ api, Take, takeId: i })
+    }
+
 
     // Now listen to the Take contract for new takes.
     Take.on('Transfer', async (from, to, id) => {
         console.log(`New take: ${id}`)
         await processNewTake({ api, Take, takeId: id })
+        // setTimeout(async () => {
+        //     // VM Exception while processing transaction: reverted with reason string "NOT_MINTED"
+        //     // Appears we're running into race conditions with the contract.
+        //     // Wait 1000ms might solve.
+            
+        // }, 1000)
     })
 
     //     // // Load the take.
