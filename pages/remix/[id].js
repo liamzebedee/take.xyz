@@ -45,6 +45,7 @@ function UI() {
     const debouncedTake = useDebounce(take, 150)
     const [input1, setInput1] = useState('')
     const [input2, setInput2] = useState('')
+    const [input3, setInput3] = useState('')
     const [canTakeIt, setCanTakeIt] = useState(false)
 
     const account = useAccount()
@@ -57,6 +58,14 @@ function UI() {
     const onInput2Change = (e) => {
         setInput2(e.target.value)
     }
+    const onInput3Change = (e) => {
+        setInput3(e.target.value)
+    }
+
+    // Detect each type of take placeholder.
+    const hasXX = ogTake && ogTake.description.includes('[xx]')
+    const hasYY = ogTake && ogTake.description.includes('[yy]')
+    const hasZZ = ogTake && ogTake.description.includes('[zz]')
 
     // Compile the take
     useEffect(() => {
@@ -65,7 +74,8 @@ function UI() {
         // Replace any [xx] and [yy] with the input values.
         let xx = input1 || '[xx]'
         let yy = input2 || '[yy]'
-        const take = ogTake.description.replace(/\[xx\]/g, xx).replace(/\[yy\]/g, yy)
+        let zz = input3 || '[zz]'
+        const take = ogTake.description.replace(/\[xx\]/g, xx).replace(/\[yy\]/g, yy).replace(/\[zz\]/g, zz)
         setTake(take)
     }, [input1, input2, ogTake])
 
@@ -162,13 +172,24 @@ function UI() {
 
                 {renderTemplateTake(take)}
 
-                <p className={styles.description}>
-                    <input className={styles.takeInput} onChange={onInput1Change} maxLength={60} type="text"></input>
-                </p>
+                {
+                    hasXX && (<p className={styles.description}>
+                        <input className={styles.takeInput} onChange={onInput1Change} maxLength={60} type="text" disabled={!hasXX}></input>
+                    </p>)
+                }
 
-                <p className={styles.description}>
-                    <input className={styles.takeInput} onChange={onInput2Change} maxLength={60} type="text"></input>
-                </p>
+                {
+                    hasYY && (<p className={styles.description}>
+                        <input className={styles.takeInput} onChange={onInput2Change} maxLength={60} type="text" disabled={!hasYY}></input>
+                    </p>)
+                }
+
+                {
+                    hasZZ && (<p className={styles.description}>
+                        <input className={styles.takeInput} onChange={onInput3Change} maxLength={60} type="text" disabled={!hasZZ}></input>
+                    </p>)
+                }
+
 
                 {/* <p className={styles.description}>
                     {take}
