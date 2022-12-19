@@ -73,6 +73,8 @@
 
 
 .loading {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
   color: #ff2a8d;
 
   /* flex to max width/height of container, and centre text */

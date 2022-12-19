@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
 
 
@@ -18,6 +18,14 @@ import { BigNumber } from 'ethers';
 import { useEnsName } from 'wagmi';
 import truncateEthAddress from 'truncate-eth-address';
 
+
+import {
+    useQuery,
+    useQueryClient,
+    QueryClient,
+    QueryClientProvider,
+    useInfiniteQuery,
+} from '@tanstack/react-query'
 
 
 const { chains, provider } = configureChains(
@@ -50,120 +58,12 @@ import { TakeV3Address } from '../lib/config';
 import { AppLayout } from '../components/layout';
 
 import { multicall } from '@wagmi/core'
-import { parseTakeURI } from '../lib/chain';
+import { parseTakeURI, fetchTakesBatch } from '../lib/chain';
+import InfiniteScroll from 'react-infinite-scroller';
 
-async function fetchTakesBatch({ takeIds, takeItContractV1, takeId, provider }) {
-    const { address } = takeItContractV1
-    const abi = TakeABI
-
-    const functions = (['tokenURI', 'ownerOf', 'getTakeRefs', 'getTakeAuthor'])
-    const contracts = takeIds
-        .map(takeId => functions
-            .map(functionName => ({
-                abi,
-                address,
-                functionName,
-                args: [takeId]
-            }))
-        )
-        .flat()
-    
-    // console.log(contracts)
-
-    const data = await multicall({
-        contracts,
-    })
-    console.log(data)
-
-    // Now we have to parse the data.
-    // Process in batches of functions.length.
-    const takes = data
-        .reduce((acc, val, i) => {
-            const index = Math.floor(i / functions.length)
-            if (!acc[index]) {
-                acc[index] = []
-            }
-            acc[index].push(val)
-            return acc
-        }, [])
-        .map(([
-            takeURI,
-            owner,
-            refsIdsBN,
-            author
-        ], i) => {
-            console.log(takeURI)
-            const takeId = takeIds[i]
-            
-            const tokenURIJsonBlob = parseTakeURI(takeURI)
-            const refIds = refsIdsBN.map(id => id.toNumber()).filter(id => id > 0)
-
-            return {
-                id: takeId,
-                owner,
-                takeURI,
-                refIds,
-                ...tokenURIJsonBlob,
-            }
-        });
-
-    console.log(takes)
-    return takes
-}
-
-async function fetchTake2({ takeItContractV1, takeId, provider }) {
-    const { address } = takeItContractV1
-    const abi = TakeABI
-
-    const contracts = ['tokenURI', 'ownerOf', 'getTakeRefs', 'getTakeAuthor'].map(functionName => ({
-        abi,
-        address,
-        functionName,
-        args: [takeId]
-    }))
-
-    const data = await multicall({
-        contracts,
-    })
-
-    const [
-        takeURI,
-        owner,
-        refsIdsBN,
-        author
-    ] = data
-    const json = atob(takeURI.substring(29))
-    const tokenURIJsonBlob = JSON.parse(json)
-    const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
-
-    return {
-        id: takeId,
-        owner,
-        takeURI,
-        refIds,
-        ...tokenURIJsonBlob,
-    }
-}
-
-async function fetchTake(takeItContractV1, takeId) {
-    const takeURI = await takeItContractV1.tokenURI(takeId)
-    const owner = await takeItContractV1.ownerOf(takeId)
-    const json = atob(takeURI.substring(29))
-    const tokenURIJsonBlob = JSON.parse(json)
-    const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
-    const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
-
-    return {
-        id: takeId,
-        owner,
-        takeURI,
-        refIds,
-        ...tokenURIJsonBlob,
-    }
-}
 
 function UI() {
-    const [takes, setTakes] = useState([])
+    // const [takes, setTakes] = useState([])
 
     const account = useAccount()
     const provider = getProvider()
@@ -176,44 +76,110 @@ function UI() {
         signerOrProvider: provider
     })
 
-    // Fetch the latest 10 takes.
-    const fetchTakes = async () => {
+    const fetchTakes = async ({ pageParam = -1 }) => {
         const takeCount = await takeItContractV1.totalSupply()
-        const from = takeCount
+        if (pageParam === -1) {
+            pageParam = takeCount
+        }
+
         const takeIds = Array.from(Array(15).keys())
-            .map(i => BigNumber.from(from).sub(i).toNumber())
-            .reverse()
-            .filter(i => i > -1)
-            .filter(i => i < takeCount)
-            .reverse()
-
-        const takes = await fetchTakesBatch({ takeIds, takeItContractV1, provider })
-
-        // const takes = await Promise.all(takeIds.map(async (takeId) => {
-        //     return await fetchTake2({ takeItContractV1, takeId, provider })
-        //     // const takeURI = await takeItContractV1.tokenURI(takeId)
-        //     // const owner = await takeItContractV1.ownerOf(takeId)
-        //     // const json = atob(takeURI.substring(29))
-        //     // const tokenURIJsonBlob = JSON.parse(json)
-        //     // const refsIdsBN = await takeItContractV1.getTakeRefs(takeId)
-        //     // const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
-
-        //     // return {
-        //     //     id: takeId,
-        //     //     owner,
-        //     //     takeURI,
-        //     //     refIds,
-        //     //     ...tokenURIJsonBlob,
-        //     // }
-        // }))
-        setTakes(takes)
+        .map(i => BigNumber.from(pageParam).sub(i).toNumber())
+        .reverse()
+        .filter(i => i > -1)
+        .filter(i => i < takeCount)
+        .reverse();
+        console.log(takeIds)
+        
+        const takes2 = await fetchTakesBatch({ takeIds, takeItContractV1, provider, takeIds,  })
+        
+        takes2.nextCursor = takes2[takes2.length - 1].id - 1
+        if (takes2.nextCursor == -1) takes2.nextCursor = 0
+        takes2.hasNextPage = takes2.nextCursor > 0
+        console.log('next page', pageParam, takes2.nextCursor)
+        
+        return takes2
     }
 
-    useEffect(() => {
-        if (account.isConnected) {
-            fetchTakes()
-        }
-    }, [account.isConnected, fetchTakes])
+
+    const queryClient = useQueryClient()
+
+    const {
+        data,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+        isFetchingNextPage,
+        isFetched,
+        status,
+    } = useInfiniteQuery({
+        queryKey: ['feed'],
+        queryFn: fetchTakes,
+        getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    })
+
+
+    // useEffect(() => {
+    //     const handleScroll = () => {
+            
+    //     }
+
+    //     const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight + 20;
+    //     if (bottom && !isFetchingNextPage) {
+    //         console.log('bottom')
+    //         fetchNextPage()
+    //     }
+
+    //     handleScroll()
+    // }, [isFetchingNextPage, fetchNextPage])
+
+    // return status === 'loading' ? (
+    //     <p>Loading...</p>
+    // ) : status === 'error' ? (
+    //     <p>Error: {error.message}</p>
+    // ) : (
+    //     <>
+    //         <InfiniteScroll
+    //             pageStart={0}
+    //             loadMore={fetchNextPage}
+    //             hasMore={true || false}
+    //             loader={<div className="loader" key={0}>Loading ...</div>}
+    //         >
+    //                     {data.pages.map((group, i) => (
+    //                         <React.Fragment key={i}>
+    //                             {group.map(res => (
+    //                                 <span>{res.id},</span>
+    //                             ))}
+    //                         </React.Fragment>
+    //                     ))}
+    //         </InfiniteScroll>
+    //         {/* {data.pages.map((group, i) => (
+    //             <React.Fragment key={i}>
+    //                 {group.map(res => (
+    //                     <span>{res.id},</span>
+    //                 ))}
+    //             </React.Fragment>
+    //         ))} */}
+    //         <div>
+    //             <button
+    //                 onClick={() => fetchNextPage()}
+    //                 disabled={!hasNextPage || isFetchingNextPage}
+    //             >
+    //                 {isFetchingNextPage
+    //                     ? 'Loading more...'
+    //                     : hasNextPage
+    //                         ? 'Load More'
+    //                         : 'Nothing more to load'}
+    //             </button>
+    //         </div>
+    //         <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
+    //     </>
+    // )
+
+    // if(data) console.log(data.pageParams, data.pages)
+    // console.log('data', data)
+
+    // Add the ability to load more when you reach the bottom of the page.
 
     const ui = (
         <div className={styles.containerFeed}>
@@ -226,15 +192,29 @@ function UI() {
             <Header />
 
             <main className={styles.main}>
-                {!takes.length && (
+                { isFetched && (<div>
+                    <InfiniteScroll
+                        pageStart={0}
+                        className={styles.takesGrid}
+                        loadMore={fetchNextPage}
+                        hasMore={data.pages[data.pages.length - 1].hasNextPage}
+                    >
+                        {data.pages.map((group, i) => (
+                            <React.Fragment key={i}>
+                                {group.map(take => (
+                                    <TakeBox key={take.id} take={take} />
+                                ))}
+                            </React.Fragment>
+                        ))}
+                    </InfiniteScroll>
+                    
+                </div>) }
+
+                {isFetching && (
                     <div className={styles.loading}>
                         <div>loading...</div>
                     </div>
                 )}
-
-                <div className={styles.takesGrid}>
-                    {takes.map(take => <TakeBox key={take.id} take={take}/>)}
-                </div>
             </main>
 
             <div style={{ paddingBottom: "1rem" }}></div>
@@ -251,10 +231,11 @@ const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     
     // Load the .eth name for the author.
-    const { data: authorEns, isError, isLoading } = useEnsName({
-        address: take.owner,
-        chainId: 1,
-    })
+    // const { data: authorEns, isError, isLoading } = useEnsName({
+    //     address: take.owner,
+    //     chainId: 1,
+    // })
+    let authorEns = null
 
     const remix = async () => {}
 

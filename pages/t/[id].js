@@ -113,7 +113,7 @@ function UI() {
             }
 
             // Load the take.
-            const take = await fetchTake2({ takeItContractV1, takeId, provider })
+            const take = await fetchTake2({ takeItContractV1, takeId, provider, fetchRefs: true })
             
             setTake({
                 id: takeId,
