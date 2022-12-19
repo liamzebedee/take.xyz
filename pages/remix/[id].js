@@ -60,14 +60,14 @@ function UI() {
 
     // Compile the take
     useEffect(() => {
-        if(!ogTake.description) return
+        if(!ogTake) return
 
         // Replace any [xx] and [yy] with the input values.
         let xx = input1 || '[xx]'
         let yy = input2 || '[yy]'
         const take = ogTake.description.replace(/\[xx\]/g, xx).replace(/\[yy\]/g, yy)
         setTake(take)
-    }, [input1, input2])
+    }, [input1, input2, ogTake])
 
     // Validate input, enable button.
     useEffect(() => {
@@ -139,7 +139,7 @@ function UI() {
         if (isTxSuccess) {
             redirectOnMint()
         }
-    }, [signer, isTxSuccess])
+    }, [signer, isTxSuccess, debouncedTake, txReceipt])
 
     const ui = (
         <div className={styles.container}>
@@ -160,9 +160,7 @@ function UI() {
                     {ogTake.description}
                 </p> */}
 
-                <p className={styles.description}>
-                    {renderTemplateTake(take)}
-                </p>
+                {renderTemplateTake(take)}
 
                 <p className={styles.description}>
                     <input className={styles.takeInput} onChange={onInput1Change} maxLength={60} type="text"></input>
