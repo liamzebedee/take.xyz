@@ -1,14 +1,19 @@
+import { CHAT_ID_TEST, TAKE_APP_BASE_URL } from './config'
+import { fetchTake, printTelegramBotInfo } from './helpers'
+
 const TG = require('telegram-bot-api')
 const slugify = require('slugify')
+const { ethers } = require('ethers')
+const { TakeABI, HYPEABI } = require('../../abis')
+const { TakeV3Address, HYPETokenAddress } = require('../../lib/config')
+const { default: truncateEthAddress } = require('truncate-eth-address')
 
+// Configure.
 let { TELEGRAM_TOKEN, CHAT_ID } = process.env
-
 if(process.env.NODE_ENV != 'production') {
-    const CHAT_ID_TEST = "-801845949"
     CHAT_ID = CHAT_ID_TEST
 }
 
-const TAKE_APP_BASE_URL = "https://take-xyz.vercel.app"
 printTelegramBotInfo()
 
 // Check if TELEGRAM_TOKEN is set
@@ -20,6 +25,10 @@ if (!TELEGRAM_TOKEN) {
 let provider, ensProvider
 
 async function main() {
+    console.log(`NODE_ENV: ${process.env.NODE_ENV}`)
+    console.log(`TakeV3Address: ${TakeV3Address}`)
+    console.log(`CHAT_ID: ${CHAT_ID}`)
+
     const api = new TG({
         token: TELEGRAM_TOKEN
     })
@@ -31,72 +40,52 @@ async function main() {
     await ensProvider.getBlock('latest')
 
     // printTakeDeploymentInfo()
+
+    listenToTokenTransfers({ api })
     listenToNewTakes({ api })
 }
 
-// import TakeABI and ethers
-const { ethers } = require('ethers')
-const { TakeABI } = require('../../abis')
-// import take deployment address
-const { TakeV3Address } = require('../../lib/config')
-
-const { default: truncateEthAddress } = require('truncate-eth-address')
-
-
-function printTelegramBotInfo() {
-    console.log(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getUpdates`)
-}
-
-function printTakeDeploymentInfo() {
-    const takeDeploymentInfoPage = `https://polygonscan.com/txs?a=${TakeV3Address}`
-    console.log(`Take deployment info: ${takeDeploymentInfoPage}`)
-}
-
-
-
-export const parseTakeURI = (uri) => {
-    const safeUri = `data:application/json;base64,eyJuYW1lIjogIkhvdCBUYWtlICMxMyIsICJkZXNjcmlwdGlvbiI6ICIiLCAiaW1hZ2UiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhCeVpYTmxjblpsUVhOd1pXTjBVbUYwYVc4OUluaE5hVzVaVFdsdUlHMWxaWFFpSUhacFpYZENiM2c5SWpBZ01DQXpNREFnTXpBd0lqNDhjM1I1YkdVK0xtSmhjMlVnZXlCbWFXeHNPaUIzYUdsMFpUc2dabTl1ZEMxbVlXMXBiSGs2SUhOaGJuTXRjMlZ5YVdZN0lHWnZiblF0YzJsNlpUb2dNVGh3ZURzZ2ZUd3ZjM1I1YkdVK1BISmxZM1FnZDJsa2RHZzlJakV3TUNVaUlHaGxhV2RvZEQwaU1UQXdKU0lnWm1sc2JEMGlJMFV6TVVNM09TSWdMejQ4ZEdWNGRDQjRQU0l4TUNJZ2VUMGlNakFpSUdOc1lYTnpQU0ppWVhObElqNDhMM1JsZUhRK1BIUmxlSFFnZUQwaU1UQWlJSGs5SWpRd0lpQmpiR0Z6Y3owaVltRnpaU0krUEM5MFpYaDBQangwWlhoMElIZzlJakV3SWlCNVBTSTJNQ0lnWTJ4aGMzTTlJbUpoYzJVaVBqd3ZkR1Y0ZEQ0OGRHVjRkQ0I0UFNJeE1DSWdlVDBpT0RBaUlHTnNZWE56UFNKaVlYTmxJajQ4TDNSbGVIUStQSFJsZUhRZ2VEMGlNVEFpSUhrOUlqRXdNQ0lnWTJ4aGMzTTlJbUpoYzJVaVBqd3ZkR1Y0ZEQ0OGRHVjRkQ0I0UFNJeE1DSWdlVDBpTVRJd0lpQmpiR0Z6Y3owaVltRnpaU0krUEM5MFpYaDBQangwWlhoMElIZzlJakV3SWlCNVBTSXhOREFpSUdOc1lYTnpQU0ppWVhObElqNDhMM1JsZUhRK1BIUmxlSFFnZUQwaU1UQWlJSGs5SWpFMk1DSWdZMnhoYzNNOUltSmhjMlVpUGp3dmRHVjRkRDQ4TDNOMlp6ND0ifQ==`
-
-    try {
-        const json = atob(uri.substring(29))
-        const tokenURIJsonBlob = JSON.parse(json)
-        return tokenURIJsonBlob
-    } catch {
-        const json = atob(safeUri.substring(29))
-        const tokenURIJsonBlob = JSON.parse(json)
-        return tokenURIJsonBlob
-    }
-}
-
-
-
-async function fetchTake({ takeContract: Take, takeId }) {
-    const takeURI = await Take.tokenURI(takeId)
-    const owner = await Take.ownerOf(takeId)
-    const author = await Take.getTakeAuthor(takeId)
-    const tokenURIJsonBlob = parseTakeURI(takeURI)
-    const refsIdsBN = await Take.getTakeRefs(takeId)
-    const refIds = await Promise.all(refsIdsBN.map(id => id.toNumber()).filter(id => id > 0))
-
-    return {
-        id: takeId,
-        owner,
-        author,
-        takeURI,
-        refIds,
-        ...tokenURIJsonBlob,
-    }
-}
-
-
 const getENSUsername = async (address) => {
     try {
-        return await ensProvider.lookupAddress(address)
-    } catch(err) {
+        const ens = await ensProvider.lookupAddress(address)
+        if (ens) return ens
+    } catch (err) {
     }
 
-    console.log(address)
     return truncateEthAddress(address)
+}
+
+async function listenToTokenTransfers({ api }) {
+    // Get the HYPE contract.
+    const HypeToken = new ethers.Contract(
+        HYPETokenAddress,
+        HYPEABI,
+        provider
+    )
+
+    HypeToken.on('Transfer', async (from, to, amount) => {
+        await processHypeTransfer({ api, HypeToken, from, to, amount })
+    })
+}
+
+async function processHypeTransfer({ api, HypeToken, from, to, amount }) {
+    const fromUsername = await getENSUsername(from)
+    const toUsername = await getENSUsername(to)
+
+    const hypeTransfer = {
+        from,
+        fromUsername,
+        to,
+        toUsername,
+        amount,
+    }
+
+    await api.sendMessage({
+        chat_id: CHAT_ID,
+        parse_mode: 'HTML',
+        disable_web_page_preview: 'true',
+        text: `🎉 ${fromUsername} sent <b>${amount} HYPE</b> to ${toUsername}\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
+    })
 }
 
 async function listenToNewTakes({ api }) {
