@@ -69,7 +69,12 @@ async function listenToTokenTransfers({ api }) {
 }
 
 async function processHypeTransfer({ api, HypeToken, from, to, amount }) {
-    const fromUsername = await getENSUsername(from)
+    let fromUsername
+    fromUsername = await getENSUsername(from)
+    if(from == ethers.constants.AddressZero) {
+        fromUsername = 'HypeDAO'
+    }
+
     const toUsername = await getENSUsername(to)
 
     const hypeTransfer = {
