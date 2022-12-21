@@ -196,7 +196,7 @@ function UI() {
                 </p> */}
 
                 <div className={styles.grid}>
-                    <button disabled={!write || isWriteLoading || isTxLoading || !canTakeIt} className={styles.takeItBtn} onClick={() => write()}>
+                    <button disabled={isWriteLoading || isTxLoading || !canTakeIt} className={styles.takeItBtn} onClick={() => write()}>
                         {isTxLoading ? 'minting...' : 'mint'}
                     </button>
                 </div>
