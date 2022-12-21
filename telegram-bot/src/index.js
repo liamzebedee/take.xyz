@@ -84,7 +84,7 @@ async function processHypeTransfer({ api, HypeToken, from, to, amount }) {
         chat_id: CHAT_ID,
         parse_mode: 'HTML',
         disable_web_page_preview: 'true',
-        text: `🎉 ${fromUsername} sent <b>${amount} HYPE</b> to ${toUsername}\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
+        text: `🎉 ${fromUsername} sent <b>${ethers.utils.formatEther(amount)} HYPE</b> to ${toUsername}\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
     })
 }
 
