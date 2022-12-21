@@ -2,7 +2,12 @@ set -ex
 source .env
 
 NAME=$1
-ADDRESS=$(cast resolve-name --rpc-url https://cloudflare-eth.com/ $NAME)
+if [[ "$date" =~ ^[0x] ]]; then
+    echo "Looking up name"
+    ADDRESS=$(cast resolve-name --rpc-url https://cloudflare-eth.com/ $NAME)
+else
+    ADDRESS=$NAME
+fi
 
 RPC_URL=https://polygon-rpc.com
 GAS_PRICE=$(cast gas-price --rpc-url $RPC_URL)

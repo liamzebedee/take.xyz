@@ -26,7 +26,7 @@ abstract contract Owned {
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _owner) {
+    function initialize_Owned(address _owner) public initializable {
         owner = _owner;
 
         emit OwnershipTransferred(address(0), _owner);
