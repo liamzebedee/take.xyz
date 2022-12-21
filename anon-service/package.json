@@ -1,0 +1,22 @@
+{
+  "name": "anon-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "node ./build/anon-service/src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ethers": "^5.7.2",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@types/yargs": "^17.0.17",
+    "yargs": "^17.6.2"
+  }
+}

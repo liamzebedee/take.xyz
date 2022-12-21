@@ -1,0 +1,15 @@
+.step h3 {
+    font-weight: normal;
+}
+
+.step .isDone h3 {
+    color: #ddd;
+}
+
+.step.isCurrent h3 {
+    font-weight: bold;
+}
+
+.step .isFuture h3 {
+    
+}

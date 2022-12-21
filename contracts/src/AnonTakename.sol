@@ -1,16 +1,13 @@
+
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
 
 import "./lib/Base64.sol";
 import "./lib/Utils.sol";
 
-
-// Based on:
-// - Solmate erc721
-// - Loot
-// - DAOBetic Loot https://github.com/liamzebedee/sugardao/blob/master/contracts/system/Daobetic.sol
-
-contract Take {
+/// @notice Modern, minimalist, and gas efficient ERC-721 implementation.
+/// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC721.sol)
+contract AnonTakenameRegistry {
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -25,154 +22,9 @@ contract Take {
                          METADATA STORAGE/LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    string public symbol = "TAKE";
+    string public name;
 
-    struct Take {
-        string text;
-        address author;
-        uint256[3] refs;
-    }
-
-    mapping(uint256 => Take) public takes;
-    uint256 public totalSupply;
-
-    function getTakeAuthor(uint256 tokenId) public view returns (address) {
-        return takes[tokenId].author;
-    }
-
-    function getTakeText(uint256 tokenId) public view returns (string memory) {
-        return takes[tokenId].text;
-    }
-
-    function getTakeRefs(uint256 tokenId) public view returns (uint256[3] memory) {
-        return takes[tokenId].refs;
-    }
-
-    function getTakeLines(string memory take) public view returns (string[8] memory) {
-        string[8] memory lines;
-
-        string memory nextWord = "";
-        uint j = 0;
-
-        for(uint i = 0; i < 8; i++) {
-            // the line buffer
-            string memory line = "";
-
-            // split the take into lines.
-            // we make a new line when:
-            // 1) the `line` exceeds 30 characters
-
-            while(true) {
-                // scan until we encounter a space to get the next word
-                uint k = j;
-                for(; j < bytes(take).length; j++) {
-                    if(bytes(take)[j] == " ") {
-                        break;
-                    }
-                }
-
-                // store the characters between k and j as the next word
-                for(uint l = k; l < j; l++) {
-                    nextWord = string(abi.encodePacked(nextWord, bytes(take)[l]));
-                }
-                
-                if(bytes(line).length == 0) {
-                    // if the line is empty, add the next word
-                    line = string(abi.encodePacked(line, nextWord));
-                    nextWord = "";
-                } else if(bytes(line).length + bytes(nextWord).length < 30) {
-                    // if the line is not empty and the next word fits, add a space and the next word
-                    line = string(abi.encodePacked(line, " ", nextWord));
-                    nextWord = "";
-                } else {
-                    // if the line is not empty and the next word does not fit, break
-                    line = "";
-                    break;
-                }
-
-                lines[i] = line;
-            }
-
-            // if the line is empty, we have reached the end of the take
-            if(bytes(line).length == 0) {
-                // add the rest of the take to the last line
-                lines[i] = string(abi.encodePacked(lines[i], nextWord));
-                break;
-            }
-        }
-
-        return lines;
-    }
-
-    function tokenURI(uint256 tokenId) public view returns (string memory) {
-        // Load the take.
-        Take memory take = takes[tokenId];
-        // string[8] memory lines = getTakeLines(take.text);
-        // TODO fix.
-        string[8] memory lines;
-        lines[0] = take.text;
-
-        string[17] memory parts;
-        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 300 300"><style>.base { fill: white; font-family: sans-serif; font-size: 18px; }</style><rect width="100%" height="100%" fill="#E31C79" /><text x="10" y="20" class="base">';
-
-        parts[1] = lines[0];
-
-        parts[2] = '</text><text x="10" y="40" class="base">';
-
-        parts[3] = lines[1];
-
-        parts[4] = '</text><text x="10" y="60" class="base">';
-
-        parts[5] = lines[2];
-
-        parts[6] = '</text><text x="10" y="80" class="base">';
-
-        parts[7] = lines[3];
-
-        parts[8] = '</text><text x="10" y="100" class="base">';
-
-        parts[9] = lines[4];
-
-        parts[10] = '</text><text x="10" y="120" class="base">';
-
-        parts[11] = lines[5];
-
-        parts[12] = '</text><text x="10" y="140" class="base">';
-
-        parts[13] = lines[6];
-
-        parts[14] = '</text><text x="10" y="160" class="base">';
-
-        parts[15] = lines[7];
-
-        parts[16] = '</text></svg>';
-
-        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]));
-        output = string(abi.encodePacked(output, parts[9], parts[10], parts[11], parts[12], parts[13], parts[14], parts[15], parts[16]));
-        
-        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "Hot Take #', Utils.toString(tokenId), '", "description": "', take.text,'", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
-        output = string(abi.encodePacked('data:application/json;base64,', json));
-
-        return output;
-    }
-
-    // Mint function.
-    function mint(string memory take, uint256[3] memory refs) public {
-        // Get the next token ID.
-        uint256 id = totalSupply;
-
-        // Increment the next token ID.
-        totalSupply++;
-
-        // Verify each ref take ID is valid ie. below the total supply.
-        bool isRefsValid = refs[0] < totalSupply && refs[1] < totalSupply && refs[2] < totalSupply;
-        require(isRefsValid, "INVALID_REFS");
-
-        // Store the take.
-        takes[id] = Take(take, msg.sender, refs);
-
-        _safeMint(msg.sender, id);
-    }
+    string public symbol;
 
     /*//////////////////////////////////////////////////////////////
                       ERC721 BALANCE/OWNER STORAGE
@@ -203,12 +55,6 @@ contract Take {
     /*//////////////////////////////////////////////////////////////
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
-
-
-    constructor() {
-        uint256[3] memory refs;
-        mint("The first take.", refs);
-    }
 
     /*//////////////////////////////////////////////////////////////
                               ERC721 LOGIC
@@ -366,7 +212,119 @@ contract Take {
             "UNSAFE_RECIPIENT"
         );
     }
+
+
+
+
+
+
+    
+
+    using Utils for uint;
+    using StringUtils for string;
+
+    event NameRegistered(address indexed user, string name);
+    event OperatorChanged(address indexed operator);
+
+    // the operator is the only address that can register names.
+    // the point of the name registry is to be used by anons in order to secure their account.
+    // we're not selling names just yet.
+    address operator;
+
+    struct AnonTakename {
+        string name;
+    }
+    mapping(uint256 => AnonTakename) takenames;
+    mapping(string => uint256) takenameToId;
+    uint256 public totalSupply;
+
+    constructor() {
+        name = "anon takers v1";
+        symbol = "ANON+TAKER";
+        operator = msg.sender;
+        _registerName("nakamofo");
+    }
+
+    function getTakenameForId(uint id) public view returns (string memory) {
+        return takenames[id].name;
+    }
+
+    // function getTakenameForAddress(address addr) public view returns (string memory) {
+    //     return takenames[ownerOf(addr)].name;
+    // }
+
+    function setOperator(address _operator) public {
+        require(msg.sender == operator, "only operator");
+        operator = _operator;
+        emit OperatorChanged(_operator);
+    }
+
+    function registerName(string memory name) public returns (uint256) {
+        require(msg.sender == operator, "only operator");
+        require(takenameToId[name] == 0, "name already registered");
+        return _registerName(name);
+    }
+
+    function _registerName(string memory name) internal returns (uint256) {
+        require(bytes(name).length > 0, "name must be non-empty");
+        require(bytes(name).length <= 32, "name must be less than 32 characters");
+
+        uint256 id = totalSupply++;
+
+        takenameToId[name] = id;
+        AnonTakename memory takename = AnonTakename(name);
+        takenames[id] = takename;
+
+        _safeMint(msg.sender, id);
+
+        // Mint them the name they want.
+        emit NameRegistered(msg.sender, name);
+
+        return id;
+    }
+
+    function tokenURI(uint256 tokenId) public view returns (string memory) {
+        // Load the name from the mapping.
+        AnonTakename memory takename = takenames[tokenId];
+
+        string memory output = tokenURIImageJson(tokenId);
+        // NOTE: the newline is encoded in JSON, not in Solidity as \newline.
+        string memory description = takename.name.concat(".anon").concat("\\n").concat(unicode"take is [xx] · https://twitter.com/takeisxx");
+        
+        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "take anon #', Utils.toString(tokenId), '", "description": "', description,'", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '"}'))));
+        output = string(abi.encodePacked('data:application/json;base64,', json));
+
+        return output;
+    }
+
+    function tokenURIImageJson(uint256 tokenId) public view returns (string memory) {
+        AnonTakename memory takename = takenames[tokenId];
+
+        string[17] memory parts;
+        parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 300 300"><style>.base { fill: white; font-family: sans-serif; font-size: 18px; }</style><rect width="100%" height="100%" fill="#E31C79" />';
+
+
+        // each line is max 20 chars
+        // iterate over the chars of the string and start a new line every 20 chars
+        parts[1] = '<text x="10" y="20" class="base">';
+        uint y = 20;
+        for (uint256 i = 0; i < bytes(takename.name).length; i++) {
+            if (i % 20 == 0 && i != 0) {
+                string memory a = '</text><text x="10" y="';
+                parts[1] = parts[1].concat(a.concat(Utils.toString(y)).concat('" class="base">'));
+            }
+            bytes1 c = bytes(takename.name)[i];
+            parts[1] = parts[1].concat(string(abi.encodePacked(c)));
+        }
+        parts[1] = parts[1].concat('.anon</text>');
+        parts[2] = '</svg>';
+
+        string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]));
+        output = string(abi.encodePacked(output, parts[9], parts[10], parts[11], parts[12], parts[13], parts[14], parts[15], parts[16]));
+        return output;
+    }
 }
+
 
 /// @notice A generic interface for a contract which properly accepts ERC721 tokens.
 /// @author Solmate (https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC721.sol)
@@ -380,3 +338,4 @@ abstract contract ERC721TokenReceiver {
         return ERC721TokenReceiver.onERC721Received.selector;
     }
 }
+

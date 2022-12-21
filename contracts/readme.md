@@ -1,3 +1,8 @@
+@takeisxx/contracts
+===================
+
+Install [Foundry](https://github.com/foundry-rs/foundry).
+
 ```sh
 # Develop.
 anvil
@@ -18,6 +23,9 @@ Enter private key:
 Deployer: 0x913Fd60887e7b99F2EE9115a79F3C5886ad2d47A
 Deployed to: 0xC343497721e61FD96B1E3C6e6DeBE5C2450d563c
 Transaction hash: 0xea00aa4a648e663ac87006b09746741654afd19e1d99a4df9d3c8794d5b1eef9
+
+
+forge create -i --rpc-url https://polygon-rpc.com src/AnonTakename.sol:AnonTakenameRegistry --verify --gas
 
 # Flatten.
 # forge flatten --output flat/Take.sol src/Take.sol

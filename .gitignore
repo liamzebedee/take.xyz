@@ -33,3 +33,7 @@ yarn-error.log*
 # vercel
 .vercel
 LightsailDefaultKey-eu-central-1.pem
+
+**/node_modules
+**/.env
+**/build
