@@ -11,7 +11,7 @@ import { getContract } from '@wagmi/core';
 import Header from '../../components/header';
 import { TakeABI } from '../../abis';
 import { useRouter } from 'next/router';
-import { TakeV3Address } from '../../lib/config';
+import { TakeV3Address, TAKE_LENGTH } from '../../lib/config';
 import { AppLayout } from '../../components/layout';
 import { useDebounce } from '../../components/util';
 import { ethers } from 'ethers';
@@ -174,19 +174,19 @@ function UI() {
 
                 {
                     hasXX && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput1Change} maxLength={60} type="text" disabled={!hasXX}></input>
+                        <input className={styles.takeInput} onChange={onInput1Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasXX}></input>
                     </p>)
                 }
 
                 {
                     hasYY && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput2Change} maxLength={60} type="text" disabled={!hasYY}></input>
+                        <input className={styles.takeInput} onChange={onInput2Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasYY}></input>
                     </p>)
                 }
 
                 {
                     hasZZ && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput3Change} maxLength={60} type="text" disabled={!hasZZ}></input>
+                        <input className={styles.takeInput} onChange={onInput3Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasZZ}></input>
                     </p>)
                 }
 

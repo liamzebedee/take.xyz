@@ -192,8 +192,6 @@
 
 .takeInput {
   height: 50px;
-  /* make text input wide enough to input a short sentence */
-  width: 500px;
   font-size: 1.5rem;
 }
 
