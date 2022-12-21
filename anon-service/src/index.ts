@@ -37,34 +37,70 @@ async function startRelayer() {
     const signer = new ethers.Wallet(RELAYER_PRIVATE_KEY, provider)
 
     console.log('RPC URL:', provider.connection.url)
-    console.log('Relayer address:', signer.address)
+    console.log('Signer:', signer.address)
+    console.log(`Signer link: https://polygonscan.com/address/${signer.address}`)
     console.log('Relayer contract address:', RELAYER_CONTRACT_ADDRESS)
     console.log('Listening for deposits...')
 
     // Create the relayer contract.
     const relayer = new ethers.Contract(
         RELAYER_CONTRACT_ADDRESS,
-        AnonRelayerABI,
-        provider
+        [
+            ...AnonRelayerABI,
+            'function operator() external view returns (address)'
+        ],
+        signer
     )
+
+    // console.log(relayer)
+    
+    // Verify we are an authorised operator of the relay.
+    const relayerOperator = await relayer.operator()
+    if (relayerOperator !== signer.address) {
+        console.log('Relayer operator:', relayerOperator)
+        console.log('Signer:', signer.address)
+        console.log(`${signer.address} != ${relayerOperator}`)
+        throw new Error('Signer is not an operator of the relayer contract')
+    }
+
 
     // Get past Deposit events.
     const depositEvents = await relayer.queryFilter('Deposit')
-    console.log('Past deposit events:', depositEvents)
+    // console.log('Past deposit events:', depositEvents)
 
-    // Get past events.
-    const events = await relayer.queryFilter({})
-    console.log('Past events:', events)
+    async function processPastDeposit(ev: ethers.Event) {
+        const { user, amount, name } = ev.args
+        await processDeposit(relayer, user, amount, name, ev)
+    }
+    await processPastDeposit(depositEvents[depositEvents.length - 1])
+    
+
+    // // Get past events.
+    // const events = await relayer.queryFilter({})
+    // console.log('Past events:', events)
 
 
     relayer.on('Deposit', async function(user: string, amount: ethers.BigNumber, name: string, ev) {
-        console.log('Deposit event detected')
-        
-        // Now we process it and mint them a name.
-        const tx = await relayer.createAnonAccount(0, user, name)
-        await tx.wait(1)
+        processDeposit(relayer, user, amount, name, ev)
     })
 
+}
+
+async function processDeposit(relayer: ethers.Contract, user: string, amount: ethers.BigNumber, name: string, ev) {
+    console.log('Deposit event detected')
+
+    if (amount.eq(ethers.constants.Zero)) {
+        console.log('Deposit amount is zero, ignoring')
+        return
+    }
+
+    console.log('Processing deposit for:', name)
+
+    // Now we process it and mint them a name.
+    const tx = await relayer.createAnonAccount(amount, user, name)
+    await tx.wait(1)
+
+    console.log('Anon minted:', name)
 }
 
 async function main() {

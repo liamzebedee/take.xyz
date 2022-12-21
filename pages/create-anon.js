@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/Home.module.css';
 import anonStyles from '../styles/anon.module.css';
 
@@ -11,29 +11,32 @@ Rainbow & wagmi
 import {
     getDefaultWallets
 } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, useAccount, useSigner } from 'wagmi';
+import { configureChains, createClient, useAccount, useContractWrite, usePrepareContractWrite, useProvider, useSigner, useWaitForTransaction } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 
+import { ANON_RELAYER_ADDRESS } from '../lib/config'
+const { AnonRelayerABI, AnonTakenameRegistryABI } = require('../abis')
 
-const { chains, provider } = configureChains(
-    [polygon],
-    [
-        publicProvider()
-    ]
-);
 
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
+// const { chains, provider } = configureChains(
+//     [polygon],
+//     [
+//         publicProvider()
+//     ]
+// );
 
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
+// const { connectors } = getDefaultWallets({
+//     appName: 'take',
+//     chains
+// });
+
+// const wagmiClient = createClient({
+//     autoConnect: true,
+//     connectors,
+//     provider
+// })
 
 
 /*
@@ -45,6 +48,7 @@ import Header from '../components/header';
 import { TakeV3Address } from '../lib/config';
 import { AppLayout } from '../components/layout';
 import classNames from 'classnames';
+import { ethers } from 'ethers';
 
 const Step = ({ currentStep, step, title, children }) => {
     const isCurrent = currentStep === step
@@ -83,6 +87,21 @@ function UI() {
 
     const [anonUsername, setAnonUsername] = useState('')
     const [anonDeposit, setAnonDeposit] = useState('')
+    const [mixingStatus, setMixingStatus] = useState('')
+
+    const [depositAmount, setDepositAmount] = useState(ethers.constants.Zero)
+    useEffect(() => {
+        try {
+            const d = ethers.utils.parseEther(anonDeposit)
+            console.log(d)
+            // Validate amount is a valid BN.
+            // d.plus(ethers.constants.One)
+            setDepositAmount(ethers.utils.parseEther(anonDeposit))
+        } catch(err) {
+            console.error(err)
+        }
+        
+    }, [anonDeposit])
     
     const onChangeAnonUsername = (e) => {
         setAnonUsername(e.target.value)
@@ -109,15 +128,67 @@ function UI() {
     }
 
     
-    const doStep3 = async () => {
+    const doStep3 = async (write) => {
         // Deposit some MATIC to the Take relay address (trusted).
         // This will be used to pay for gas of creating the anon account.
         // The anon account will be created with the same amount of MATIC - fee.
-        
-
         setStep(3)
     }
 
+    const doStep4 = async () => {
+        // setStep(4)
+        write()
+
+        // Now we listen for the NameRegistered event.
+        // 
+
+        // Create the contract.
+        const anonRelayer = new ethers.Contract(ANON_RELAYER_ADDRESS, AnonRelayerABI, provider)
+
+        // Get the registry address.
+        const registryAddress = await anonRelayer.registry()
+
+        // Create the registry contract.
+        const anonRegistry = new ethers.Contract(registryAddress, AnonTakenameRegistryABI, provider)
+
+        // Listen to the events.
+        anonRegistry.on('NameRegistered', (name, address, blockNumber, event) => {
+            if(name == anonUsername) {
+                // Update the mint status.
+                setMixingStatus({ res: 'done', txhash: event.transactionHash })
+            }
+
+            console.log('NameRegistered', name, address, blockNumber, event)
+        })
+    }
+
+
+    // Mint the take on click.
+    const { config: txConfig } = usePrepareContractWrite({
+        chainId: polygon.id,
+        address: ANON_RELAYER_ADDRESS,
+        abi: AnonRelayerABI,
+        signerOrProvider: signer,
+        functionName: 'deposit',
+        args: [anonUsername],
+        overrides: {
+            value: depositAmount
+        },
+        enabled: step === 3,
+    })
+
+    const { data, write, isLoading: isWriteLoading } = useContractWrite(txConfig)
+    const { isLoading: isTxLoading, isSuccess: isTxSuccess, data: txReceipt } = useWaitForTransaction({
+        hash: data && data.hash,
+    })
+
+    // const provider = useProvider()
+    const getAccounts = async () => {
+        const provider = getSigner()
+        console.log(provider)
+        const accounts = await provider.request({ method: "eth_requestAccounts" });
+        console.log(accounts)
+    }
 
     const ui = (
         <div className={styles.containerFeed}>
@@ -139,6 +210,7 @@ function UI() {
                     </Step>
                     <Step step={1} currentStep={step} title="Input the address">
                         <input type="text" onChange={onChangeAnonAddress} value={anonAddress} />
+                        <button onClick={getAccounts}>Load accounts from wallet</button>
                         <button disabled={!anonAddress.length} onClick={doStep2}>
                             Done
                         </button>
@@ -153,13 +225,19 @@ function UI() {
                         </button>
                     </Step>
                     <Step step={3} currentStep={step} title="We will mix it so it isn't linked">
+                        <button onClick={() => setStep(step-1)}>Back</button><br/>
                         <p>Username: {anonUsername}</p>
-                        <p>Deposit: {anonDeposit}</p>
+                        <p>Deposit: {ethers.utils.formatEther(depositAmount)}</p>
                         <p>Address: {anonAddress}</p>
 
-                        <button onClick={doStep3}>
+                        <button disabled={isWriteLoading || isTxLoading} onClick={() => doStep4(write)}>
                             Create anon
                         </button>
+
+                        {isWriteLoading && <p>Creating anon...</p>}
+                        {isTxLoading && <p>Waiting for transaction...</p>}
+                        {isTxSuccess && <p>Waiting for mixing...</p>}
+                        {mixingStatus.res == 'done' && <p>Done! (<a href={`https://polygonscan.com/tx/${mixingStatus.txhash}`}>transaction</a>)</p>}
 
                     </Step>
                 </ol>

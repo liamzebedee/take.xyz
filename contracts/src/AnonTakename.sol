@@ -229,6 +229,8 @@ contract AnonTakenameRegistry {
     // the operator is the only address that can register names.
     // the point of the name registry is to be used by anons in order to secure their account.
     // we're not selling names just yet.
+    
+    // TODO change this to public
     address operator;
 
     struct AnonTakename {
