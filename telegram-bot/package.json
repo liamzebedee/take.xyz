@@ -1,5 +1,5 @@
 {
-  "name": "telegram-bot",
+  "name": "@takeisxx/telegram-bot",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@takeisxx/lib": "file:../lib",
     "@yuva1422/telegram.js": "^1.0.5",
     "backoff": "^2.5.0",
     "ethers": "^5.7.2",

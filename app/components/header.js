@@ -24,8 +24,8 @@ import { useEnsName } from 'wagmi'
 import truncateEthAddress from 'truncate-eth-address'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { HYPETokenAddress } from '../../lib/config';
-import { HYPEABI } from '../../abis';
+const { TakeABI, HYPEABI, AnonRelayerABI, AnonTakenameRegistryABI } = require('@takeisxx/lib/src/abis')
+const { TakeV3Address, HYPETokenAddress, ANON_RELAYER_ADDRESS } = require('@takeisxx/lib/src/config')
 const classNames = require('classnames');
 
 const {

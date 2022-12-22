@@ -6,11 +6,11 @@ import styles from '../styles/Home.module.css';
 import { useAccount, useContractWrite, usePrepareContractWrite, useSigner, useWaitForTransaction } from 'wagmi';
 import { getContract } from '@wagmi/core';
 import Header from '../components/header';
-import { TakeV3Address, TAKE_LENGTH } from '../../lib/config';
-import { TakeABI } from '../../abis';
 import { useDebounce } from '../components/util';
 import { ethers } from 'ethers';
 import { polygon } from 'wagmi/chains';
+import { TakeV3Address, TAKE_LENGTH } from '@takeisxx/lib/src/config';
+import { TakeABI } from '@takeisxx/lib/src/abis';
 
 /*
 UI

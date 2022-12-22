@@ -77,7 +77,8 @@
   justify-items: center;
   align-content: center;
   padding: 0.5rem;
-  background: #FF469D;
+  /* background: #FF469D; */
+  background: black;
   border-radius: .5rem;
   color: white;
   font-weight: bold;
@@ -86,7 +87,8 @@
 }
 
 .hypeStatus:hover {
-  background: #ec4492;
+  /* background: #ec4492; */
+  background-color: #000000b8;
 }
 
 @keyframes right-animate {
@@ -293,6 +295,7 @@
   justify-content: center;
   grid-gap: 4rem;
   padding: 0 1rem;
+  margin-top: 3rem;
 }
 
 /* Mobile media query. */

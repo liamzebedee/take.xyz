@@ -4,8 +4,8 @@ import { fetchTake, printTelegramBotInfo } from './helpers'
 const TG = require('telegram-bot-api')
 const slugify = require('slugify')
 const { ethers } = require('ethers')
-const { TakeABI, HYPEABI } = require('../../abis')
-const { TakeV3Address, HYPETokenAddress } = require('../../lib/config')
+const { TakeABI, HYPEABI } = require('@takeisxx/lib/src/abis')
+const { TakeV3Address, HYPETokenAddress } = require('@takeisxx/lib/src/config')
 const { default: truncateEthAddress } = require('truncate-eth-address')
 
 // Configure.

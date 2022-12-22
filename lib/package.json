@@ -1,0 +1,12 @@
+{
+  "name": "@takeisxx/lib",
+  "version": "0.1.0",
+  
+  "scripts": {
+    "sync-abi": "./sync.sh && node generate-index.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

@@ -13,15 +13,18 @@ import { getContract, getProvider } from '@wagmi/core';
 import { useEnsName } from 'wagmi';
 import Header from '../../components/header';
 import { useRouter } from 'next/router';
-import { TakeV3Address } from '../../../lib/config';
-import { TakeABI } from '../../../abis';
 import Link from 'next/link';
+import { multicall } from '@wagmi/core'
 import { AppLayout } from '../../components/layout';
-import { fetchTake2 } from '../../../lib/chain';
+
+
 // import useSigner
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
+import { TakeV3Address } from '@takeisxx/lib/src/config';
+import { TakeABI } from '@takeisxx/lib/src/abis';
+import { fetchTake2 } from '@takeisxx/lib/src/chain';
 
 /*
 UI
@@ -113,7 +116,7 @@ function UI() {
             }
 
             // Load the take.
-            const take = await fetchTake2({ takeItContractV1, takeId, provider, fetchRefs: true })
+            const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: true })
             
             setTake({
                 id: takeId,
@@ -214,7 +217,7 @@ function UI() {
                 <p>
                     {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
-                    <button disabled={true} className={styles.takeItBtn} onClick={likeTake}>like</button>
+                    {/* <button disabled={true} className={styles.takeItBtn} onClick={likeTake}>like</button> */}
                     {/* a button for sending a take NFT to an address */}
                     <SendButton takeId={take.id} takeOwner={take.owner} />
                 </p>

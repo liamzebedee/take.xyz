@@ -51,14 +51,18 @@ const wagmiClient = createClient({
 UI
 */
 
-import { TakeABI } from '../../abis/index.js';
+
 import Link from 'next/link';
 import Header from '../components/header';
-import { TakeV3Address } from '../../lib/config';
+
 import { AppLayout } from '../components/layout';
 
 import { multicall } from '@wagmi/core'
-import { parseTakeURI, fetchTakesBatch } from '../../lib/chain';
+
+import { TakeABI } from '@takeisxx/lib/src/abis'
+import { TakeV3Address } from '@takeisxx/lib/src/config'
+import { parseTakeURI, fetchTakesBatch } from '@takeisxx/lib/src/chain'
+
 import InfiniteScroll from 'react-infinite-scroller';
 
 
@@ -90,7 +94,7 @@ function UI() {
         .reverse();
         console.log(takeIds)
         
-        const takes2 = await fetchTakesBatch({ takeIds, takeItContractV1, provider, takeIds,  })
+        const takes2 = await fetchTakesBatch({ multicall, takeIds, takeItContractV1, provider, takeIds,  })
         
         takes2.nextCursor = takes2[takes2.length - 1].id - 1
         if (takes2.nextCursor == -1) takes2.nextCursor = 0
