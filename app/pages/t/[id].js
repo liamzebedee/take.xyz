@@ -140,6 +140,11 @@ function UI() {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
+    const likeTake = async () => {
+        // request signature over call to like abi
+        
+    }
+
 
 
     // Remixing is enabled if the take contains [xx] or [yy] template vars,
@@ -162,7 +167,6 @@ function UI() {
     })
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
-
     const isARemixedTake = take.refs && take.refs.length > 0
 
     const ui = (
@@ -208,9 +212,9 @@ function UI() {
                 </p>
 
                 <p>
-                    {/* <button disabled={true} className={styles.takeItBtn} onClick={remix}>like (wip)</button> */}
                     {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
+                    <button disabled={true} className={styles.takeItBtn} onClick={likeTake}>like</button>
                     {/* a button for sending a take NFT to an address */}
                     <SendButton takeId={take.id} takeOwner={take.owner} />
                 </p>

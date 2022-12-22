@@ -23,11 +23,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: all 50ms;
 }
 
 .header {
   width: 100%;
-  padding: 0 4rem;
   height: 100px;
   border-bottom: 1px solid #eaeaea;
   display: flex;
@@ -35,10 +35,80 @@
   align-items: center;
 }
 
+/* Mobile media query. */
+@media (max-width: 600px) {
+  .header {
+    padding: 0 1rem;
+  }
+}
+
+/* Desktop media query */
+@media (min-width: 600px) {
+  .header {
+    padding: 0 4rem;
+  }
+}
+
+.account {
+  display: flex;  
+  flex: 1;
+  justify-content: right;
+}
+
+.mainStatus {
+  flex: 2;
+  justify-content: center;
+  display: flex;
+}
+
+.hypeStatus {
+  animation: right-animate 400ms ease alternate;
+  /* min-width: 3rem; */
+  width: 7rem;
+  height: initial;
+
+
+  transition: all 50ms;
+  cursor: pointer;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  padding: 0.5rem;
+  background: #FF469D;
+  border-radius: .5rem;
+  color: white;
+  font-weight: bold;
+  font-family: "Helvetica Neue";
+  padding: 0.5rem 1rem;
+}
+
+.hypeStatus:hover {
+  background: #ec4492;
+}
+
+@keyframes right-animate {
+  0% {
+    width: 7rem;
+    height: initial;
+    opacity: 0;
+  }
+
+  100% {
+    width: 7rem;
+    opacity: 1;
+  }
+}
+
 .menu {
   flex: 1;
 }
 
+.menu ul {
+  padding-left: 0;
+}
 /* separator is middot */
 .menu ul li {
   display: inline-block;
@@ -88,10 +158,6 @@
 
 .loading div {
   flex: 1;
-}
-
-.account {
-  /* flex: 1; */
 }
 
 .footer {
@@ -245,6 +311,9 @@
 }
 
 .takeBox {
+  min-height: 20rem;
+  transition: all 25ms;
+  
   /* max-width: 500px;
   max-height: 500px; */
   display: grid;
@@ -259,6 +328,8 @@
   padding-top: 1rem;
   padding-left: 0.5rem;
   font-family: sans-serif;
+  transition: all 25ms;
+
 }
 
 .mockTakeImg:hover {
