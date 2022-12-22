@@ -51,14 +51,14 @@ const wagmiClient = createClient({
 UI
 */
 
-import { TakeABI } from '../abis/index.js';
+import { TakeABI } from '../../abis/index.js';
 import Link from 'next/link';
 import Header from '../components/header';
-import { TakeV3Address } from '../lib/config';
+import { TakeV3Address } from '../../lib/config';
 import { AppLayout } from '../components/layout';
 
 import { multicall } from '@wagmi/core'
-import { parseTakeURI, fetchTakesBatch } from '../lib/chain';
+import { parseTakeURI, fetchTakesBatch } from '../../lib/chain';
 import InfiniteScroll from 'react-infinite-scroller';
 
 

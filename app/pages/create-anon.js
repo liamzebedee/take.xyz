@@ -16,8 +16,8 @@ import { polygon } from 'wagmi/chains';
 import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 
-import { ANON_RELAYER_ADDRESS } from '../lib/config'
-const { AnonRelayerABI, AnonTakenameRegistryABI } = require('../abis')
+import { ANON_RELAYER_ADDRESS } from '../../lib/config'
+const { AnonRelayerABI, AnonTakenameRegistryABI } = require('../../abis')
 
 
 // const { chains, provider } = configureChains(
@@ -45,7 +45,7 @@ UI
 
 import { TakeABI } from '../abis/index.js';
 import Header from '../components/header';
-import { TakeV3Address } from '../lib/config';
+import { TakeV3Address } from '../../lib/config';
 import { AppLayout } from '../components/layout';
 import classNames from 'classnames';
 import { ethers } from 'ethers';

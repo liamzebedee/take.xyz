@@ -9,9 +9,9 @@ Rainbow & wagmi
 import { useAccount, useContractWrite, usePrepareContractWrite, useSigner, useWaitForTransaction } from 'wagmi';
 import { getContract } from '@wagmi/core';
 import Header from '../../components/header';
-import { TakeABI } from '../../abis';
+import { TakeABI } from '../../../abis';
 import { useRouter } from 'next/router';
-import { TakeV3Address, TAKE_LENGTH } from '../../lib/config';
+import { TakeV3Address, TAKE_LENGTH } from '../../../lib/config';
 import { AppLayout } from '../../components/layout';
 import { useDebounce } from '../../components/util';
 import { ethers } from 'ethers';

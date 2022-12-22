@@ -13,11 +13,11 @@ import { getContract, getProvider } from '@wagmi/core';
 import { useEnsName } from 'wagmi';
 import Header from '../../components/header';
 import { useRouter } from 'next/router';
-import { TakeV3Address } from '../../lib/config';
-import { TakeABI } from '../../abis';
+import { TakeV3Address } from '../../../lib/config';
+import { TakeABI } from '../../../abis';
 import Link from 'next/link';
 import { AppLayout } from '../../components/layout';
-import { fetchTake2 } from '../../lib/chain';
+import { fetchTake2 } from '../../../lib/chain';
 // import useSigner
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
