@@ -2,10 +2,6 @@
 
 weaponized cultural production at the lowest fidelity
 
-![Imgur](https://imgur.com/GoeGl0m)
-
-![Imgur](blob:https://imgur.com/f9f2ad64-56a2-4ad5-95c4-e13a0a1f51bd)
-
 ## Layout.
 
 ```sh
@@ -17,3 +13,9 @@ model/         # Model of the Hyper protocol
 rnd/           # Small tools for R&D
 telegram-bot/  # Source of the "takebot" tg bot
 ```
+
+## Screens.
+
+![Imgur](https://i.imgur.com/GoeGl0m.png)
+
+![img](https://i.imgur.com/QMz7o6u.png)
