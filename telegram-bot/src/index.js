@@ -5,7 +5,7 @@ const TG = require('telegram-bot-api')
 const slugify = require('slugify')
 const { ethers } = require('ethers')
 const { TakeABI, HYPEABI } = require('@takeisxx/lib/src/abis')
-const { TakeV3Address, HYPETokenAddress } = require('@takeisxx/lib/src/config')
+import { TakeV3Address, HYPETokenAddress, renderBalance } from '@takeisxx/lib'
 const { default: truncateEthAddress } = require('truncate-eth-address')
 
 // Configure.
@@ -91,14 +91,14 @@ async function processHypeTransfer({ api, HypeToken, from, to, amount }) {
             chat_id: CHAT_ID,
             parse_mode: 'HTML',
             disable_web_page_preview: 'true',
-            text: `🎉 ${toUsername} you have earnt <b>${ethers.utils.formatEther(amount)} HYPE</b>. Your balance is now <b>${ethers.utils.formatEther(balance)} HYPE</b>\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
+            text: `🎉 ${toUsername} you have earnt <b>${renderBalance(amount)} HYPE</b>. Your balance is now <b>${renderBalance(balance)} HYPE</b>\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
         })
     } else {
         await api.sendMessage({
             chat_id: CHAT_ID,
             parse_mode: 'HTML',
             disable_web_page_preview: 'true',
-            text: `🎉 ${fromUsername} sent <b>${ethers.utils.formatEther(amount)} HYPE</b> to ${toUsername}\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
+            text: `🎉 ${fromUsername} sent <b>${renderBalance(amount)} HYPE</b> to ${toUsername}\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
         })
     }
 

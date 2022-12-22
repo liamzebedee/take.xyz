@@ -48,3 +48,5 @@ class HYPEToken:
         if self.balances[user]:
             self.balances[user] = 0
         self.balances[user] += amount
+
+

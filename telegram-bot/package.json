@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "node ./build/telegram-bot/src/index.js"
+    "start": "node ./build/index.js"
   },
   "keywords": [],
   "author": "",
