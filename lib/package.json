@@ -2,14 +2,15 @@
   "name": "@takeisxx/lib",
   "version": "0.1.0",
   "main": "build/index.js",
-  
   "scripts": {
     "sync-abi": "./sync.sh && node generate-index.js",
     "build": "tsc",
     "watch": "tsc -w"
   },
   "dependencies": {
+    "ethers": "^5.7.2"
   },
   "devDependencies": {
+    "typescript": "^4.9.4"
   }
 }
