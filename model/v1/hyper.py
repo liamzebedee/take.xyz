@@ -136,7 +136,7 @@ visit_tree(tree_root, dist_bounty)
 
 # Print the tree, showing each take's id and bounty.
 def print_tree_distributions(root):
-    visit_tree(root, lambda t, d: print(' ' * d, t.id, 'likes='+str(t.total_likes()), t.bounty))
+    visit_tree(root, lambda t, d: print(' ' * d, t.id, '{num:{width}} likes'.format(num=t.total_likes(), width=3), str(int(t.bounty)) + " reward"))
 
 print_tree_distributions(tree_root)
 

@@ -14,7 +14,7 @@ if(process.env.NODE_ENV != 'production') {
     CHAT_ID = CHAT_ID_TEST
 }
 
-printTelegramBotInfo()
+printTelegramBotInfo(TELEGRAM_TOKEN)
 
 // Check if TELEGRAM_TOKEN is set
 if (!TELEGRAM_TOKEN) {

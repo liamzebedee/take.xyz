@@ -7,6 +7,6 @@ async function main() {
     await provider.getBlock('latest')
     await ensProvider.getBlock('latest')
 
-    // get list of all people who have made takes.
+    // 
     
 }
