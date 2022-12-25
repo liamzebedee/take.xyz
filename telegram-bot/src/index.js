@@ -44,6 +44,7 @@ async function main() {
 
     // listenToTakeRewards({ api })
     listenToTokenTransfers({ api })
+    // listenToTokenTransfers({ api })
     listenToNewTakes({ api })
 }
 
