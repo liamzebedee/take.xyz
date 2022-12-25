@@ -16,6 +16,7 @@
     "@yuva1422/telegram.js": "^1.0.5",
     "backoff": "^2.5.0",
     "ethers": "^5.7.2",
+    "lodash": "^4.17.21",
     "slugify": "^1.6.5",
     "telegram-bot-api": "^2.0.1",
     "truncate-eth-address": "^1.0.2",
