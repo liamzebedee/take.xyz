@@ -40,8 +40,7 @@ async function main() {
     await ensProvider.getBlock('latest')
 
     // printTakeDeploymentInfo()
-
-    listenToTokenTransfers({ api })
+    // listenToTokenTransfers({ api })
     listenToNewTakes({ api })
 }
 
