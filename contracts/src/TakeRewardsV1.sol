@@ -4,7 +4,7 @@ pragma solidity >=0.8.0;
 import {Owned} from "./lib/Owned.sol";
 
 interface HYPEToken {
-    function transferFrom(address from, address to, uint256 amount) external;
+    function transfer(address to, uint256 amount) external;
 }
 
 contract TakeRewardsV1 is
@@ -33,12 +33,11 @@ contract TakeRewardsV1 is
         external
         onlyOwner
     {
-        hypeToken.transferFrom(address(this), user1, amount1);
+        hypeToken.transfer(user1, amount1);
         if(user2 != address(0)) {
-            hypeToken.transferFrom(address(this), user2, amount2);
+            hypeToken.transfer(user2, amount2);
         }
 
         emit Reward(user1, user2, amount1, amount2, takeId);
     }
-
 }

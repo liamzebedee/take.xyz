@@ -1,6 +1,6 @@
 import { TakeRewardsV1Address } from "@takeisxx/lib"
 import { TakeRewardsV1ABI } from "@takeisxx/lib/build/abis"
-import { ethers } from "ethers"
+import { BigNumber, ethers } from "ethers"
 import { Context } from "../context"
 import _, { sortBy } from 'lodash'
 import { Msg } from "../helpers"
@@ -16,7 +16,7 @@ export async function listenToTakeRewards(ctx: Context) {
         provider
     )
 
-    TakeRewards.on('Rewards', async (user1, user2, amount1, amount2, takeId) => {
+    TakeRewards.on('Rewards', async (user1: string, user2: string, amount1: BigNumber, amount2: BigNumber, takeId: BigNumber) => {
         await processTakeReward(ctx, { user1, user2, amount1, amount2, takeId })
     })
 }
@@ -30,12 +30,13 @@ interface RewardEntry {
 
 let rewardsEntries: RewardEntry[] = []
 
-async function processTakeReward(ctx: Context, { api, user1, user2, amount1, amount2, takeId }: any) {
+type RewardsArgs = { user1: string, user2: string, amount1: BigNumber, amount2: BigNumber, takeId: BigNumber  }
+async function processTakeReward(ctx: Context, { user1, user2, amount1, amount2, takeId }: RewardsArgs) {
     if (user2 == ethers.constants.AddressZero) {
         // Reward for single take.
         const reward = {
             user: user1,
-            reward: amount1,
+            reward: amount1.toNumber(),
             isRemix: false,
             wasRemixed: false
         }
@@ -46,14 +47,14 @@ async function processTakeReward(ctx: Context, { api, user1, user2, amount1, amo
         // Reward for remix.
         const rewardRemix = {
             user: user1,
-            reward: amount1,
+            reward: amount1.toNumber(),
             isRemix: true,
             wasRemixed: false
         }
 
         const rewardOg = {
             user: user2,
-            reward: amount2,
+            reward: amount2.toNumber(),
             isRemix: false,
             wasRemixed: true
         }

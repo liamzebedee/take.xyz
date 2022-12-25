@@ -1,14 +1,11 @@
 import { ethers } from "ethers"
 
-// Create a Polygon RPC provider.
-let provider
-let ensProvider
-
-
 export type Context = {
+    // Polygon provider.
     provider: ethers.providers.Provider
-    api: any
+    // Ethereum mainnet provider.
     ensProvider: ethers.providers.Provider
+    api: any
     chatId: string
 }
 

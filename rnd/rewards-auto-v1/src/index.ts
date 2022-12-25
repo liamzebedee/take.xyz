@@ -44,6 +44,7 @@ async function main() {
     await ensProvider.getBlock('latest')
 
     console.log(`TakeRewardsV1: ${TakeRewardsV1Address}`)
+    console.log(`signer: ${await signer.getAddress()}`)
 
     // printTakeDeploymentInfo()
     listenToNewTakes({  })
@@ -163,7 +164,7 @@ async function rewardNewTakes({ Take, TakeRewardsV1, HypeToken, takeId }: Proces
 
             // Mint reward.
             const tx = await TakeRewardsV1.reward(
-                take.author,
+                take.author, 
                 og.author,
                 reward,
                 ogReward,
