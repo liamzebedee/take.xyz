@@ -44,8 +44,11 @@ async function main() {
         chatId: CHAT_ID
     }
     
-    listenToTakeRewards(ctx)
-    printRewardsSummary(ctx)
+    await listenToTakeRewards(ctx)
+    // Every 8h, print the rewards summary.
+    setInterval(async () => {
+        await printRewardsSummary(ctx)
+    }, 1000 * 60 * 60 * 8)
     
     listenToTokenTransfers(ctx)
     // listenToTokenTransfers({ api })

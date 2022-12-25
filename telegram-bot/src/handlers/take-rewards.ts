@@ -1,4 +1,4 @@
-import { TakeRewardsV1Address } from "@takeisxx/lib"
+import { renderBalance, TakeRewardsV1Address } from "@takeisxx/lib"
 import { TakeRewardsV1ABI } from "@takeisxx/lib/build/abis"
 import { BigNumber, ethers } from "ethers"
 import { Context } from "../context"
@@ -16,7 +16,17 @@ export async function listenToTakeRewards(ctx: Context) {
         provider
     )
 
-    TakeRewards.on('Rewards', async (user1: string, user2: string, amount1: BigNumber, amount2: BigNumber, takeId: BigNumber) => {
+    // get old rewards
+    const filter = TakeRewards.filters.Reward(null, null, null, null, null)
+    // Query from the block which the Take contract was deployed.
+    const TakeDeploymentBlock = 36967571
+    const events = await TakeRewards.queryFilter(filter, TakeDeploymentBlock, 'latest')
+    events.forEach(async event => {
+        await processTakeReward(ctx, event.args as unknown as RewardsArgs)
+    })
+
+
+    TakeRewards.on('Reward', async (user1: string, user2: string, amount1: BigNumber, amount2: BigNumber, takeId: BigNumber) => {
         await processTakeReward(ctx, { user1, user2, amount1, amount2, takeId })
     })
 }
@@ -36,7 +46,7 @@ async function processTakeReward(ctx: Context, { user1, user2, amount1, amount2,
         // Reward for single take.
         const reward = {
             user: user1,
-            reward: amount1.toNumber(),
+            reward: renderBalance(amount1),
             isRemix: false,
             wasRemixed: false
         }
@@ -47,14 +57,14 @@ async function processTakeReward(ctx: Context, { user1, user2, amount1, amount2,
         // Reward for remix.
         const rewardRemix = {
             user: user1,
-            reward: amount1.toNumber(),
+            reward: renderBalance(amount1),
             isRemix: true,
             wasRemixed: false
         }
 
         const rewardOg = {
             user: user2,
-            reward: amount2.toNumber(),
+            reward: renderBalance(amount2),
             isRemix: false,
             wasRemixed: true
         }
@@ -75,22 +85,23 @@ interface RewardsSummary {
 }
 
 export async function printRewardsSummary(ctx: Context) {
-    const { api, ensProvider } = ctx
+    const { api, ensProvider, chatId } = ctx
 
     // Reduce the rewards to a list of users each with their reward.
     let rewards: Record<string, RewardsSummary> = {}
-    const defaultEntry = {
-        username: '',
-        totalRewards: 0,
-        totalRemixes: 0,
-        totalRemixesByOthers: 0,
-        totalTakes: 0
-    }
 
     for (const rewardEntry of rewardsEntries) {
         const { user } = rewardEntry
         
-        let entry = _.get(rewards, user, defaultEntry)
+        let entry = _.get(rewards, user, {
+            username: '',
+            totalRewards: 0,
+            totalRemixes: 0,
+            totalRemixesByOthers: 0,
+            totalTakes: 0
+        })
+
+        // entry.username = user
 
         // Get the username.
         if (!entry.username.length) {
@@ -115,12 +126,31 @@ export async function printRewardsSummary(ctx: Context) {
     )
     .reverse() // sort descending
 
+    if(!table.length) return
+
     // Print the table.
     let msg = new Msg
-    table.map(({ fromUsername, totalRewards, totalRemixes, totalRemixesByOthers }: any, i) => {
+    msg.write("🏆 <b>Take Rewards Leaderboard</b> 🏆\n\n")
+    table.map(({ username, totalRewards, totalTakes, totalRemixes, totalRemixesByOthers }, i) => {
         // get ens
-        msg.write(`#${i} <b>${fromUsername}</b> - made ${totalRemixes} takes, remixed ${totalRemixesByOthers} times. +${totalRewards} HYPE`)
+        const pluralize = (word: string, num: number) => {
+            if(word == 'remix') {
+                return num == 1 ? word : word + 'es'
+            }
+            return num == 1 ? word : word + 's'
+        }
+        msg.write(`${i + 1}. <b>${username}</b> - +${totalRewards} HYPE. Made ${totalTakes} ${pluralize('take', totalTakes)}, ${totalRemixes} ${pluralize('remix', totalRemixes)}, remixed ${totalRemixesByOthers} ${pluralize('time', totalRemixesByOthers)}.`)
     })
+
+    await api.sendMessage({
+        chat_id: chatId,
+        parse_mode: 'HTML',
+        disable_web_page_preview: 'true',
+        text: msg.buf
+    })
+
+    // Clear the rewards.
+    rewardsEntries = []
 
     console.log(msg.buf)
 }
