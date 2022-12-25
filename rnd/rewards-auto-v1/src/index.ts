@@ -1,10 +1,11 @@
 
-import { fetchTake, printTelegramBotInfo } from './helpers'
+import { fetchTake } from './helpers'
+import { abis, rewardsFor } from "@takeisxx/lib"
+const { HYPEABI, TakeABI, TakeRewardsV1ABI } = abis
 
-const slugify = require('slugify')
-const { ethers } = require('ethers')
-const { TakeABI, HYPEABI } = require('@takeisxx/lib/src/abis')
-import { TakeV3Address, HYPETokenAddress, renderBalance, formatUnits } from '@takeisxx/lib'
+import { ethers } from 'ethers'
+import { TakeV3Address, HYPETokenAddress, renderBalance, formatUnits, TakeRewardsV1Address } from '@takeisxx/lib'
+
 const { default: truncateEthAddress } = require('truncate-eth-address')
 
 // Configure.
@@ -17,10 +18,12 @@ if (!PRIVATE_KEY) {
 
 
 // Create a Polygon RPC provider.
-let provider, ensProvider, signer
+let provider: ethers.providers.Provider, 
+    ensProvider: ethers.providers.Provider, 
+    signer: ethers.Signer
 
 
-const getENSUsername = async (address) => {
+const getENSUsername = async (address: string) => {
     try {
         const ens = await ensProvider.lookupAddress(address)
         if (ens) return ens
@@ -40,12 +43,14 @@ async function main() {
     await provider.getBlock('latest')
     await ensProvider.getBlock('latest')
 
+    console.log(`TakeRewardsV1: ${TakeRewardsV1Address}`)
+
     // printTakeDeploymentInfo()
     listenToNewTakes({  })
 }
 
 const TakeDeploymentBlock = 36967571
-async function listenToNewTakes({ api }) {
+async function listenToNewTakes({ }) {
     // Get the HYPE contract.
     const HypeToken = new ethers.Contract(
         HYPETokenAddress,
@@ -58,6 +63,12 @@ async function listenToNewTakes({ api }) {
         TakeV3Address,
         TakeABI,
         provider
+    )
+
+    const TakeRewardsV1 = new ethers.Contract(
+        TakeRewardsV1Address,
+        TakeRewardsV1ABI,
+        signer
     )
 
     // Test the contract by getting the total number of takes.
@@ -78,26 +89,33 @@ async function listenToNewTakes({ api }) {
     const lastProcessedTake = process.env.LASTTAKE || totalTakes
     for (let i = lastProcessedTake; i < totalTakes; i++) {
         console.log(`processing missed take: ${i}`)
-        await processNewTake({ api, Take, HypeToken, takeId: i })
+        await processNewTake({ Take, HypeToken, TakeRewardsV1, takeId: i })
     }
 
 
     // Now listen to the Take contract for new takes.
-    Take.on('Transfer', async (from, to, id) => {
+    Take.on('Transfer', async (from: string, to: string, id: ethers.BigNumberish) => {
         console.log(`New take: ${id}`)
-        await processNewTake({ api, Take, HypeToken, takeId: id })
+        await processNewTake({ Take, HypeToken, TakeRewardsV1, takeId: id })
     })
 }
 
-async function processNewTake({ api, Take, HypeToken, takeId }) {
+type ProcessTakeArgs = {
+    Take: ethers.Contract
+    TakeRewardsV1: ethers.Contract
+    HypeToken: ethers.Contract
+    takeId: ethers.BigNumberish
+}
+
+async function processNewTake(args: ProcessTakeArgs) {
     try {
-        const msg = await rewardNewTakes({ Take, HypeToken, takeId })
+        const msg = await rewardNewTakes(args)
     } catch (ex) {
         console.log(ex)
     }
 }
 
-async function rewardNewTakes({ Take, HypeToken, takeId }) {
+async function rewardNewTakes({ Take, TakeRewardsV1, HypeToken, takeId }: ProcessTakeArgs) {
     // Load the take.
     let take
     try {
@@ -108,7 +126,7 @@ async function rewardNewTakes({ Take, HypeToken, takeId }) {
     }
 
     // Load any takes we have remixed.
-    const refs = await Promise.all(take.refIds.map(id => fetchTake({ takeContract: Take, takeId: id })))
+    const refs = await Promise.all(take.refIds.map((id: any) => fetchTake({ takeContract: Take, takeId: id })))
 
     // Detect if take is template.
     const isTemplate = (take.description.includes('[xx]') || take.description.includes('[yy]') || take.description.includes('[zz]'))
@@ -117,9 +135,16 @@ async function rewardNewTakes({ Take, HypeToken, takeId }) {
     const author = await getENSUsername(take.author)
     if (isTemplate) {
         // New template.
-        const reward = formatUnits(3);
+        const reward = rewardsFor.template
         console.log(`${take.id} - rewarding template with ${renderBalance(reward)} HYPE`)
-        let tx = await HypeToken.mint(take.author, reward, await getGas())
+        const tx = await TakeRewardsV1.reward(
+            take.author, 
+            ethers.constants.AddressZero,
+            reward, 
+            ethers.constants.Zero,
+            take.id,
+            await getGas()
+        )
         await tx.wait(1)
 
     } else if (isRemix) {
@@ -130,17 +155,23 @@ async function rewardNewTakes({ Take, HypeToken, takeId }) {
         const selfRemix = author === authorOg
 
         if(!selfRemix) {
-            const reward = formatUnits(5);
-            const ogReward = formatUnits("2.5");
+            const reward = rewardsFor.remix.take
+            const ogReward = rewardsFor.remix.og
 
             console.log(`${take.id} - rewarding remixer with ${renderBalance(reward)} HYPE`)
             console.log(`${take.id} - rewarding remix (${og.id}) with ${renderBalance(ogReward)} HYPE`)
 
-            // Mint take.
-            let tx = await HypeToken.mint(take.author, reward, await getGas())
+            // Mint reward.
+            const tx = await TakeRewardsV1.reward(
+                take.author,
+                og.author,
+                reward,
+                ogReward,
+                take.id,
+                await getGas()
+            )
             await tx.wait(1)
-            let tx2 = await HypeToken.mint(og.author, ogReward, await getGas())
-            await tx2.wait(1)
+
         } else {
             // const reward = formatUnits(1);
 
@@ -155,10 +186,19 @@ async function rewardNewTakes({ Take, HypeToken, takeId }) {
 
     } else {
         // New take.
-        const reward = formatUnits(3);
+        const reward = rewardsFor.take
         console.log(`${take.id} - rewarding take with ${renderBalance(reward)} HYPE`)
-        let tx = await HypeToken.mint(take.author, reward, await getGas())
+
+        const tx = await TakeRewardsV1.reward(
+            take.author,
+            ethers.constants.AddressZero,
+            reward,
+            ethers.constants.Zero,
+            take.id,
+            await getGas()
+        )
         await tx.wait(1)
+        
     }
 }
 

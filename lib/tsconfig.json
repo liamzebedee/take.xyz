@@ -9,6 +9,7 @@
     "baseUrl": ".",
     "inlineSourceMap": true,
     "inlineSources": true,
+    "declaration": true,
     "paths": {
       "*": ["node_modules/*"]
     },
