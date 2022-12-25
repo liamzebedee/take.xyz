@@ -14,6 +14,7 @@
   "dependencies": {
     "@takeisxx/lib": "file:../../lib",
     "ethers": "^5.7.2",
+    "lodash": "^4.17.21",
     "truncate-eth-address": "^1.0.2",
     "typescript": "^4.9.4"
   }

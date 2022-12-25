@@ -41,3 +41,9 @@ export async function fetchTake({ takeContract: Take, takeId }) {
     }
 }
 
+export class Msg {
+    buf = ''
+    write(line = '') {
+        this.buf += line + '\n'
+    }
+}

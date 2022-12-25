@@ -1,12 +1,13 @@
 import { CHAT_ID_TEST, TAKE_APP_BASE_URL } from './config'
-import { fetchTake, printTelegramBotInfo } from './helpers'
+import { fetchTake, printTelegramBotInfo, Msg } from './helpers'
 
 const TG = require('telegram-bot-api')
 const slugify = require('slugify')
 const { ethers } = require('ethers')
-const { TakeABI, HYPEABI } = require('@takeisxx/lib/src/abis')
-import { TakeV3Address, HYPETokenAddress, renderBalance } from '@takeisxx/lib'
+const { TakeABI, HYPEABI, TakeRewardsV1ABI } = require('@takeisxx/lib/src/abis')
+import { TakeV3Address, HYPETokenAddress, TakeRewardsV1Address, renderBalance } from '@takeisxx/lib'
 const { default: truncateEthAddress } = require('truncate-eth-address')
+import { sortBy } from 'lodash'
 
 // Configure.
 let { TELEGRAM_TOKEN, CHAT_ID } = process.env
@@ -41,6 +42,7 @@ async function main() {
 
     // printTakeDeploymentInfo()
 
+    // listenToTakeRewards({ api })
     listenToTokenTransfers({ api })
     listenToNewTakes({ api })
 }
@@ -54,6 +56,115 @@ const getENSUsername = async (address) => {
 
     return truncateEthAddress(address)
 }
+
+async function listenToTakeRewards({ api }) {
+    // Get the HYPE contract.
+    const TakeRewards = new ethers.Contract(
+        TakeRewardsV1Address,
+        TakeRewardsV1ABI,
+        provider
+    )
+
+    TakeRewards.on('Rewards', async(user1, user2, amount1, amount2, takeId) => {
+        await processTakeReward({ api, user1, user2, amount1, amount2, takeId })
+    })
+}
+
+let rewardsEntries = []
+
+async function processTakeReward({ api, user1, user2, amount1, amount2, takeId }) {
+    if(user2 == ethers.constants.AddressZero) {
+        // Reward for single take.
+        const reward = {
+            user: user1,
+            reward: amount1,
+            isRemix: false,
+            wasRemixed: false
+        }
+
+        rewardsEntries.push(reward)
+
+    } else {
+        // Reward for remix.
+        const rewardRemix = {
+            user: user1,
+            reward: amount1,
+            isRemix: true,
+            wasRemixed: false
+        }
+
+        const rewardOg = {
+            user: user2,
+            reward: amount2,
+            isRemix: false,
+            wasRemixed: true
+        }
+
+
+        rewardsEntries.push(rewardRemix)
+        rewardsEntries.push(rewardOg)
+    }
+
+    // @nakamofo earns ${rewardsFor.remix.take}, ${ogauthor} earns ${rewardsFor.remix.og}
+    // await api.sendMessage({
+    //     chat_id: CHAT_ID,
+    //     parse_mode: 'HTML',
+    //     disable_web_page_preview: 'true',
+    //     text: `🎉 ${toUsername} you have earnt <b>${renderBalance(amount)} HYPE</b>. Your balance is now <b>${renderBalance(balance)} HYPE</b>\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
+    // })
+}
+
+
+
+async function printRewardsSummary() {
+    // Reduce the rewards to a list of users each with their reward.
+    rewards = {}
+
+    for(let rewardEntry of rewardsEntries) {
+        const { user } = rewardEntry
+        const default = {
+            totalRewards: 0,
+            totalRemixes: 0,
+            totalRemixesByOthers: 0,
+            totalTakes: 0
+        }
+
+        let { totalRewards, totalRemixes, totalRemixesByOthers, totalTakes } = rewards[user] || default
+
+
+        totalRewards += rewardEntry.reward
+        totalRemixes += rewardEntry.isRemix
+        totalRemixesByOthers += rewardEntry.wasRemixed
+        totalTakes += 1
+
+        rewards[user] = {
+            totalRewards,
+            totalRemixes,
+            totalRemixesByOthers,
+            totalTakes,
+        }
+    }
+
+    // Now we create a leaderboard.
+    // Sort the table by the highest scoring user.
+    let table = sortBy(
+        Object
+        .entries(rewards)
+        .map(([ user, scores ]) => ({ user, ...scores }))
+    , ['totalRewards'])
+    
+
+    
+    let msg = new Msg
+    table.map(async (({ user, totalRewards, totalRemixes, totalRemixesByOthers }), i) => {
+        // get ens
+        const fromUsername = await getENSUsername(from)
+        msg.write(`#${i} <b>${fromUsername}</b> - made ${totalRemixes} takes, remixed ${totalRemixesByOthers} times. +${totalRewards} HYPE`)
+    })
+
+    console.log(rewards)
+}
+
 
 async function listenToTokenTransfers({ api }) {
     // Get the HYPE contract.
@@ -93,6 +204,7 @@ async function processHypeTransfer({ api, HypeToken, from, to, amount }) {
             disable_web_page_preview: 'true',
             text: `🎉 ${toUsername} you have earnt <b>${renderBalance(amount)} HYPE</b>. Your balance is now <b>${renderBalance(balance)} HYPE</b>\n<a href="https://polygonscan.com/token/${HYPETokenAddress}?a=${from}">View on PolygonScan</a>`
         })
+    } else if(from == TakeRewardsV1Address) {
     } else {
         await api.sendMessage({
             chat_id: CHAT_ID,
@@ -225,12 +337,6 @@ async function getNewTakeAnnouncements({ Take, takeId }) {
     const takeShortUrl = `${TAKE_APP_BASE_URL}/t/-${takeId}`
     const takeLongUrl = `${TAKE_APP_BASE_URL}/t/${slugify(take.description)}-${takeId}`
 
-    class Msg {
-        buf = ''
-        write(line = '') {
-            this.buf += line + '\n'
-        }
-    }
     let msg = new Msg
 
     const author = await getENSUsername(take.author)
