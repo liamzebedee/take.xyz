@@ -8,6 +8,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
+    "atob": "^2.1.2",
     "ethers": "^5.7.2"
   },
   "devDependencies": {
