@@ -22,7 +22,7 @@ import { AppLayout } from '../../components/layout';
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
-import { TakeV3Address, TAKE_BASE_URL } from '@takeisxx/lib/src/config';
+import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 
@@ -188,7 +188,7 @@ function UI(props) {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     const isARemixedTake = take.refs && take.refs.length > 0
 
-    // let TAKE_BASE_URL = TAKE_BASE_URL
+    //x let TAKE_BASE_URL = TAKE_BASE_URL
     // if(process.env.NODE_ENV == 'development') {
     //     // Run localtunnel to get this URL below.
     //     // lt --port 3000
@@ -208,15 +208,15 @@ function UI(props) {
                 <meta property="og:type" content="article" />
                 <meta property="og:title" content={`${take.description} - take #${take.id}`} />
                 <meta property="og:description" content={`hot takes, on chain`} />
-                <meta property="og:image" content={`https://${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
+                <meta property="og:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
                 {/* <meta property="og:image" content={`${TAKE_BASE_URL}/0.png`} /> */}
-                <meta property="og:url" content={`https://${TAKE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} />
+                <meta property="og:url" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} />
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@takeisxx" />
                 <meta name="twitter:title" content={`${take.description} - take #${take.id}`} />
                 <meta name="twitter:description" content={`hot takes, on chain. remix and make magic internet money`} />
-                <meta name="twitter:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
+                <meta name="twitter:image" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/api/t/${take.id}/img.png`} />
             </Head>
 
             <Header/>

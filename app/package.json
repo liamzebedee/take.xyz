@@ -10,9 +10,6 @@
     "lint": "next lint",
     "sync-abi": "./abis/sync.sh && node abis/generate-index.js"
   },
-  "engines": {
-    "node": "14.x"
-  },
   "dependencies": {
     "chrome-aws-lambda": "10.1.0",
     "puppeteer-core": "10.1.0",
