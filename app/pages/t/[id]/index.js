@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
-import styles from '../../styles/Home.module.css';
+import styles from '../../../styles/Home.module.css';
 const slugify = require('slugify')
 import truncateEthAddress from 'truncate-eth-address';
 
@@ -11,11 +11,11 @@ Rainbow & wagmi
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { getContract, getProvider } from '@wagmi/core';
 import { useEnsName } from 'wagmi';
-import Header from '../../components/header';
+import Header from '../../../components/header';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { multicall } from '@wagmi/core'
-import { AppLayout } from '../../components/layout';
+import { AppLayout } from '../../../components/layout';
 
 
 // import useSigner
