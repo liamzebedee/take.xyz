@@ -198,7 +198,17 @@ export const TakeBox = ({ take }) => {
 // const path = require('path')
 // console.log(app)
 
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
+
+// https://gist.github.com/kettanaito/56861aff96e6debc575d522dd03e5725
+import edgeChromium from 'chrome-aws-lambda'
+import puppeteer from 'puppeteer-core'
+
+// You may want to change this if you're developing
+// on a platform different from macOS.
+// See https://github.com/vercel/og-image for a more resilient
+// system-agnostic options for Puppeteeer.
+const LOCAL_CHROME_EXECUTABLE = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 async function svg2Png(svg) {
     // 1. Launch the browser
@@ -220,15 +230,29 @@ async function svg2Png(svg) {
 }
 
 async function html2Png(svg) {
+    // Edge executable will return an empty string locally.
+    const executablePath = await edgeChromium.executablePath || LOCAL_CHROME_EXECUTABLE
+
     // 1. Launch the browser
     const browser = await puppeteer.launch({
-        headless: true,
+        executablePath,
+        args: edgeChromium.args,
+        headless: false,
         // make the window large
         defaultViewport: {
             width: TWITTER_CARD.dimensions.width,
             height: TWITTER_CARD.dimensions.height
         }
-    });
+    })
+
+    // const browser = await puppeteer.launch({
+    //     headless: true,
+    //     // make the window large
+    //     defaultViewport: {
+    //         width: TWITTER_CARD.dimensions.width,
+    //         height: TWITTER_CARD.dimensions.height
+    //     }
+    // });
 
     // 2. Open a new page
     const page = await browser.newPage();

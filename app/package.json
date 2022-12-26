@@ -10,7 +10,12 @@
     "lint": "next lint",
     "sync-abi": "./abis/sync.sh && node abis/generate-index.js"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
+    "chrome-aws-lambda": "10.1.0",
+    "puppeteer-core": "10.1.0",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@takeisxx/lib": "file:../lib",
     "@tanstack/react-query": "^4.20.4",
