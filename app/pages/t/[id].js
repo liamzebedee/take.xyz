@@ -205,12 +205,12 @@ function UI(props) {
                 {/* Why the hell do we need this? */}
                 {/* https://take-xyz.vercel.app/t/rachel-and-ross-were-on-a-break-28 */ }
                 
-                <meta property="og:type" content="article" />
+                {/* <meta property="og:type" content="article" />
                 <meta property="og:title" content={`${take.description} - take #${take.id}`} />
                 <meta property="og:description" content={`hot takes, on chain`} />
-                <meta property="og:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
+                <meta property="og:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} /> */}
                 {/* <meta property="og:image" content={`${TAKE_BASE_URL}/0.png`} /> */}
-                <meta property="og:url" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} />
+                {/* <meta property="og:url" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} /> */}
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@takeisxx" />
