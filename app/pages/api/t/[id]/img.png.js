@@ -144,6 +144,8 @@ export const TakeBox = ({ take }) => {
             }
             .takebox {
                 flex: 1;
+                width: 100%;
+                height: 100%;
                 display: inline-block;
                 font-size: 4.5rem;
                 background: #ff2a8d;

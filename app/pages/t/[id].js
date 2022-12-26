@@ -25,6 +25,7 @@ import { ethers } from 'ethers';
 import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
+import { useQuery } from '@tanstack/react-query';
 
 /*
 UI
@@ -109,6 +110,7 @@ export async function getServerSideProps(context) {
         const takeItContractV1 = new ethers.Contract(TakeV3Address, TakeABI, provider)
 
         const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: false })
+        take.from = 'server'
         console.log(take)
         return take
     }
@@ -131,7 +133,7 @@ export async function getServerSideProps(context) {
 
 
 function UI(props) {
-    const [take, setTake] = useState(props.take)
+    const [take, setTake] = useState({})
     const account = useAccount()
     const provider = getProvider()
 
@@ -249,7 +251,7 @@ function UI(props) {
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@takeisxx" />
-                <meta name="twitter:title" content={`${take.description} - take #${take.id}`} />
+                <meta name="twitter:title" content={`${props.take.description} - take #${props.take.id}`} />
                 <meta name="twitter:description" content={`hot takes, on chain. remix and make magic internet money`} />
                 <meta name="twitter:image" content={props.meta.twitterImage} />
             </Head>
