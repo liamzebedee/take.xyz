@@ -77,19 +77,54 @@ const SendButton = ({ takeId, takeOwner }) => {
 }
 
 export async function getServerSideProps(context) {
-    // Construct the Alchemy provider.
-    const provider = new ethers.providers.AlchemyProvider('matic', 'aPWRA4EZ6QMbPKs_L6DNo_w-avrXNGrm')
-
-    // Construct the Take contract.
-    const takeItContractV1 = new ethers.Contract(TakeV3Address, TakeABI, provider)
-
     const takeId = context.query.id.split('-').pop()
-    const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: false })
-    console.log(take)
+
+    async function fetchTwitterImage() {
+        // Check if this is the twitter bot.
+        const twitterImageUrl = `${TAKE_OPENGRAPH_SERVICE_BASE_URL}/api/t/${takeId}/img.png`
+
+        let twitterImage = null
+
+        // Check if header includes Twitterbot
+        if (context.req.headers['user-agent'].includes('Twitterbot')) {
+            // Prefetch the image.
+            // Fetch the binary twitter image from the API.
+            const image = await fetch(twitterImageUrl)
+            // Encode it into a data: URI.
+            const imageBuffer = await image.buffer()
+            const imageBase64 = imageBuffer.toString('base64')
+            twitterImage = `data:image/png;base64,${imageBase64}`
+        } else {
+            twitterImage = twitterImageUrl
+        }
+
+        return twitterImage
+    }
+
+    async function fetchTakeData() {
+        // Construct the Alchemy provider.
+        const provider = new ethers.providers.AlchemyProvider('matic', 'aPWRA4EZ6QMbPKs_L6DNo_w-avrXNGrm')
+
+        // Construct the Take contract.
+        const takeItContractV1 = new ethers.Contract(TakeV3Address, TakeABI, provider)
+
+        const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: false })
+        console.log(take)
+        return take
+    }
+
+    // Fetch in parallel to speed things up.
+    const [ twitterImage, take ] = await Promise.all([
+        fetchTwitterImage(),
+        fetchTakeData()
+    ])
 
     return {
         props: {
-            take
+            take,
+            meta: {
+                twitterImage
+            }
         },
     }
 }
@@ -216,7 +251,7 @@ function UI(props) {
                 <meta name="twitter:site" content="@takeisxx" />
                 <meta name="twitter:title" content={`${take.description} - take #${take.id}`} />
                 <meta name="twitter:description" content={`hot takes, on chain. remix and make magic internet money`} />
-                <meta name="twitter:image" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/api/t/${take.id}/img.png`} />
+                <meta name="twitter:image" content={props.meta.twitterImage} />
             </Head>
 
             <Header/>
