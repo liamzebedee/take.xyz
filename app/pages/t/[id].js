@@ -188,12 +188,12 @@ function UI(props) {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     const isARemixedTake = take.refs && take.refs.length > 0
 
-    let TAKE_BASE_URL = TAKE_BASE_URL
-    if(process.env.NODE_ENV == 'development') {
-        // Run localtunnel to get this URL below.
-        // lt --port 3000
-        TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
-    }
+    // let TAKE_BASE_URL = TAKE_BASE_URL
+    // if(process.env.NODE_ENV == 'development') {
+    //     // Run localtunnel to get this URL below.
+    //     // lt --port 3000
+    //     TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
+    // }
 
     const ui = (
         <div className={styles.container}>
