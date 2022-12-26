@@ -22,7 +22,7 @@ import { AppLayout } from '../../components/layout';
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
-import { TakeV3Address, TAKE_BASE_URL, TAKE_BASE_URL } from '@takeisxx/lib/src/config';
+import { TakeV3Address, TAKE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 
@@ -192,7 +192,7 @@ function UI(props) {
     if(process.env.NODE_ENV == 'development') {
         // Run localtunnel to get this URL below.
         // lt --port 3000
-        let TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
+        TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
     }
 
     const ui = (
