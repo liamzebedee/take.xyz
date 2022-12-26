@@ -88,6 +88,7 @@ async function processNewTake(ctx: Context, { Take, takeId }: any) {
             chat_id: chatId,
             parse_mode: 'HTML',
             text: msg.buf,
+            disable_web_page_preview: 'true',
         })
     } catch (ex) {
         console.log(ex)
