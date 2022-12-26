@@ -243,8 +243,7 @@ async function html2Png(svg) {
 
     // 4. Take screenshot
     const buf = await page.screenshot()
-
-    await browser.close();
+    browser.close();
 
     return buf
 }
