@@ -22,7 +22,7 @@ import { AppLayout } from '../../components/layout';
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
-import { TakeV3Address } from '@takeisxx/lib/src/config';
+import { TakeV3Address, TAKE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 
@@ -76,13 +76,29 @@ const SendButton = ({ takeId, takeOwner }) => {
     )
 }
 
-function UI() {
-    const [take, setTake] = useState({})
+export async function getServerSideProps(context) {
+    // Construct the Alchemy provider.
+    const provider = new ethers.providers.AlchemyProvider('matic', 'aPWRA4EZ6QMbPKs_L6DNo_w-avrXNGrm')
+
+    // Construct the Take contract.
+    const takeItContractV1 = new ethers.Contract(TakeV3Address, TakeABI, provider)
+
+    const takeId = context.query.id.split('-').pop()
+    const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: false })
+    console.log(take)
+
+    return {
+        props: {
+            take
+        },
+    }
+}
+
+
+function UI(props) {
+    const [take, setTake] = useState(props.take)
     const account = useAccount()
-
     const provider = getProvider()
-    
-
 
     const { data: signer } = useSigner()
     const takeItContractV1 = getContract({
@@ -172,6 +188,8 @@ function UI() {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     const isARemixedTake = take.refs && take.refs.length > 0
 
+    let TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
+
     const ui = (
         <div className={styles.container}>
             <Head>
@@ -181,9 +199,19 @@ function UI() {
 
                 {/* Why the hell do we need this? */}
                 {/* https://take-xyz.vercel.app/t/rachel-and-ross-were-on-a-break-28 */ }
-                {/* <meta property="og:title" content={} />
-                <meta property="og:description" content="Get from SEO newbie to SEO pro in 8 simple steps." />
-                <meta property="og:image" content="https://ahrefs.com/blog/wp-content/uploads/2019/12/fb-how-to-become-an-seo-expert.png" /> */}
+                
+                <meta property="og:type" content="article" />
+                <meta property="og:title" content={`${take.description} - take #${take.id}`} />
+                <meta property="og:description" content={`hot takes, on chain`} />
+                <meta property="og:image" content={`https://${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
+                {/* <meta property="og:image" content={`${TAKE_BASE_URL}/0.png`} /> */}
+                <meta property="og:url" content={`https://${TAKE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:site" content="@takeisxx" />
+                <meta name="twitter:title" content={`${take.description} - take #${take.id}`} />
+                <meta name="twitter:description" content={`hot takes, on chain. remix and make magic internet money`} />
+                <meta name="twitter:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} />
             </Head>
 
             <Header/>
