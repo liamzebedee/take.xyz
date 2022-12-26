@@ -18,10 +18,11 @@ function UI(props) {
         if(id != null) {
             // split
             id = id.split("-").pop()
-            window.location = `http://15.165.74.200:3000/api/t/${id}/img.png`
-
+            router.push(`http://15.165.74.200:3000/api/t/${id}/img.png`, '_blank')
         }
-    }, [])
+    }, [id])
+
+    return <>...</>
 }
 
 
