@@ -26,8 +26,6 @@ import { TakeV3Address, TAKE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 
-import domtoimage from 'dom-to-image';
-
 /*
 UI
 */
