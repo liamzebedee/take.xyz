@@ -48,7 +48,7 @@ async function main() {
     // Every 8h, print the rewards summary.
     setInterval(async () => {
         await printRewardsSummary(ctx)
-    }, 1000 * 60 * 60 * 8)
+    }, 1000 * 60 * 60 * 24)
     
     listenToTokenTransfers(ctx)
     // listenToTokenTransfers({ api })
