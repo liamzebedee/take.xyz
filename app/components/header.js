@@ -133,6 +133,9 @@ export default function Header() {
                 <li className={classNames({ [menuLiActive]: isFeed })}>
                     <Link href="/feed">feed</Link>
                 </li>
+                <li>
+                    <Link href="https://t.me/+l_mrM707TIg1ZTA9">tg chat</Link>
+                </li>
                 <li className={classNames({ [menuLiActive]: isLiterallyAnythingElse, [menuLiLiterallyAnythingElse]: true })}>
                     <span>✴✴✴</span>
                 </li>
