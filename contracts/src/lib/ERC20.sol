@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.8.0;
 
-import {Initializable} from "../../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+// import {Initializable} from "../../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import {Initializable} from "./Initializable.sol";
 
 
 /// @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
@@ -51,6 +52,19 @@ abstract contract ERC20 is Initializable {
                                CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
+    function _initialize_ERC20(
+        string memory _name,
+        string memory _symbol,
+        uint8 _decimals
+    ) internal {
+        name = _name;
+        symbol = _symbol;
+        decimals = _decimals;
+
+        INITIAL_CHAIN_ID = block.chainid;
+        INITIAL_DOMAIN_SEPARATOR = computeDomainSeparator();
+    }
+    
     function initialize_ERC20(
         string memory _name,
         string memory _symbol,

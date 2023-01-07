@@ -2,7 +2,8 @@
 pragma solidity >=0.8.0;
 
 import {ERC20} from "./lib/ERC20.sol";
-import {Initializable} from "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+// import {Initializable} from "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
+import {Initializable} from "./lib/Initializable.sol";
 import {Owned} from "./lib/Owned.sol";
 
 contract HYPE is 
