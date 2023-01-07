@@ -22,9 +22,9 @@ import { AppLayout } from '../../../components/layout';
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
-import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
-import { TakeABI } from '@takeisxx/lib/src/abis';
-import { fetchTake2 } from '@takeisxx/lib/src/chain';
+import { HYPETokenAddress, TakeMarketV1Address, TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
+import { HYPEABI, TakeABI, TakeMarketSharesV1ABI, TakeMarketV1ABI } from '@takeisxx/lib/src/abis';
+import { fetchTake2, formatUnits, renderBalance } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
 
 /*
@@ -134,6 +134,7 @@ export async function getServerSideProps(context) {
 
 function UI(props) {
     const [take, setTake] = useState({})
+    const [takeShares, setTakeShares] = useState({})
     const account = useAccount()
     const provider = getProvider()
 
@@ -141,6 +142,12 @@ function UI(props) {
     const takeItContractV1 = getContract({
         address: TakeV3Address,
         abi: TakeABI,
+        signerOrProvider: provider
+    })
+
+    const takeMarketV1Contract = getContract({
+        address: TakeMarketV1Address,
+        abi: TakeMarketV1ABI,
         signerOrProvider: provider
     })
 
@@ -168,12 +175,31 @@ function UI(props) {
                 return
             }
 
+            loadTakeShares(takeId)
+
             // Load the take.
             const take = await fetchTake2({ multicall, takeItContractV1, takeId, provider, fetchRefs: true })
             
             setTake({
                 id: takeId,
                 ...take,
+            })
+        }
+
+        const loadTakeShares = async (takeId) => {
+            // Load the take shares.
+            const contract = await takeMarketV1Contract.getTakeSharesContract(takeId)
+
+            let shares = ethers.constants.Zero
+            try {
+                shares = await takeMarketV1Contract.getBalanceForMarket(takeId, account.address)
+            } catch(err) {
+                // market doesn't exist
+            }
+            
+            setTakeShares({
+                shares,
+                contract
             })
         }
 
@@ -186,7 +212,9 @@ function UI(props) {
         if (!router.query.id) return
 
         let takeId = router.query.id.split('-').pop()
-        if (takeId != take.id) loadTake(takeId)
+        if (takeId != take.id) {
+            loadTake(takeId)
+        }
 
     }, [router])
 
@@ -198,7 +226,6 @@ function UI(props) {
 
     const likeTake = async () => {
         // request signature over call to like abi
-        
     }
 
 
@@ -223,6 +250,7 @@ function UI(props) {
     })
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
+    const takeSharesContractUrl = `https://polygonscan.com/address/${takeShares && takeShares.contract}`
     const isARemixedTake = take.refs && take.refs.length > 0
 
     //x let TAKE_BASE_URL = TAKE_BASE_URL
@@ -280,7 +308,10 @@ function UI(props) {
                         <span>minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.author)}</strong></a><br /></span>
                     )}
                     {take.owner && (
-                        <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
+                        <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a><br /></span>
+                    )}
+                    {takeShares.contract && (
+                        <span>you own <a href={takeSharesContractUrl}><strong>{renderBalance(takeShares.shares)} shares</strong></a></span>
                     )}
                 </p>
 
@@ -289,7 +320,9 @@ function UI(props) {
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
                     {/* <button disabled={true} className={styles.takeItBtn} onClick={likeTake}>like</button> */}
                     {/* a button for sending a take NFT to an address */}
-                    <SendButton takeId={take.id} takeOwner={take.owner} />
+                    {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
+                    <SwapButton2 take={take} />
+                    {/* <SwapButton1 /> */}
                 </p>
 
                 <h3>remixed from</h3>
@@ -317,6 +350,67 @@ function UI(props) {
 
 
     return ui
+}
+
+export const SwapButton1 = ({ take }) => {
+    const account = useAccount()
+    const provider = getProvider()
+    const { data: signer } = useSigner()
+    const { config } = usePrepareContractWrite({
+        chainId: polygon.id,
+        address: HYPETokenAddress,
+        abi: HYPEABI,
+        signerOrProvider: signer,
+        functionName: 'approve',
+        args: [TakeMarketV1Address, ethers.constants.MaxUint256],
+        enabled: true,
+    })
+
+    const { data, write, isLoading: isWriteLoading } = useContractWrite(config)
+    const { isLoading: isTxLoading, isSuccess: isTxSuccess, data: txReceipt } = useWaitForTransaction({
+        hash: data && data.hash,
+    })
+
+    const swapTakeshares = async () => {
+        write()
+    }
+
+    return <>
+        <button disabled={isWriteLoading || isTxLoading} className={styles.takeItBtn} onClick={() => swapTakeshares()}>
+            {isTxLoading ? 'approving HYPE' : 'swap'}
+        </button>
+    </>
+}
+
+
+export const SwapButton2 = ({ take }) => {
+    const account = useAccount()
+    const provider = getProvider()
+    const { data: signer } = useSigner()
+    const { config } = usePrepareContractWrite({
+        chainId: polygon.id,
+        address: TakeMarketV1Address,
+        abi: TakeMarketV1ABI,
+        signerOrProvider: signer,
+        functionName: 'deposit',
+        args: [take.id, formatUnits(10)],
+        enabled: false,
+    })
+
+    const { data, write, isLoading: isWriteLoading } = useContractWrite(config)
+    const { isLoading: isTxLoading, isSuccess: isTxSuccess, data: txReceipt } = useWaitForTransaction({
+        hash: data && data.hash,
+    })
+
+    const swapTakeshares = async () => {
+        write()
+    }
+
+    return <>
+        <button disabled={isWriteLoading || isTxLoading} className={styles.takeItBtn} onClick={() => swapTakeshares()}>
+            {isTxLoading ? 'buying shares...' : 'invest'}
+        </button>
+    </>
 }
 
 

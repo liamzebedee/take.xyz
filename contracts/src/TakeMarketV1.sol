@@ -12,6 +12,7 @@ interface ITakeMarketSharesV1 {
 
     function mint(address to, uint256 amount) external;
     function burn(address to, uint256 amount) external;
+    function allowance(address owner, address spender) external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
 }
 
@@ -51,7 +52,7 @@ contract TakeMarketV1 is
     // HYPE token.
     IERC20 public HypeToken;
 
-    event Swap(uint256 indexed takeId, address account, int256 amount, uint256 fee);
+    event Swap(uint256 indexed takeId, address account,  bool inn, uint256 amount, uint256 fee);
     event Fee (uint256 indexed takeId, address operator, uint256 amount, uint256 fee);
 
     constructor(address _HypeToken, address _operator) {
@@ -88,13 +89,14 @@ contract TakeMarketV1 is
 
     // Deposit shares of a take.
     function deposit(uint256 take, uint256 amount) public {
+        require(HypeToken.allowance(msg.sender, address(this)) >= amount, "INSUFFICIENT_ALLOWANCE");
         ITakeMarketSharesV1 shares = getOrCreateTakeSharesContract(uint256(take));
         shares.mint(msg.sender, amount);
 
         // Take the HYPE.
         HypeToken.transferFrom(msg.sender, address(this), amount);
 
-        emit Swap(take, msg.sender, int256(amount), 0);
+        emit Swap(take, msg.sender, true, amount, 0);
     }
 
     // Withdraw shares of a take.
@@ -109,21 +111,28 @@ contract TakeMarketV1 is
         HypeToken.transfer(msg.sender, amountMinusFee);
         HypeToken.transfer(operator, fee);
 
-        emit Swap(take, msg.sender, -int256(amount), fee);
+        emit Swap(take, msg.sender, false, amount, fee);
         emit Fee(take, operator, amount, fee);
     }
 
-    function swap(uint256 take, int256 amount) public {
-        require(amount != 0, "INVALID_AMOUNT");
-        // If amount is -ve, withdraw.
-        if (amount < 0) {
-            withdraw(take, uint256(-amount));
+    // Funny thing is,
+    // even when you try to achieve a beautiful design,
+    // software is the funniest thing
+    // your abstractions never actually hide information
+    // int256 would mean that the range of HYPE I could support is 
+    // -2^128 to 2^128
+    // which is obviously not the same as before
+    // function swap(uint256 take, int256 amount) public {
+    //     require(amount != 0, "INVALID_AMOUNT");
+    //     // If amount is -ve, withdraw.
+    //     if (amount < 0) {
+    //         withdraw(take, uint256(-amount));
         
-        // If amount is +ve, deposit.
-        } else {
-            deposit(take, uint256(amount));
-        }
-    }
+    //     // If amount is +ve, deposit.
+    //     } else {
+    //         deposit(take, uint256(amount));
+    //     }
+    // }
 
     function setFeeRateBps(uint256 newFeeRateBps) external onlyOwner {
         feeRateBps = newFeeRateBps;
