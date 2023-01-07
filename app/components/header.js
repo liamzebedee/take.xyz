@@ -24,6 +24,7 @@ import { useEnsName } from 'wagmi'
 import truncateEthAddress from 'truncate-eth-address'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useQuery } from '@tanstack/react-query';
 const { TakeABI, HYPEABI, AnonRelayerABI, AnonTakenameRegistryABI } = require('@takeisxx/lib/src/abis')
 const { TakeV3Address, HYPETokenAddress, ANON_RELAYER_ADDRESS } = require('@takeisxx/lib/src/config')
 const classNames = require('classnames');
@@ -44,68 +45,48 @@ const HYPEStatus = ({ }) => {
     
     const { data: signer, isError, isLoading } = useSigner()
 
-    const [hypeBalance, setHypeBalance] = useState(null)
-    const [hypeBalanceLoading, setHypeBalanceLoading] = useState(false)
-    const [hypeBalanceError, setHypeBalanceError] = useState(null)
-    const [hypeBalanceListener, setHypeBalanceListener] = useState(null)
+    const hypeContract = getContract({
+        chainId: polygon.id,
+        address: HYPETokenAddress,
+        abi: HYPEABI,
+        signerOrProvider: provider,
+    })
 
     useEffect(() => {
-        if(hypeBalance) return
-
         if (!account.isConnected) {
             return
         }
 
-        if (hypeBalanceLoading || hypeBalance) {
-            return
-        }
+        const hypeContract = getContract({
+            chainId: mainnet.id,
+            address: HYPETokenAddress,
+            abi: HYPEABI,
+            signerOrProvider: provider,
+        })
 
-        const fetchHypeBalance = async () => {
-            setHypeBalanceLoading(true)
-            try {
-                const hypeContract = getContract({
-                    chainId: polygon.id,
-                    address: HYPETokenAddress,
-                    abi: HYPEABI,
-                    signerOrProvider: provider,
-                })
-                
-                const balance = await hypeContract.balanceOf(account.address)
-                console.log(balance)
-                setHypeBalance(balance)
-            } catch (e) {
-                setHypeBalanceError(e)
+        // TODO optimize index only on the addys below
+        const listener = hypeContract.on('Transfer', (from, to, amount, event) => {
+            if (from == account.address || to == account.address) {
+                hypeBalanceQuery.refetch()
             }
-            setHypeBalanceLoading(false)
+        })
 
-            // Listen to transfers
-            const hypeContract = getContract({
-                chainId: mainnet.id,
-                address: HYPETokenAddress,
-                abi: HYPEABI,
-                signerOrProvider: provider,
-            })
-            const listener = hypeContract.on('Transfer', (from, to, amount, event) => {
-                if (from == account.address || to == account.address) {
-                    setHypeBalance(amount)
-                }
-            })
-
-            setHypeBalanceListener(listener)
-
-            return () => {
-                hypeContract.off(listener)
-            }
+        return () => {
+            hypeContract.off(listener)
         }
+    }, [account.isConnected, account.address])
 
-        if(!hypeBalance) fetchHypeBalance()
-    }, [account, isLoading, hypeBalance, hypeBalanceLoading, hypeBalanceError, hypeBalanceListener, provider])
+    const hypeBalanceQuery = useQuery({
+        queryKey: ['hypeBalance', account.address],
+        queryFn: () => hypeContract.balanceOf(account.address),
+    })
 
-    
-
-    if (hypeBalanceLoading || hypeBalanceError || !hypeBalance) {
+    if (!hypeBalanceQuery.isSuccess) {
         return <span className={styles.hypeStatus}>HYPE</span>
     }
+
+    const { data: hypeBalance } = hypeBalanceQuery
+
     let balance = Number(ethers.utils.formatUnits(hypeBalance, 18)).toFixed(0)
 
     const navigate = () => {

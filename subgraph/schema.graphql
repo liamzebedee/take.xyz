@@ -1,0 +1,13 @@
+
+type Take @entity {
+  id: ID!
+  description: String!
+  creator: String!
+  numRemixes: Int!
+}
+
+type Remix @entity {
+  id: ID!
+  source: Take!
+  remix: Take!
+}

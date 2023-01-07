@@ -1,0 +1,27 @@
+{
+  "name": "spam-subgraph",
+  "version": "0.1.0",
+  "scripts": {
+    "create": "graph create liamzebedee/take-subgraph --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create liamzebedee/take-subgraph --node http://127.0.0.1:8020",
+    "refresh-local": "graph remove liamzebedee/take-subgraph --node http://127.0.0.1:8020 && yarn create-local && yarn deploy-local",
+    "build": "graph build",
+    "deploy": "graph deploy liamzebedee/take-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy liamzebedee/take-subgraph --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
+    "codegen": "ts-node render-templates.ts && graph codegen"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.19.0",
+    "@graphprotocol/graph-ts": "^0.19.0",
+    "ipfs-core": "^0.5.1",
+    "multihashes": "^3.1.2"
+  },
+  "dependencies": {
+    "@takeisxx/lib": "file:../lib",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "cids": "^1.1.5",
+    "multihashing": "^0.3.3",
+    "mustache": "^4.1.0"
+  }
+}

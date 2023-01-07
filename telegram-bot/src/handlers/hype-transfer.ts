@@ -1,4 +1,4 @@
-import { HYPETokenAddress, renderBalance, TakeRewardsV1Address } from "@takeisxx/lib"
+import { HYPETokenAddress, renderBalance, TakeRewardsV1Address, TakeMarketV1Address } from "@takeisxx/lib"
 import { HYPEABI } from "@takeisxx/lib/build/abis"
 import { ethers } from "ethers"
 import { getENSUsername } from "../helpers"
@@ -28,6 +28,10 @@ async function processHypeTransfer(ctx: Context, { HypeToken, from, to, amount }
     fromUsername = await getENSUsername(ensProvider, from)
     if (from == ethers.constants.AddressZero) {
         fromUsername = 'HypeDAO'
+    }
+    if (from == TakeMarketV1Address) {
+        // Ignore.
+        return;
     }
 
     const toUsername = await getENSUsername(ensProvider, to)

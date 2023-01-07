@@ -15,7 +15,8 @@ import { mainnet, polygon } from 'wagmi/chains';
 import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 import { BigNumber } from 'ethers';
-import { useEnsName } from 'wagmi';
+// import { useEnsName } from 'wagmi';
+import { useEnsName } from '../hooks'
 import truncateEthAddress from 'truncate-eth-address';
 
 
@@ -27,24 +28,6 @@ import {
     useInfiniteQuery,
 } from '@tanstack/react-query'
 
-
-const { chains, provider } = configureChains(
-    [polygon],
-    [
-        publicProvider()
-    ]
-);
-
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
 
 
 /*
@@ -235,11 +218,10 @@ const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     
     // Load the .eth name for the author.
-    // const { data: authorEns, isError, isLoading } = useEnsName({
-    //     address: take.owner,
-    //     chainId: 1,
-    // })
-    let authorEns = null
+    const { data: authorEns, isError, isLoading } = useEnsName({
+        address: take.owner,
+        chainId: 1,
+    })
 
     const remix = async () => {}
 
