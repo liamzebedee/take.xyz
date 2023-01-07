@@ -3,6 +3,7 @@ import { CHAT_ID_TEST } from './config'
 import { Context } from './context'
 import { listenToTokenTransfers } from './handlers/hype-transfer'
 import { listenToNewTakes } from './handlers/new-take'
+import { listenToTakeMarkets } from './handlers/take-markets'
 import { listenToTakeRewards, printRewardsSummary } from './handlers/take-rewards'
 import { printTelegramBotInfo } from './helpers'
 
@@ -49,9 +50,8 @@ async function main() {
     setInterval(async () => {
         await printRewardsSummary(ctx)
     }, 1000 * 60 * 60 * 24)
-    
+    listenToTakeMarkets(ctx)
     listenToTokenTransfers(ctx)
-    // listenToTokenTransfers({ api })
     listenToNewTakes(ctx)
 }
 
