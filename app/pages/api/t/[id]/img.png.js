@@ -108,7 +108,7 @@ const getENSUsername = async (ensProvider, address) => {
 
 export const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
-    console.log(take)
+    // console.log(take)
 
     return <html>
         <head>
