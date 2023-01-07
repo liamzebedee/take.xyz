@@ -1,4 +1,4 @@
-import { TakeV3Address } from "@takeisxx/lib"
+import { TakeV3Address, TakeV3DeploymentBlock } from "@takeisxx/lib"
 import { TakeABI } from "@takeisxx/lib/build/abis"
 import { ethers } from "ethers"
 import slugify from "slugify"
@@ -25,8 +25,7 @@ export async function listenToNewTakes(ctx: Context) {
     const filter = Take.filters.Transfer(null, null, null)
     // Query from the block which the Take contract was deployed.
     // See: printTakeDeploymentInfo()
-    const TakeDeploymentBlock = 36967571
-    const events = await Take.queryFilter(filter, TakeDeploymentBlock, 'latest')
+    const events = await Take.queryFilter(filter, TakeV3DeploymentBlock, 'latest')
 
     // Print the latest take ID.
     const lastTakeId = events[events.length - 1].args.id.toNumber()

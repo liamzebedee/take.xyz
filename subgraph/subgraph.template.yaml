@@ -1,0 +1,26 @@
+specVersion: 0.0.4
+description: Take subgraph
+repository: https://github.com/liamzebedee/take.xyz
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Take
+    network: {{network}}
+    source:
+      address: '{{Take.address}}'
+      abi: Take
+      startBlock: {{Take.startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Take
+      abis:
+        - name: Take
+          file: ../lib/abis/Take.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleNewTake
+      file: ./src/mapping.ts
