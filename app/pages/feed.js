@@ -28,24 +28,6 @@ import {
 } from '@tanstack/react-query'
 
 
-const { chains, provider } = configureChains(
-    [polygon],
-    [
-        publicProvider()
-    ]
-);
-
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
-
 
 /*
 UI
