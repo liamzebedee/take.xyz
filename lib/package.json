@@ -4,8 +4,8 @@
   "main": "build/index.js",
   "scripts": {
     "sync-abi": "./sync.sh && node generate-index.js",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "npx tsc",
+    "watch": "npx tsc -w"
   },
   "dependencies": {
     "atob": "^2.1.2",
