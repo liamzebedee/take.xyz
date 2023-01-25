@@ -12,7 +12,8 @@ import { BigNumber } from 'ethers';
 import { useEnsName } from 'wagmi';
 import truncateEthAddress from 'truncate-eth-address';
 
-const convertFloatToUint256 = (f) => ethers.utils.parseUnits("" + f, 18).toString()
+// const convertFloatToUint256 = (f) => ethers.utils.parseUnits("" + f, 18).toString()
+const convertFloatToUint256 = (f) => Math.max(Math.round(parseFloat(f)), 1)
 
 export default async function handler(req, res) {
     const { page } = req.query
