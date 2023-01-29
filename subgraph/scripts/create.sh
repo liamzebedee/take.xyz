@@ -1,0 +1,1 @@
+graph create $SUBGRAPH_NAME --node $GRAPH_NODE_URL

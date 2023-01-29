@@ -1,13 +1,13 @@
 {
-  "name": "spam-subgraph",
+  "name": "take-subgraph",
   "version": "0.1.0",
   "scripts": {
-    "create": "graph create liamzebedee/take-subgraph --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create liamzebedee/take-subgraph --node http://127.0.0.1:8020",
+    "create": "./scripts/create.sh",
+    "create-local": "source .env.local && ./scripts/create.sh",
     "refresh-local": "graph remove liamzebedee/take-subgraph --node http://127.0.0.1:8020 && yarn create-local && yarn deploy-local",
     "build": "graph build",
-    "deploy": "graph deploy liamzebedee/take-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy liamzebedee/take-subgraph --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
+    "deploy": "./scripts/deploy.sh",
+    "deploy-local": "source .env.local && ./scripts/deploy.sh",
     "codegen": "ts-node render-templates.ts && graph codegen"
   },
   "devDependencies": {

@@ -22,7 +22,7 @@ import { AppLayout } from '../../../components/layout';
 
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
-import { HYPETokenAddress, TakeMarketV1Address, TakeV3Address, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
+import { HYPETokenAddress, TakeMarketV1Address, TakeV3Address, TAKE_API_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
 import { HYPEABI, TakeABI, TakeMarketSharesV1ABI, TakeMarketV1ABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2, formatUnits, renderBalance } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
@@ -116,7 +116,8 @@ export async function getServerSideProps(context) {
 
     // Fetch in parallel to speed things up.
     const [ twitterImage, take ] = await Promise.all([
-        fetchTwitterImage(),
+        // fetchTwitterImage(),
+        Promise.resolve(),
         fetchTakeData()
     ])
 
@@ -124,13 +125,22 @@ export async function getServerSideProps(context) {
         props: {
             take,
             meta: {
-                twitterImage
+                twitterImage: ""
             }
         },
     }
 }
 
-
+const api = {
+    getTake: async (takeId) => {
+        // Fetch the JSON
+        const url = `${TAKE_API_BASE_URL}/takes/?nft_id=${takeId}`
+        const res = await fetch(url)
+        const data = await res.json()
+        console.log(111111, data)
+        return data.results[0]
+    }
+} 
 function UI(props) {
     const [hypeAllowanceForTakeMarkets, setHypeAllowanceForTakeMarkets] = useState({})
     const account = useAccount()
@@ -262,6 +272,15 @@ function UI(props) {
         placeholderData: {},
     })
     const { data: takeShares } = takeSharesQuery
+
+    const takeApiQuery = useQuery({
+        queryKey: ['api', 'take', 'view', takeId],
+        queryFn: () => api.getTake(takeId),
+        enabled: !!takeId,
+        placeholderData: {},
+    })
+    const { data: apiTake, isSuccess: apiIsSuccess } = takeApiQuery
+    console.log(2222, apiIsSuccess, apiTake)
     
     // Remix the take.
     const remix = async () => {
@@ -376,11 +395,31 @@ function UI(props) {
                     {/* a button for sending a take NFT to an address */}
                     {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
                 </p>
+                
+                <h3>remixes</h3>
+                {
+                    // TODO - this is a hack to get the remixes to show up
+                    // I renamed the props:
+                    // - take.description -> take.text
+                    apiTake.remixes && apiTake.remixes.map(take => {
+                        let translated = {
+                            ...take,
+                            id: take.nft_id,
+                            owner: ethers.constants.AddressZero, // TODO
+                            description: take.text,
+                        }
+                        return <InlineTakeBox key={take.id} take={translated} />
+                    })
+                }
+                {/* {!isARemixedTake && 'none'}
+                {isARemixedTake && take.refs.map(ref => (
+                    <TakeBox key={ref.id} take={ref} />
+                ))} */}
 
                 <h3>remixed from</h3>
                 {!isARemixedTake && 'none'}
                 {isARemixedTake && take.refs.map(ref => (
-                    <TakeBox key={ref.id} take={ref}/>
+                    <TakeBox key={ref.id} take={ref} />
                 ))}
 
                 {/* <p className={styles.description}>
@@ -483,6 +522,29 @@ export const SwapButton = ({ takeId, refetchTakeShares }) => {
 
 
 
+export const InlineTakeBox = ({ take }) => {
+    const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
+
+    // Load the .eth name for the author.
+    const { data: authorEns } = useEnsName({
+        address: take.owner,
+        chainId: 1,
+    })
+
+    const remix = async () => { }
+
+    return <div className={styles.inlineTakeBox}>
+        <div>
+            <Link href={`/t/${slugify(take.description)}-${take.id}`}>
+                <div className={styles.mockTakeImgInline}>
+                    <span>{take.description}</span>
+                </div>
+                {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
+            </Link>
+        </div>
+    </div>
+}
+
 export const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
@@ -501,11 +563,9 @@ export const TakeBox = ({ take }) => {
 
         <div>
             <Link href={`/t/${slugify(take.description)}-${take.id}`}>
-                {take.takeURI && (
-                    <div className={styles.mockTakeImg}>
-                        <span>{take.description}</span>
-                    </div>
-                )}
+                <div className={styles.mockTakeImg}>
+                    <span>{take.description}</span>
+                </div>
                 {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
             </Link>
         </div>

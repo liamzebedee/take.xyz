@@ -322,6 +322,31 @@
   justify-content: center;
 }
 
+.inlineTakeBox {
+  transition: all 25ms;
+  display: inline-block;
+}
+
+.inlineTakeBox .mockTakeImg {
+  width: 15rem;
+  height: 4rem;
+}
+
+.mockTakeImgInline {
+  background: #ff2a8d;
+  color: white;
+  padding: .5rem;
+  margin: .5rem;
+  padding-left: 0.5rem;
+  font-family: sans-serif;
+  transition: all 25ms;
+}
+
+.mockTakeImgInline:hover {
+  cursor: pointer;
+  background: #E31C79;
+}
+
 .mockTakeImg {
   width: 15rem;
   height: 15rem;
@@ -331,7 +356,6 @@
   padding-left: 0.5rem;
   font-family: sans-serif;
   transition: all 25ms;
-
 }
 
 .mockTakeImg:hover {
