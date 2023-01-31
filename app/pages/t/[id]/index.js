@@ -207,7 +207,7 @@ function UI(props) {
     // or it is a remix of another take.
     const canRemix = take.takeURI 
         && (
-            (take.description.includes('[xx]') || take.description.includes('[yy]'))
+            (take.text.includes('[xx]') || take.text.includes('[yy]'))
             // || take.refs.length > 0
         )
 
@@ -243,15 +243,15 @@ function UI(props) {
                 {/* https://take-xyz.vercel.app/t/rachel-and-ross-were-on-a-break-28 */ }
                 
                 {/* <meta property="og:type" content="article" />
-                <meta property="og:title" content={`${take.description} - take #${take.id}`} />
+                <meta property="og:title" content={`${take.text} - take #${take.id}`} />
                 <meta property="og:description" content={`hot takes, on chain`} />
                 <meta property="og:image" content={`${TAKE_BASE_URL}/api/t/${take.id}/img.png`} /> */}
                 {/* <meta property="og:image" content={`${TAKE_BASE_URL}/0.png`} /> */}
-                {/* <meta property="og:url" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/t/${slugify(take.description)}-${take.id}`} /> */}
+                {/* <meta property="og:url" content={`${TAKE_OPENGRAPH_SERVICE_BASE_URL}/t/${slugify(take.text)}-${take.id}`} /> */}
 
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@takeisxx" />
-                <meta name="twitter:title" content={`${props.take.description} - take #${props.take.id}`} />
+                <meta name="twitter:title" content={`${props.take.text} - take #${props.take.id}`} />
                 <meta name="twitter:description" content={`hot takes, on chain. remix and make magic internet money`} />
                 <meta name="twitter:image" content={props.meta.twitterImage} />
             </Head>
@@ -259,15 +259,15 @@ function UI(props) {
             <Header/>
 
             <main className={styles.main}>
-                <p className={styles.description}>
+                <p className={styles.text}>
                     <strong>take #{take.id}</strong>
                 </p>
 
                 <div>
-                    {/* <Link href={`/t/${slugify(take.description)}-${take.id}`}> */}
+                    {/* <Link href={`/t/${slugify(take.text)}-${take.id}`}> */}
                         {take.takeURI && (
                             <div className={styles.mockTakeImg}>
-                                <span>{take.description}</span>
+                                <span>{take.text}</span>
                             </div>
                         )}
                         {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
@@ -298,7 +298,7 @@ function UI(props) {
                     <TakeBox key={ref.id} take={ref}/>
                 ))}
 
-                {/* <p className={styles.description}>
+                {/* <p className={styles.text}>
                     {take.text}
                 </p> */}
             </main>
@@ -338,10 +338,10 @@ export const TakeBox = ({ take }) => {
         </div>
 
         <div>
-            <Link href={`/t/${slugify(take.description)}-${take.id}`}>
+            <Link href={`/t/${slugify(take.text)}-${take.id}`}>
                 {take.takeURI && (
                     <div className={styles.mockTakeImg}>
-                        <span>{take.description}</span>
+                        <span>{take.text}</span>
                     </div>
                 )}
                 {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
@@ -357,7 +357,7 @@ export const TakeBox = ({ take }) => {
             <button className={styles.takeItBtn} onClick={remix}>remix</button>
         </p> */}
 
-        {/* <p className={styles.description}>
+        {/* <p className={styles.text}>
             {take.text}
         </p> */}
     </div>

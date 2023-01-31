@@ -249,10 +249,10 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div>
-            <Link href={`/t/${slugify(take.description)}-${take.id}`}>
+            <Link href={`/t/${slugify(take.text)}-${take.id}`}>
                 {take.takeURI && (
                     <div className={styles.mockTakeImg}>
-                        <span>{take.description}</span>
+                        <span>{take.text}</span>
                     </div>
                 )}
                 {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
@@ -273,7 +273,7 @@ const TakeBox = ({ take }) => {
             <button className={styles.takeItBtn} onClick={remix}>remix</button>
         </p> */}
 
-        {/* <p className={styles.description}>
+        {/* <p className={styles.text}>
                     {take.text}
                 </p> */}
     </div>
