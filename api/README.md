@@ -23,4 +23,10 @@ python manage.py migrate
 
 # Run.
 python manage.py runserver
+
+# Run the indexer.
+cd ../indexer
+npm i
+# index from take id 1
+FROM_TAKE=1 npm run start
 ```
