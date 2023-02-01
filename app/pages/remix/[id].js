@@ -161,7 +161,7 @@ function UI() {
 
                 {
                     takeVariables.length && takeVariables.map((token, i) => {
-                        return <p className={styles.description}>
+                        return <p key={i} className={styles.description}>
                             <input className={styles.takeInput} onChange={onVariableInputChange(token.variableName)} maxLength={TAKE_LENGTH} type="text" placeholder={token.variableName}></input>
                         </p>
                     })
