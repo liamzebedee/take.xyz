@@ -16,15 +16,13 @@ import { AppLayout } from '../../components/layout';
 import { useDebounce } from '../../components/util';
 import { ethers } from 'ethers';
 import { polygon } from 'wagmi/chains';
+import { parseTake, compileTake } from '@takeisxx/lib/src/parser';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { TakeV3Address, TAKE_LENGTH } from '@takeisxx/lib/src/config';
-
 
 /*
 UI
 */
-
-const compose = (...fns) => x => fns.reduceRight((y, f) => f(y), x);
 const slugify = require('slugify')
 
 function parseTakeURI(uri) {
@@ -53,32 +51,31 @@ function UI() {
     const account = useAccount()
     const { data: signer, isError, isLoading } = useSigner()
 
+    const [variablesState, setVariablesState] = useState({
+    })
+
     // Listen to the input changes.
-    const onInput1Change = (e) => {
-        setInput1(e.target.value)
-    }
-    const onInput2Change = (e) => {
-        setInput2(e.target.value)
-    }
-    const onInput3Change = (e) => {
-        setInput3(e.target.value)
+    const onVariableInputChange = (k) => {
+        return (e) => {
+            setVariablesState({
+                ...variablesState,
+                [k]: e.target.value
+            })
+        }
     }
 
     // Detect each type of take placeholder.
-    const hasXX = ogTake && ogTake.description.includes('[xx]')
-    const hasYY = ogTake && ogTake.description.includes('[yy]')
-    const hasZZ = ogTake && ogTake.description.includes('[zz]')
-
+    let takeVariables = []
+    if(ogTake) {
+        const tokens = parseTake(ogTake.description)
+        takeVariables = tokens.filter(token => token.type == 'var')
+    }
+    
     // Compile the take
     useEffect(() => {
         if(!ogTake) return
 
-        // Replace any [xx] and [yy] with the input values.
-        let xx = input1 || '[xx]'
-        let yy = input2 || '[yy]'
-        let zz = input3 || '[zz]'
-        const take = ogTake.description.replace(/\[xx\]/g, xx).replace(/\[yy\]/g, yy).replace(/\[zz\]/g, zz)
-        setTake(take)
+        setTake(compileTake(ogTake.description, variablesState))
     }, [input1, input2, ogTake])
 
     // Validate input, enable button.
@@ -87,27 +84,19 @@ function UI() {
     }, [account, take])
 
     // Render the templated take.
-    const renderTemplateTake = (take) => {
-        let spans = []
-        let isVar = false
-        for(let i = 0; i < take.length; i++) {
-            let c = take[i]
-            // I fucking love that GPT just wrote this for me.
-            if(c === '[') {
-                isVar = true
-                spans.push(<span className={styles.var} key={i}>{c}</span>)
-            } else if(c === ']') {
-                isVar = false
-                spans.push(<span className={styles.var} key={i}>{c}</span>)
-            } else if(isVar) {
-                spans.push(<span className={styles.var} key={i}>{c}</span>)
-            } else {
-                spans.push(<span key={i}>{c}</span>)
-            }
-        }
+    const renderCompiledTake = (take) => {
+        const tokens = parseTake(take)
+        console.log('tokens2', tokens)
+
         return <>
             <p className={styles.description}>
-                {spans}
+                {tokens.map((token, i) => {
+                    if (token.type == 'string') {
+                        return <span key={i}>{token.string}</span>
+                    } else if (token.type == 'var') {
+                        return <span key={i} className={styles.var}>{token.string}</span>
+                    }
+                })}
             </p>
         </>
     }
@@ -156,7 +145,7 @@ function UI() {
     const ui = (
         <div className={styles.container}>
             <Head>
-                <title>take</title>
+                <title>remix take</title>
                 <meta name="description" content="hot takes" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -168,34 +157,15 @@ function UI() {
                     <strong>remix take{' '}</strong>
                 </p>
 
-                {/* <p className={styles.description}>
-                    {ogTake.description}
-                </p> */}
-
-                {renderTemplateTake(take)}
+                {renderCompiledTake(take)}
 
                 {
-                    hasXX && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput1Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasXX}></input>
-                    </p>)
+                    takeVariables.length && takeVariables.map((token, i) => {
+                        return <p className={styles.description}>
+                            <input className={styles.takeInput} onChange={onVariableInputChange(token.variableName)} maxLength={TAKE_LENGTH} type="text" placeholder={token.variableName}></input>
+                        </p>
+                    })
                 }
-
-                {
-                    hasYY && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput2Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasYY}></input>
-                    </p>)
-                }
-
-                {
-                    hasZZ && (<p className={styles.description}>
-                        <input className={styles.takeInput} onChange={onInput3Change} maxLength={TAKE_LENGTH} type="text" disabled={!hasZZ}></input>
-                    </p>)
-                }
-
-
-                {/* <p className={styles.description}>
-                    {take}
-                </p> */}
 
                 <div className={styles.grid}>
                     <button disabled={isWriteLoading || isTxLoading || !canTakeIt} className={styles.takeItBtn} onClick={() => write()}>

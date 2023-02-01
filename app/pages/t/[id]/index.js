@@ -26,6 +26,7 @@ import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
+import { canRemixTake } from '@takeisxx/lib/src/parser';
 
 /*
 UI
@@ -196,20 +197,10 @@ function UI(props) {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
-    const likeTake = async () => {
-        // request signature over call to like abi
-        
-    }
-
-
-
     // Remixing is enabled if the take contains [xx] or [yy] template vars,
     // or it is a remix of another take.
     const canRemix = take.takeURI 
-        && (
-            (take.text.includes('[xx]') || take.text.includes('[yy]'))
-            // || take.refs.length > 0
-        )
+        && canRemixTake(take.text)
 
     // Load the .eth name for the author.
     // TODO.
@@ -285,9 +276,7 @@ function UI(props) {
                 </p>
 
                 <p>
-                    {/* <button disabled={false} className={styles.takeItBtn} onClick={remix}>copy (wip)</button> */}
                     <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
-                    {/* <button disabled={true} className={styles.takeItBtn} onClick={likeTake}>like</button> */}
                     {/* a button for sending a take NFT to an address */}
                     <SendButton takeId={take.id} takeOwner={take.owner} />
                 </p>
