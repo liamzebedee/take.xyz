@@ -122,6 +122,7 @@ export default function Header() {
     const router = useRouter()
     const isHome = router.pathname == "/"
     const isFeed = router.pathname == "/feed"
+    const isHotTemplates = router.pathname == "/hot-templates"
     const isLiterallyAnythingElse = !isHome && !isFeed
 
     return <header className={styles.header}>
@@ -132,6 +133,9 @@ export default function Header() {
                 </li>
                 <li className={classNames({ [menuLiActive]: isFeed })}>
                     <Link href="/feed">feed</Link>
+                </li>
+                <li className={classNames({ [menuLiActive]: isHotTemplates })}>
+                    <Link href="/hot-templates">hot templates</Link>
                 </li>
                 <li>
                     <Link href="https://t.me/+l_mrM707TIg1ZTA9">tg chat</Link>
