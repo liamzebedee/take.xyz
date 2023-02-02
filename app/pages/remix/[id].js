@@ -157,8 +157,8 @@ function UI() {
                     <strong>remix take{' '}</strong>
                 </p>
 
-                {/* {renderCompiledTake(take)} */}
-                <RenderedTakeText take={take}/>
+                {renderCompiledTake(take)}
+                {/* <RenderedTakeText take={take}/> */}
 
                 {
                     takeVariables.length && takeVariables.map((token, i) => {
