@@ -157,7 +157,8 @@ function UI() {
                     <strong>remix take{' '}</strong>
                 </p>
 
-                {renderCompiledTake(take)}
+                {/* {renderCompiledTake(take)} */}
+                <RenderedTakeText take={take}/>
 
                 {
                     takeVariables.length && takeVariables.map((token, i) => {
@@ -188,6 +189,18 @@ function UI() {
 
 
     return ui
+}
+
+const RenderedTakeText = ({ take }) => {
+    // { renderCompiledTake(take) }
+    // const [takeRefs, setTakeRefs] = useState(null)
+    
+    async function render() {
+        const tokens = parseTake(take.text)
+
+    }
+
+    return renderCompiledTake(take)
 }
 
 

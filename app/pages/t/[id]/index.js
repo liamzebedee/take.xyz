@@ -26,7 +26,7 @@ import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
-import { canRemixTake } from '@takeisxx/lib/src/parser';
+import { canRemixTake, parseTake } from '@takeisxx/lib/src/parser';
 
 /*
 UI
@@ -223,6 +223,35 @@ function UI(props) {
     //     TAKE_BASE_URL = `https://metal-tables-kick-101-188-157-210.loca.lt`
     // }
 
+    const renderTake = (take) => {
+        console.log(take)
+        // Interpolate subtakes.
+        const tokens = parseTake(take.text)
+        return tokens.map(token => {
+            const { start, end } = token
+
+            const context = {
+                string: take.text.substring(start, end + 1),
+                subtake: null,
+            }
+
+            // Subtake.
+            if (token.type == 'takelink') {
+                const subtake = take.subtakes.find(subtake => subtake.takeId == token.takeId)
+                if (subtake) {
+                    context.subtake = subtake
+                }
+            }
+
+            return <span>
+                {token.type == 'takelink' && <Link href={`/t/-${context.subtake.takeId}`}>{context.subtake.take.text}</Link>}
+                {token.type == 'string' && context.string}
+                {token.type == 'var' && context.string}
+            </span>
+        })
+        // return <span>{take.text}</span>
+    }
+
     const ui = (
         <div className={styles.container}>
             <Head>
@@ -249,43 +278,51 @@ function UI(props) {
 
             <Header/>
 
-            <main className={styles.main}>
-                <p className={styles.text}>
-                    <strong>take #{take.id}</strong>
-                </p>
+            <main className={styles.viewTake}>
 
-                <div>
-                    {/* <Link href={`/t/${slugify(take.text)}-${take.id}`}> */}
-                        {take.takeURI && (
-                            <div className={styles.mockTakeImg}>
-                                <span>{take.text}</span>
-                            </div>
+                <div className={styles.takeLead}>
+                    <p className={styles.text}>
+                        <strong>take #{take.id}</strong>
+                    </p>
+
+                    <p className={styles.takeLeadText}>{take.takeURI && renderTake(take)}</p>
+
+
+                    <footer>
+                        {/* owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a> */}
+                        {take.author && (
+                            <span>minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.author)}</strong></a><br /></span>
                         )}
-                        {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
-                    {/* </Link> */}
+                        {take.owner && (
+                            <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
+                        )}
+                    </footer>
                 </div>
 
-                <p>
-                    {/* owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a> */}
-                    { take.author && (
-                        <span>minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.author)}</strong></a><br /></span>
-                    )}
-                    {take.owner && (
-                        <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
-                    )}
-                </p>
+                {/* <div> */}
+                    {/* <Link href={`/t/${slugify(take.text)}-${take.id}`}> */}
+                        {/* {take.takeURI && (
+                            <div className={styles.mockTakeImg}>
+                                
+                            </div>
+                        )} */}
+                        {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
+                    {/* </Link> */}
+                {/* </div> */}
 
                 <p>
-                    <button disabled={!canRemix} className={styles.takeItBtn} onClick={remix}>remix</button>
+                    <button disabled={!canRemix} className={styles.takeItBtn} style={{ padding: '0.5rem', fontSize: "1.2rem" }} onClick={remix}>remix</button>
                     {/* a button for sending a take NFT to an address */}
-                    <SendButton takeId={take.id} takeOwner={take.owner} />
+                    {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
                 </p>
 
-                <h3>remixed from</h3>
-                {!isARemixedTake && 'none'}
-                {isARemixedTake && take.refs.map(ref => (
-                    <TakeBox key={ref.id} take={ref}/>
-                ))}
+                <div className={styles.remixedFrom}>
+                    <h3>remixed from</h3>
+                    {!isARemixedTake && 'none'}
+                    {isARemixedTake && take.refs.map(ref => (
+                        <TakeBox key={ref.id} take={ref}/>
+                    ))}
+                </div>
 
                 {/* <p className={styles.text}>
                     {take.text}
@@ -350,6 +387,18 @@ export const TakeBox = ({ take }) => {
             {take.text}
         </p> */}
     </div>
+}
+
+const RenderedTakeText = ({ take }) => {
+    // { renderCompiledTake(take) }
+    // const [takeRefs, setTakeRefs] = useState(null)
+
+    async function render() {
+        const tokens = parseTake(take.text)
+
+    }
+
+    return renderCompiledTake(take)
 }
 
 
