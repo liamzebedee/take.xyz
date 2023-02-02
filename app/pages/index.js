@@ -96,6 +96,7 @@ function UI() {
         <p className={styles.description}>
           <strong>mint your take{' '}</strong>
         </p>
+          <br /><small><a href="https://gist.github.com/liamzebedee/feee38ba38141d8a7c0f47dfab603623">(syntax)</a></small>
 
         <p className={styles.description}>
           <input className={styles.takeInput} maxLength={TAKE_LENGTH} type="text"></input>
