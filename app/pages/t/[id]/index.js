@@ -227,7 +227,7 @@ function UI(props) {
         console.log(take)
         // Interpolate subtakes.
         const tokens = parseTake(take.text)
-        return tokens.map(token => {
+        return tokens.map((token, i) => {
             const { start, end } = token
 
             const context = {
@@ -243,7 +243,7 @@ function UI(props) {
                 }
             }
 
-            return <span>
+            return <span key={i}>
                 {token.type == 'takelink' && <Link href={`/t/-${context.subtake.takeId}`}>{context.subtake.take.text}</Link>}
                 {token.type == 'string' && context.string}
                 {token.type == 'var' && context.string}
