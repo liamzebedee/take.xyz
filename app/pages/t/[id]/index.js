@@ -117,16 +117,16 @@ export async function getServerSideProps(context) {
     }
 
     // Fetch in parallel to speed things up.
-    const [ twitterImage, take ] = await Promise.all([
-        fetchTwitterImage(),
-        fetchTakeData()
-    ])
+    // const [ twitterImage, take ] = await Promise.all([
+    //     fetchTwitterImage(),
+    //     fetchTakeData()
+    // ])
 
     return {
         props: {
-            take,
+            take: {},
             meta: {
-                twitterImage
+                // twitterImage
             }
         },
     }
