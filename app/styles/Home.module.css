@@ -24,9 +24,9 @@
   justify-content: center;
   align-items: center;
   transition: all 50ms;
-  border-left: 1px solid #eaeaea;
-  border-right: 1px solid #eaeaea;
+
 }
+
 
 .viewTake {
   padding: -1rem 0;
