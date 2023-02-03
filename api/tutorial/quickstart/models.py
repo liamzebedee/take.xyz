@@ -4,7 +4,7 @@ class Take(models.Model):
     nft_id = models.IntegerField(unique=True)
     text = models.TextField()
     creator = models.ForeignKey('User', on_delete=models.CASCADE, related_name='created_takes', null=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    # created_at = models.DateTimeField(auto_now_add=True)
 
     # A Take can have many remixes, and a remix can have many takes as sources.
     remixes = models.ManyToManyField('self', through='Remix', through_fields=('source', 'mix'), blank=True)
