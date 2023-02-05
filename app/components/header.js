@@ -134,6 +134,25 @@ export default function Header() {
                 <li className={classNames({ [menuLiActive]: isFeed })}>
                     <Link href="/feed">feed</Link>
                 </li>
+                <li>
+                    <Link href="https://t.me/+l_mrM707TIg1ZTA9">tg chat</Link>
+                </li>
+                <li className={classNames({ [menuLiActive]: isLiterallyAnythingElse, [menuLiLiterallyAnythingElse]: true })}>
+                    <span>✴✴✴</span>
+                </li>
+            </ul>
+        </div>
+{/* 
+        <div className={styles.mobileMenu}>
+            <Image src="/hamburger.png" width={22} height={22} />
+
+            <ul>
+                <li className={classNames({ [menuLiActive]: isHome })}>
+                    <Link href="/">home</Link>
+                </li>
+                <li className={classNames({ [menuLiActive]: isFeed })}>
+                    <Link href="/feed">feed</Link>
+                </li>
                 <li className={classNames({ [menuLiActive]: isHotTemplates })}>
                     <Link href="/hot-templates">hot templates</Link>
                 </li>
@@ -145,7 +164,7 @@ export default function Header() {
                 </li>
             </ul>
         </div>
-        
+         */}
         <div className={styles.mainStatus}>
             <HYPEStatus />
         </div>

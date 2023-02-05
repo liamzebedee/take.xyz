@@ -11,6 +11,7 @@ import { ethers } from 'ethers';
 import { polygon } from 'wagmi/chains';
 import { TakeV3Address, TAKE_LENGTH } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
+import Link from 'next/link';
 
 /*
 UI
@@ -96,7 +97,11 @@ function UI() {
         <p className={styles.description}>
           <strong>mint your take{' '}</strong>
         </p>
-          <br /><small><a href="https://gist.github.com/liamzebedee/feee38ba38141d8a7c0f47dfab603623">(syntax)</a></small>
+          <br />
+          <small>
+          <span><Link href="https://gist.github.com/liamzebedee/feee38ba38141d8a7c0f47dfab603623">syntax</Link> &middot; </span>
+          <span><Link href="/hot-templates">hot templates</Link></span>
+          </small>
 
         <p className={styles.description}>
           <input className={styles.takeInput} maxLength={TAKE_LENGTH} type="text"></input>
