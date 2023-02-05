@@ -226,27 +226,20 @@ function UI(props) {
     const renderTake = (take) => {
         console.log(take)
         // Interpolate subtakes.
-        const tokens = parseTake(take.text)
+        const { tokens } = take
         return tokens.map((token, i) => {
-            const { start, end } = token
-
-            const context = {
-                string: take.text.substring(start, end + 1),
-                subtake: null,
-            }
+            let subtake
 
             // Subtake.
             if (token.type == 'takelink') {
-                const subtake = take.subtakes.find(subtake => subtake.takeId == token.takeId)
-                if (subtake) {
-                    context.subtake = subtake
-                }
+                subtake = take.subtakes.find(subtake => subtake.id == token.takeId)
             }
 
             return <span key={i}>
-                {token.type == 'takelink' && <Link href={`/t/-${context.subtake.takeId}`}>{context.subtake.take.text}</Link>}
-                {token.type == 'string' && context.string}
-                {token.type == 'var' && context.string}
+                {token.type == 'takelink' && subtake.take.text.length > 0 && <Link href={`/t/-${token.takeId}`}>{subtake.take.text}</Link>}
+                {token.type == 'takelink' && subtake.take.text.length === 0 && token.string}
+                {token.type == 'string' && token.string}
+                {token.type == 'var' && token.string}
             </span>
         })
         // return <span>{take.text}</span>
@@ -345,6 +338,10 @@ function UI(props) {
     return ui
 }
 
+// Render a token parsed from a take string.
+const TakeToken = () => {
+
+}
 
 
 export const TakeBox = ({ take }) => {
