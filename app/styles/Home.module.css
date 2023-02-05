@@ -24,7 +24,11 @@
   justify-content: center;
   align-items: center;
   transition: all 50ms;
+}
 
+.helpGuide a {
+  color: #0070f3;
+  text-decoration: none;
 }
 
 

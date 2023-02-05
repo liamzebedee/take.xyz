@@ -372,7 +372,7 @@ export const TakeBox = ({ take }) => {
         </div>
 
         <div className={styles.takeMeta}>
-            collected by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a>
+            minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a>
         </div>
 
         {/* <p>

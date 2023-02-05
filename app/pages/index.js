@@ -99,7 +99,7 @@ function UI() {
         </p>
           <br />
           <small>
-          <span><Link href="https://gist.github.com/liamzebedee/feee38ba38141d8a7c0f47dfab603623">syntax</Link> &middot; </span>
+          <span><Link href="/help/syntax">syntax</Link> &middot; </span>
           <span><Link href="/hot-templates">hot templates</Link></span>
           </small>
 

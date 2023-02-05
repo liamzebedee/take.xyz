@@ -28,26 +28,6 @@ import {
     useInfiniteQuery,
 } from '@tanstack/react-query'
 
-
-const { chains, provider } = configureChains(
-    [polygon],
-    [
-        publicProvider()
-    ]
-);
-
-const { connectors } = getDefaultWallets({
-    appName: 'take',
-    chains
-});
-
-const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-})
-
-
 /*
 UI
 */
@@ -198,7 +178,7 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div className={styles.takeMeta}>
-            <div>collected by <a href={openseaUrl}><strong>{take.owner && (authorEns || truncateEthAddress(take.owner))}</strong></a></div>
+            <div>minted by <a href={openseaUrl}><strong>{take.owner && (authorEns || truncateEthAddress(take.owner))}</strong></a></div>
             <div>
                 {take.refIds.length > 0 && (
                     <span>remixes #{take.refIds[0]}</span>
