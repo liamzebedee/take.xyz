@@ -29,6 +29,7 @@ export const parseTakeURI = (uri: string) => {
 export async function fetchTake({ takeContract: Take, takeId }: any) {
     const takeURI = await Take.tokenURI(takeId)
     const owner = await Take.ownerOf(takeId)
+    const text = await Take.getTakeText(takeId)
     const author = await Take.getTakeAuthor(takeId)
     const tokenURIJsonBlob = parseTakeURI(takeURI)
     const refsIdsBN = await Take.getTakeRefs(takeId)
@@ -36,11 +37,12 @@ export async function fetchTake({ takeContract: Take, takeId }: any) {
 
     return {
         id: takeId,
+        ...tokenURIJsonBlob,
         owner,
+        text,
         author,
         takeURI,
         refIds,
-        ...tokenURIJsonBlob,
     }
 }
 

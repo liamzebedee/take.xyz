@@ -419,3 +419,51 @@
     width: 34rem;
   }
 }
+
+
+
+
+.btn {
+  font-size: 1.5rem;
+  padding: 1rem;
+  /* color: white; */
+  
+
+  transition: filter 10ms;
+  transform: translate(0, 0);
+}
+
+.btnStyleOutline {
+  background: white;
+  color: #ff2a8d;
+  border: 4px solid #ff2a8d;
+}
+
+.btnStyleOutline:hover {
+  cursor: pointer;
+  color: white;
+  background: #ff2a8d;
+}
+
+.btnStylePrimary {
+  background: #ff2a8d;
+  color: white;
+  border: 4px solid transparent;
+}
+
+.btnStylePrimary:hover {
+  cursor: pointer;
+  /* background: white; */
+  /* color: black; */
+  background: #E31C79;
+  /* background-image: linear-gradient(rgb(0 0 0/30%) 0 0); */
+  /* border: 4px solid #FF91AF; */
+}
+
+.btnStylePrimary:disabled {
+  background: #E31C79;
+  opacity: 0.5;
+  color: white;
+  border: 4px solid transparent;
+  cursor: not-allowed;
+}
