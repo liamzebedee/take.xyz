@@ -1,5 +1,6 @@
 import { TakeV3Address, TakeV3DeploymentBlock } from "@takeisxx/lib"
 import { TakeABI } from "@takeisxx/lib/build/abis"
+import { addContextToTokens, parseTake } from "@takeisxx/lib/build/parser"
 import { ethers } from "ethers"
 import _ from "lodash"
 import slugify from "slugify"
@@ -97,6 +98,10 @@ async function processNewTake(ctx: Context, args: any) {
         return
     }
 
+    // Parse the take and extract objects.
+    const tokens = addContextToTokens(take.text, parseTake(take.text))
+    const placeholders = tokens.filter((t: any) => t.type === 'var').map((token: any) => token.variableName)    
+
     // Post the take to the API.
     const res = await fetch(`${apiEndpoint}/v0/indexer/on_new_take`, {
         method: 'POST',
@@ -109,6 +114,7 @@ async function processNewTake(ctx: Context, args: any) {
             text: take.description,
             creator_address: take.author,
             sources: take.refIds,
+            placeholders,
         }),
     })
     // check status

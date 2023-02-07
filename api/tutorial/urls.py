@@ -22,6 +22,8 @@ router = routers.DefaultRouter()
 router.register(r'takes', views.TakeViewSet)
 router.register(r'remixes', views.RemixViewSet)
 router.register(r'users', views.UserViewSet)
+router.register(r'phrases', views.PhraseViewSet)
+router.register(r'likes', views.LikeViewSet)
 # router.register(r'groups', views.GroupViewSet)
 
 # Wire up our API using automatic URL routing.

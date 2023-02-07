@@ -18,7 +18,7 @@ class Take(models.Model):
     # A take can quote multiple other takes.
     # quotes = models.ManyToOneRel('quotes', to='Take', related_name='quoted_takes', blank=True)
     # A take can have multiple likes.
-    # likes = models.ManyToOneRel('likes', to='User', related_name='liked_takes', blank=True)
+    likes = models.ManyToOneRel('likes', to='User', related_name='liked_takes', field_name='take')
     
 
 # 
@@ -43,7 +43,8 @@ class Phrase(models.Model):
     name = models.CharField(max_length=300, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # template_takes = models.ForeignKey(Take, on_delete=models.CASCADE, related_name='take_placeholders')
+    templates = models.ManyToManyField('Take', through='TemplatePhrase', through_fields=('phrase', 'template_take'), blank=True)
+    # templates = models.ForeignKey(TemplatePhrase, on_delete=models.CASCADE, related_name='template_phrase_source')
     # substitution_takes = models.ForeignKey(Take, on_delete=models.CASCADE, related_name='take_substitutions')
 
 class Like(models.Model):

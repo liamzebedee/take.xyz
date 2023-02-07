@@ -22,7 +22,7 @@ import { AppLayout } from '../../../components/layout';
 import { useSigner } from 'wagmi';
 import { polygon } from 'wagmi/chains';
 import { ethers } from 'ethers';
-import { TakeV3Address, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
+import { TakeV3Address, TAKE_API_BASE_URL, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE_BASE_URL } from '@takeisxx/lib/src/config';
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
@@ -156,6 +156,8 @@ function UI(props) {
     // Load the take.
     const router = useRouter()
 
+    const [takeId, setTakeId] = useState(null)
+
     useEffect(() => {
         const loadTake = async (takeId) => {
             // Handle non-existent take.
@@ -187,6 +189,7 @@ function UI(props) {
         if (!router.query.id) return
 
         let takeId = router.query.id.split('-').pop()
+        setTakeId(takeId)
         if (takeId != take.id) loadTake(takeId)
 
     }, [router])
@@ -215,6 +218,21 @@ function UI(props) {
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     const isARemixedTake = take.refs && take.refs.length > 0
+
+    async function apiFetchTake() {
+        const url = `${TAKE_API_BASE_URL}/takes.json?nft_id=${Number(takeId)}`
+        const res = await (await fetch(url)).json()
+        if(!res.count) throw new Error("not found")
+        const data = res.results[0]
+        console.log('api', data)
+        return data
+    }
+
+    const { data: takeApiData, isSuccess: takeApiSuccess } = useQuery({
+        enabled: takeId != null,
+        queryKey: ['take-api', 'take', takeId],
+        queryFn: () => apiFetchTake()
+    })
 
     //x let TAKE_BASE_URL = TAKE_BASE_URL
     // if(process.env.NODE_ENV == 'development') {
@@ -317,6 +335,17 @@ function UI(props) {
                     ))}
                 </div>
 
+                <div className={styles.remixedFrom}>
+                    <h3>{takeApiSuccess && ""+takeApiData.remixes.length} remixes</h3>
+                    {takeApiSuccess && takeApiData.remixes.map(remix => {
+                        return <div style={{ paddingBottom: "1rem" }}>
+                            <Link href={`/t/-${remix.nft_id}`}>{remix.text}</Link>
+                        </div>
+                    }) }
+                </div>
+
+                
+
                 {/* <p className={styles.text}>
                     {take.text}
                 </p> */}
@@ -369,10 +398,6 @@ export const TakeBox = ({ take }) => {
                 )}
                 {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
             </Link>
-        </div>
-
-        <div className={styles.takeMeta}>
-            minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.owner)}</strong></a>
         </div>
 
         {/* <p>

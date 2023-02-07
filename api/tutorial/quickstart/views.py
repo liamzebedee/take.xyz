@@ -1,9 +1,9 @@
-from tutorial.quickstart.models import Take, Remix, User
+from tutorial.quickstart.models import Take, Remix, User, Phrase, TemplatePhrase, Like
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from tutorial.quickstart.serializers import TakeSerializer, RemixSerializer, UserSerializer
+from tutorial.quickstart.serializers import TakeSerializer, RemixSerializer, UserSerializer, PhraseSerializer, LikeSerializer
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
 from django.http.response import JsonResponse
@@ -35,10 +35,25 @@ class UserViewSet(viewsets.ModelViewSet):
     # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     # permission_classes = [permissions.IsAuthenticated]
 
+class PhraseViewSet(viewsets.ModelViewSet):
+    """
+    """
+    queryset = Phrase.objects.all()
+    serializer_class = PhraseSerializer
+    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    # permission_classes = [permissions.IsAuthenticated]
+
+class LikeViewSet(viewsets.ModelViewSet):
+    """
+    """
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    # permission_classes = [permissions.IsAuthenticated]
 
 @api_view(['POST'])
 def on_new_take(request):
-    # print(request.data)
+    print(request.data)
     
     # Parse.
     # data = JSONParser().parse(request.data)
@@ -59,6 +74,17 @@ def on_new_take(request):
     take.text = data['text']
     take.creator = user
     take.save()
+
+    # Parse the placeholders.
+    placeholders = []
+    for placeholder in data['placeholders']:
+        # Lookup the Phrase.
+        phrase, created = Phrase.objects.get_or_create(name=placeholder)
+        phrase.save()
+
+        # Now create the placeholder relation.
+        template_phrase, created = TemplatePhrase.objects.get_or_create(phrase=phrase, template_take=take)
+        template_phrase.save()
 
     # Create a new Remix for each source.
     for source_id in data['sources']:
