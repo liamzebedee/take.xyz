@@ -323,6 +323,7 @@ function UI(props) {
 
                 <p>
                     <button disabled={!canRemix} className={styles.takeItBtn} style={{ padding: '0.5rem', fontSize: "1.2rem" }} onClick={remix}>remix</button>
+                    <button disabled={!canRemix} className={styles.takeItBtn} style={{ padding: '0.5rem', fontSize: "1.2rem" }} onClick={remix}>collect</button>
                     {/* a button for sending a take NFT to an address */}
                     {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
                 </p>
