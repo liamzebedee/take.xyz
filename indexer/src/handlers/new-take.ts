@@ -76,7 +76,6 @@ export async function listenToNewTakes(ctx: Context) {
     const takes = await downloadAllTakes(lastProcessedTake)
 
     // await processNewTake(ctx, { Take, takeId: takes[takes.length - 1].id, takes: takes[takes.length - 1] })
-
     for(let take of takes) {
         console.log(`processing take: ${take.id}`)
         await processNewTake(ctx, { Take, takeId: take.id, take })
@@ -119,7 +118,7 @@ async function processNewTake(ctx: Context, args: any) {
         body: JSON.stringify({
             apiKey: ctx.apiKey,
             nft_id: takeId,
-            text: take.description,
+            text: take.text,
             creator_address: take.author,
             created_at: take.createdAt,
             sources: take.refIds,
