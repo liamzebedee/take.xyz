@@ -36,10 +36,9 @@ export async function listenToNewTakes(ctx: Context) {
     console.log(`Last take: ${lastTakeId}`)
 
     // Process missed take ID's.
-    const lastProcessedTake = process.env.FROM_TAKE || totalTakes
-    const downloadAllTakes = async () => {
+    const downloadAllTakes = async (fromId: number) => {
         let takeIds = []
-        for (let i = lastProcessedTake; i < totalTakes; i++) {
+        for (let i = fromId; i < totalTakes; i++) {
             takeIds.push(i)
         }
 
@@ -58,17 +57,26 @@ export async function listenToNewTakes(ctx: Context) {
             takes = takes.concat(data)
         }
 
-        // write takes to file
+        // update the takes file.
+        const existingCache = require('../../takes.json')
+        takes = takes.concat(existingCache)
+
         fs.writeFile("takes.json", JSON.stringify(takes), function (err: any) {
             if (err) {
                 return console.log(err);
             }
             console.log("The file was saved!");
         })
+
+        return takes
     }
 
-    // const takes = await downloadAllTakes()
-    const takes = require('../../takes.json')
+    console.log('Downloading new takes to cache in takes.json')
+    const lastProcessedTake = process.env.FROM_TAKE || totalTakes
+    const takes = await downloadAllTakes(lastProcessedTake)
+
+    // await processNewTake(ctx, { Take, takeId: takes[takes.length - 1].id, takes: takes[takes.length - 1] })
+
     for(let take of takes) {
         console.log(`processing take: ${take.id}`)
         await processNewTake(ctx, { Take, takeId: take.id, take })
@@ -113,6 +121,7 @@ async function processNewTake(ctx: Context, args: any) {
             nft_id: takeId,
             text: take.description,
             creator_address: take.author,
+            created_at: take.createdAt,
             sources: take.refIds,
             placeholders,
         }),

@@ -7,7 +7,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ['address', 'created_takes']
     
-    # created_takes = TakeSerializer(many=True, read_only=True)
+    # created_takes = TakeSerializerDepth1(many=True, read_only=True)
 
 class UserSerializerLite(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -22,14 +22,14 @@ class PhraseBasicSerializer(serializers.HyperlinkedModelSerializer):
 class TakeSerializerDepth1(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Take
-        fields = ['nft_id', 'text', 'creator']
+        fields = ['nft_id', 'text', 'creator', 'created_at']
     # creator = UserSerializerLite(read_only=True)
 
 
 class TakeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Take
-        fields = ['nft_id', 'text', 'creator', 'remixes', 'sources', 'placeholders', 'substitutions', 'likes']
+        fields = ['nft_id', 'text', 'creator', 'remixes', 'sources', 'placeholders', 'substitutions', 'likes', 'created_at']
     
     creator = UserSerializerLite(read_only=True)
     remixes = TakeSerializerDepth1(many=True, read_only=True)

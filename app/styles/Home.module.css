@@ -87,7 +87,7 @@
 }
 
 .accountUserProfile img:hover {
-  background: #ff2a8d;
+  opacity: 0.4;
   cursor: pointer;
 }
 
@@ -477,4 +477,28 @@
   color: white;
   border: 4px solid transparent;
   cursor: not-allowed;
+}
+
+.inlineTake {
+    background: #ff2a8d;
+    color: white;
+    padding: .5rem;
+}
+
+.inlineTake:hover {
+  cursor: pointer;
+  background: #E31C79;
+}
+
+.remixedFrom ul {
+  /* no style */
+  list-style: none;
+  padding: 0;
+}
+
+.remixedFrom ul > li {
+  /* no style */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }

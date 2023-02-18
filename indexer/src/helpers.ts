@@ -27,6 +27,11 @@ export const parseTakeURI = (uri: string) => {
 }
 
 export async function fetchTake({ takeContract: Take, takeId }: any) {
+    const event = await Take.queryFilter(Take.filters.Transfer(ethers.constants.AddressZero, null, takeId), 0, 'latest')
+    const block = await Take.provider.getBlock(event[0].blockNumber)
+    const createdAt = block.timestamp
+    const txHash = event[0].transactionHash
+
     const takeURI = await Take.tokenURI(takeId)
     const owner = await Take.ownerOf(takeId)
     const text = await Take.getTakeText(takeId)
@@ -43,6 +48,8 @@ export async function fetchTake({ takeContract: Take, takeId }: any) {
         author,
         takeURI,
         refIds,
+        createdAt,
+        txHash
     }
 }
 

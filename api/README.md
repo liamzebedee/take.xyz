@@ -9,7 +9,7 @@ Uses Django + Django REST Framework.
 python3 -m venv env
 source env/bin/activate
 
-pip install
+pipenv install
 ```
 
 ## Run.

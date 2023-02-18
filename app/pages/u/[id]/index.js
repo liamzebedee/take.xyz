@@ -15,7 +15,7 @@ import { mainnet, polygon } from 'wagmi/chains';
 import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 import { BigNumber } from 'ethers';
-import { useEnsName } from 'wagmi';
+import { useEnsName } from '../../../hooks';
 import truncateEthAddress from 'truncate-eth-address';
 import ReactMarkdown from 'react-markdown'
 
@@ -49,6 +49,7 @@ import { parseTakeURI, fetchTakesBatch } from '@takeisxx/lib/src/chain'
 import InfiniteScroll from 'react-infinite-scroller';
 import { useRouter } from 'next/router';
 import { Btn } from '../../../components/button';
+import { InlineTakeList } from '../../../components/takes';
 function UI() {
     const account = useAccount()
     const provider = getProvider()
@@ -68,11 +69,14 @@ function UI() {
     console.log(id)
 
     const apiFetchUserTakes = async () => {
-        const url = `${TAKE_API_BASE_URL}/users.json?address=${id}`
+        const url = `${TAKE_API_BASE_URL}/users/by-address/${id}/recent-takes/?format=json`
         console.log(url)
         const res = await (await fetch(url)).json()
-        if (!res.count) throw new Error("not found")
-        const data = res.results[0]
+        if (!res.count) {
+            throw new Error("not found")
+        }
+        
+        const data = res
         console.log('api', data)
         return data
 
@@ -95,8 +99,6 @@ function UI() {
         // if (takes2.nextCursor == -1) takes2.nextCursor = 0
         // takes2.hasNextPage = takes2.nextCursor > 0
         // console.log('next page', pageParam, takes2.nextCursor)
-
-        return takes2
     }
 
 
@@ -108,6 +110,10 @@ function UI() {
         queryFn: () => apiFetchUserTakes()
     })
 
+    const { data: ens } = useEnsName({
+        address: id,
+        chainId: 1,
+    })
 
     const ui = (
         <div className={styles.containerFeed}>
@@ -120,7 +126,7 @@ function UI() {
             <Header />
 
             <main className={styles.helpGuide}>
-                <h2>{id}</h2>
+                <h2>{ens || id}</h2>
                 <Btn style="outline" onClick={() => follow()}>
                     {'follow'}
                 </Btn>
@@ -131,16 +137,14 @@ function UI() {
             </main>
 
             <div>
-                <h2>Recent takes</h2>
+                <h2>Takes ({takeApiSuccess && takeApiData.count})</h2>
                 <div className={styles.grid}>
-                    {takeApiSuccess && takeApiData.takes.map(take => (
-                        <Link href={`/t/${take.id}`} key={take.id}>
-                            <a className={styles.card}>
-                                <h3>{take.title}</h3>
-                                <p>{take.description}</p>
-                            </a>
+                    {takeApiSuccess && <InlineTakeList takes={takeApiData.results}/>}
+                    {/* {takeApiSuccess && takeApiData.results.map(take => (
+                        <Link href={`/t/${take.nft_id}`} key={take.nft_id} className={styles.card}>
+                            <p>{take.text}</p>
                         </Link>
-                    ))}
+                    ))} */}
                 </div>
             </div>
         </div>

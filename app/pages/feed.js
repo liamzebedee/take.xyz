@@ -15,7 +15,7 @@ import { mainnet, polygon } from 'wagmi/chains';
 import { getContract, getProvider } from '@wagmi/core';
 import { publicProvider } from 'wagmi/providers/public';
 import { BigNumber } from 'ethers';
-import { useEnsName } from 'wagmi';
+import { useEnsName } from '../hooks';
 import truncateEthAddress from 'truncate-eth-address';
 
 
@@ -122,69 +122,6 @@ function UI() {
         getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
     })
 
-
-    // useEffect(() => {
-    //     const handleScroll = () => {
-            
-    //     }
-
-    //     const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight + 20;
-    //     if (bottom && !isFetchingNextPage) {
-    //         console.log('bottom')
-    //         fetchNextPage()
-    //     }
-
-    //     handleScroll()
-    // }, [isFetchingNextPage, fetchNextPage])
-
-    // return status === 'loading' ? (
-    //     <p>Loading...</p>
-    // ) : status === 'error' ? (
-    //     <p>Error: {error.message}</p>
-    // ) : (
-    //     <>
-    //         <InfiniteScroll
-    //             pageStart={0}
-    //             loadMore={fetchNextPage}
-    //             hasMore={true || false}
-    //             loader={<div className="loader" key={0}>Loading ...</div>}
-    //         >
-    //                     {data.pages.map((group, i) => (
-    //                         <React.Fragment key={i}>
-    //                             {group.map(res => (
-    //                                 <span>{res.id},</span>
-    //                             ))}
-    //                         </React.Fragment>
-    //                     ))}
-    //         </InfiniteScroll>
-    //         {/* {data.pages.map((group, i) => (
-    //             <React.Fragment key={i}>
-    //                 {group.map(res => (
-    //                     <span>{res.id},</span>
-    //                 ))}
-    //             </React.Fragment>
-    //         ))} */}
-    //         <div>
-    //             <button
-    //                 onClick={() => fetchNextPage()}
-    //                 disabled={!hasNextPage || isFetchingNextPage}
-    //             >
-    //                 {isFetchingNextPage
-    //                     ? 'Loading more...'
-    //                     : hasNextPage
-    //                         ? 'Load More'
-    //                         : 'Nothing more to load'}
-    //             </button>
-    //         </div>
-    //         <div>{isFetching && !isFetchingNextPage ? 'Fetching...' : null}</div>
-    //     </>
-    // )
-
-    // if(data) console.log(data.pageParams, data.pages)
-    // console.log('data', data)
-
-    // Add the ability to load more when you reach the bottom of the page.
-
     const ui = (
         <div className={styles.containerFeed}>
             <Head>
@@ -235,11 +172,10 @@ const TakeBox = ({ take }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
     
     // Load the .eth name for the author.
-    // const { data: authorEns, isError, isLoading } = useEnsName({
-    //     address: take.owner,
-    //     chainId: 1,
-    // })
-    let authorEns = null
+    const { data: authorEns, isError, isLoading } = useEnsName({
+        address: take.author,
+        chainId: 1,
+    })
 
     const remix = async () => {}
 
@@ -260,7 +196,7 @@ const TakeBox = ({ take }) => {
         </div>
 
         <div className={styles.takeMeta}>
-            <div>minted by <a href={openseaUrl}><strong>{take.owner && (authorEns || truncateEthAddress(take.owner))}</strong></a></div>
+            <div>minted by <Link href={`/u/${take.author}`}><strong>{take.author && (authorEns || truncateEthAddress(take.author))}</strong></Link></div>
             <div>
             {take.refIds.length > 0 && (
                 <span>remixes #{take.refIds[0]}</span>
