@@ -32,5 +32,8 @@
   "devDependencies": {
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.7"
+  },
+  "volta": {
+    "node": "16.19.1"
   }
 }
