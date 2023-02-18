@@ -12,7 +12,7 @@ contract TakeMarketV1Test is Test {
     TakeMarketV1 takeMarketV1;
 
     function setUp() public {
-        hype = new HYPE();
+        hype = new HYPE(address(0));
         address fee_address = address(0x1);
         takeMarketV1 = new TakeMarketV1(address(hype), fee_address);
     }

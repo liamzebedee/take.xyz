@@ -4,13 +4,16 @@ pragma solidity >=0.8.0;
 import "./lib/Base64.sol";
 import "./lib/Utils.sol";
 
+import {MixinResolver} from "@aller/lib/MixinResolver.sol";
 
 // Based on:
 // - Solmate erc721
 // - Loot
 // - DAOBetic Loot https://github.com/liamzebedee/sugardao/blob/master/contracts/system/Daobetic.sol
 
-contract Take {
+contract Take is
+    MixinResolver
+{
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
@@ -205,7 +208,7 @@ contract Take {
     //////////////////////////////////////////////////////////////*/
 
 
-    constructor() {
+    constructor(address _resolver) MixinResolver(_resolver) {
         uint256[3] memory refs;
         mint("The first take.", refs);
     }

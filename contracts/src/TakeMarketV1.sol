@@ -63,7 +63,7 @@ contract TakeMarketV1 is
         operator = _operator;
         
         // Deploy the master implementation of the TakeMarketSharesV1 contract.
-        TakeMarketSharesV1 takeMarketSharesV1 = new TakeMarketSharesV1();
+        TakeMarketSharesV1 takeMarketSharesV1 = new TakeMarketSharesV1(address(0));
         takeMarketSharesV1.initialize_TakeMarketSharesV1(address(this), 0);
         TakeMarketSharesV1_ = address(takeMarketSharesV1);
 
