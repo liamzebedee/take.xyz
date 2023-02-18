@@ -1,0 +1,5 @@
+contract Target is
+    Proxy
+{
+    
+}

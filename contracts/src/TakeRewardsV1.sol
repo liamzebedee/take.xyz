@@ -2,18 +2,20 @@
 pragma solidity >=0.8.0;
 
 import {Owned} from "./lib/Owned.sol";
+import {MixinResolver} from "@aller/lib/MixinResolver.sol";
 
 interface HYPEToken {
     function transfer(address to, uint256 amount) external;
 }
 
 contract TakeRewardsV1 is
+    MixinResolver,
     Owned
 {
     HYPEToken public hypeToken = HYPEToken(0xC315841328D8409f17c3f886A7bec9A37e6d0fa6);
     bool public enabled = true;
 
-    constructor() {
+    constructor(address _resolver) MixinResolver(_resolver) {
         Owned.initialize_Owned(msg.sender);
     }
 

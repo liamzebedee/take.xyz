@@ -3,28 +3,23 @@ pragma solidity >=0.8.0;
 
 import {ERC20} from "./lib/ERC20.sol";
 // import {Initializable} from "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/Initializable.sol";
-import {Initializable} from "./lib/Initializable.sol";
-import {Owned} from "./lib/Owned.sol";
+// import {Initializable} from "./lib/Initializable.sol";
+// import {Owned} from "./lib/Owned.sol";
+import {MixinResolver} from "@aller/lib/MixinResolver.sol";
 
 contract HYPE is 
-    Initializable,
-    Owned,
+    MixinResolver,
     ERC20
 {
-    constructor() {
-        initialize_HYPE();
-    }
-
-    function initialize_HYPE() public initializer {
+    constructor(address _resolver) MixinResolver(_resolver) {
         ERC20.initialize_ERC20("Hyperculture", "HYPE v1", 18);
-        Owned.initialize_Owned(msg.sender);
     }
 
-    function setNameAndSymbol(string memory name, string memory symbol) external onlyOwner {
+    function setNameAndSymbol(string memory name, string memory symbol) external {
         _setNameAndSymbol(name, symbol);
     }
 
-    function mint(address to, uint256 amount) external onlyOwner {
+    function mint(address to, uint256 amount) external {
         _mint(to, amount);
     }
 }

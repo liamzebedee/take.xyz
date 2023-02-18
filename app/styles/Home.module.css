@@ -79,12 +79,23 @@
   display: flex;  
   flex: 1;
   justify-content: right;
+  align-items: flex-end;
+}
+
+.accountUserProfile {
+  padding-right: 1rem;
+}
+
+.accountUserProfile img:hover {
+  background: #ff2a8d;
+  cursor: pointer;
 }
 
 .mainStatus {
   flex: 2;
   justify-content: center;
   display: flex;
+  align-items: center;
 }
 
 .hypeStatus {

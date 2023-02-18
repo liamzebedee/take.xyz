@@ -170,6 +170,9 @@ export default function Header() {
         </div>
 
         <div className={styles.account}>
+            <div className={styles.accountUserProfile}>
+                <Image src="/user.png" width={32} height={32}/>
+            </div>
             <ConnectButton chainStatus="name" />
         </div>
     </header>

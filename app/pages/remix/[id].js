@@ -95,6 +95,8 @@ function UI() {
                         return <span key={i}>{token.string}</span>
                     } else if (token.type == 'var') {
                         return <span key={i} className={styles.var}>{token.string}</span>
+                    } else if (token.type == 'takelink') {
+                        return <span key={i}>{token.string}</span>
                     }
                 })}
             </p>
