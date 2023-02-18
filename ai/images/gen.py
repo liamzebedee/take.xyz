@@ -79,7 +79,7 @@ chatmodel_predict = chatmodel_predict_langchain
 def get_image_prompt(meme):
     # return "{}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
     # return "internet meme, {}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
-    return "{}, photorealistic, 35mm film, very soft pink undercurrents like aggressive salmon pink ff2a8d, in the style of tame impala innerspeaker".format(meme.replace('.', ''))
+    return "{}, photorealistic, 35mm film, faint light pink undercurrents like aggressive salmon pink ff2a8d, in the style of tame impala innerspeaker".format(meme.replace('.', ''))
 
 def generate_image_dalle(prompt, num_images=1):
     openai.api_key = os.getenv("OPENAI_API_KEY")
