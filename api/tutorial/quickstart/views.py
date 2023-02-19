@@ -60,8 +60,23 @@ class PhraseViewSet(viewsets.ModelViewSet):
     """
     queryset = Phrase.objects.all()
     serializer_class = PhraseSerializer
-    # filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = ['name']
     # permission_classes = [permissions.IsAuthenticated]
+
+    # @action(detail=False, methods=['get'], url_path='by-name/(?P<name>[^.]+)/takes', url_name='takes')
+    # def recent_takes(self, request, address=None):
+    #     serializer_context = {
+    #         'request': request,
+    #     }
+    #     user = self.queryset.get(name=name)
+    #     takes = user.created_takes.all().order_by('-created_at')
+
+    #     paginator = PageNumberPagination()
+    #     paginator.page_size = 12
+    #     result_page = paginator.paginate_queryset(takes, request)
+    #     serializer = TakeSerializerDepth1(takes, many=True, context=serializer_context)
+    #     return paginator.get_paginated_response(serializer.data)
 
 class LikeViewSet(viewsets.ModelViewSet):
     """

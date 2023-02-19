@@ -200,8 +200,6 @@ function UI(props) {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
-
-
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
     async function apiFetchTake() {
@@ -346,11 +344,13 @@ function UI(props) {
 
                 <div className={styles.remixedFrom}>
                     <h3>source</h3>
-                    {!isARemixedTake && 'none'}
+                    {!isARemixedTake && <EmptyTakeBox/>}
                     {isARemixedTake && takeApiData.sources.map(source => (
                         <TakeBox showHeader={false} key={source.nft_id} take={source} />
                     ))}
                 </div>
+                <br />
+                <br />
             </main>
 
             <footer className={styles.footer}>
@@ -410,6 +410,24 @@ export const TakeBox = ({ take, showHeader }) => {
                     <span>{take.text}</span>
                 </div>
             </Link>
+        </div>
+    </div>
+}
+
+export const EmptyTakeBox = () => {
+    let phrases = [
+        // 'it was given to me by god',
+        'i made it up',
+        // 'divine inspiration',
+        // 'divine persperation',
+        // 'asinine intervention'
+    ]
+    // pick random phrase
+    let phrase = phrases[Math.floor(Math.random() * phrases.length)]
+
+    return <div className={styles.takeBoxEmpty}>
+        <div>
+            <span>{phrase}</span>
         </div>
     </div>
 }

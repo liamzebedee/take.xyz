@@ -26,6 +26,9 @@
   transition: all 50ms;
 }
 
+
+
+
 .helpGuide a {
   color: #0070f3;
   text-decoration: none;
@@ -356,11 +359,19 @@
 .takeBox {
   min-height: 20rem;
   transition: all 25ms;
-  
-  /* max-width: 500px;
-  max-height: 500px; */
   display: grid;
   justify-content: center;
+}
+
+.takeBoxEmpty {
+  background: white;
+  border: 3px solid #ff2a8d;
+  width: 15rem;
+  height: 15rem;
+  padding-top: 1rem;
+  padding-left: 0.5rem;
+  font-family: sans-serif;
+  transition: all 25ms;
 }
 
 .mockTakeImg {
@@ -372,7 +383,6 @@
   padding-left: 0.5rem;
   font-family: sans-serif;
   transition: all 25ms;
-
 }
 
 .mockTakeImg:hover {

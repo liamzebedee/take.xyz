@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Head from 'next/head'
 import React from 'react'
 import '../styles/globals.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const queryClient = new QueryClient()
 
