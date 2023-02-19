@@ -33,7 +33,7 @@ export const InlineTakeList = ({ takes }) => {
     return <div className={styles.remixedFrom}>
         <ul>
             {takes.map(remix => {
-                return <li>
+                return <li key={remix.nft_id}>
                     <div className={styles.inlineTake}>
                         <Link href={`/t/${slugify(remix.text)}-${remix.nft_id}`}>{remix.text}</Link>
                     </div>

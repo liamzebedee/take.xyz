@@ -192,7 +192,7 @@ function UI(props) {
         setTakeId(takeId)
         if (takeId != take.id) loadTake(takeId)
 
-    }, [router])
+    }, [router, provider, take.id, takeItContractV1])
 
     // Remix the take.
     const remix = async () => {
@@ -332,7 +332,7 @@ function UI(props) {
                     <h3>remixes ({takeApiSuccess && "" + takeApiData.remixes.length})</h3>
                     <ul>
                         {takeApiSuccess && takeApiData.remixes.map(remix => {
-                            return <li>
+                            return <li key={remix.nft_id}>
                                 <div className={styles.inlineTake}>
                                     <Link href={`/t/${slugify(remix.text)}-${remix.nft_id}`}>{remix.text}</Link>
                                 </div>
