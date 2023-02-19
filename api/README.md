@@ -30,3 +30,10 @@ npm i
 # index from take id 1
 FROM_TAKE=1 npm run start
 ```
+
+## Docker.
+
+```sh
+cp .env.example .env
+sudo docker-compose --env-file ./.env up -d
+```
