@@ -1,0 +1,1 @@
+gh gist create -d "take AI experiment results" -f results.md ./images/results/experiment-1/index.md

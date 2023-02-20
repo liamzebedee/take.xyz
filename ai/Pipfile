@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+openai = "*"
+langchain = "*"
+chatgpt-wrapper = {git = "https://github.com/mmabrouk/chatgpt-wrapper"}
+pandoc = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
