@@ -4,7 +4,10 @@ import base64
 from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 from langchain.chains.conversation.memory import ConversationalBufferWindowMemory
 from chatgpt_wrapper import ChatGPT
-
+import requests
+import urllib
+import urllib.request
+import urllib.parse
 import json
 import codecs
 
@@ -81,8 +84,8 @@ def get_image_prompt(meme):
     # return "{}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
     # return "internet meme, {}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
     # return "{}, photorealistic, 35mm film, faint light pink undercurrents like aggressive salmon pink ff2a8d, in the style of tame impala innerspeaker".format(meme.replace('.', ''))
-    # return "Linotype, detailed, conceptually simple, wide angle, top-down isometric, mixed with the themes of dali and surrealism, {}, —v 3".format(meme.replace('.', ''))
-    return "scene of {}, in the style of Rococo's beauty, and style of Internet meme collage, --v 3, wide angle, 3d model from GTA V".format(meme.replace('.', ''))
+    return "Linotype, detailed, conceptually simple, wide angle, top-down isometric, mixed with the themes of dali and surrealism, {}, —v 3".format(meme.replace('.', ''))
+    # return "scene of {}, in the style of Rococo's beauty, and style of Internet meme collage, --v 3, wide angle, 3d model from GTA V".format(meme.replace('.', ''))
 
 def generate_image_dalle(prompt, num_images=1):
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -115,6 +118,17 @@ def generate_image_for_take(take):
     image_prompt = get_image_prompt(image_prompt_subj)
     print(image_prompt)
     image_urls = generate_image_dalle(to_enc(image_prompt), num_images=4)
+    image_paths = []
+
+    # Save each of the image URL's.
+    for i, image_url in enumerate(image_urls):
+        # Download image, using the same Name and Extension as the URL.
+        print("Downloading image...")
+        # parse URL to get the filename
+        filename = urllib.parse.urlparse(image_url).path.split('/')[-1]
+        image_path = "results/experiment-1/images/{}_{}_{}".format(take['nft_id'], i, filename)
+        urllib.request.urlretrieve(image_url, image_path)
+        image_paths.append(image_path)
 
     # Save.
     print("Saving...")
@@ -127,18 +141,29 @@ def generate_image_for_take(take):
         f.write(image_prompt)
         f.write("\n\n")
         f.write("### Images\n\n")
-        for image_url in image_urls:
-            f.write("![]({})\n\n".format(image_url))
+        for image_path in image_paths:
+            image_path = image_path.replace("results/experiment-1/", "")
+            f.write("![]({})\n\n".format(image_path))
         f.write("\n\n")
     
-    with open("results/experiment-1/index.txt", "a") as f:
+    # open index.json and read its contents as json
+    data = []
+    if os.path.exists("results/experiment-1/index.json"):
+        with open("results/experiment-1/index.json", "r") as f:
+            data = json.load(f)
+
+    with open("results/experiment-1/index.json", "w") as f:
         obj = {
-            "take": take,
+            "take": {
+                "nft_id": take['nft_id'],
+                "text": text,
+            },
             "scene_desc": scene_desc,
             "image_prompt": image_prompt,
-            "image_urls": image_urls,
+            "image_paths": image_paths,
         }
-        f.write(json.dumps(obj))
+        data.append(obj)
+        f.write(json.dumps(data))
 
 
 # open takes.json
