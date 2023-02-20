@@ -1,0 +1,63 @@
+Hey OpenAI. I'm trying to turn a meme into a sentence which is useful input to an image model which can generate images from prompt descriptions. It's hard to do because a lot of these memes are highly conceptual and abstract, whereas the image model can only generate good images from concrete descriptions of scenes. What's the simplest dumbest way to turn a conceptual meme like "your honour please, my client was simply [xx]" into a concrete scene that can be described to an image model.
+
+
+
+
+One way to turn a conceptual meme like "your honour please, my client was simply [xx]" into a concrete scene that can be described to an image model is to provide a specific example of what the client was doing. For instance, you could describe a scene where the client was innocently walking their dog in the park, or sitting quietly reading a book at a coffee shop, or playing with their children at a playground.
+
+By providing concrete details about the client's actions and environment, you can give the image model a clearer idea of what to generate. For example, you could describe the client walking their dog in the park as follows: "Your honour, please, my client was simply walking his small brown dog on a green leash in the park, on a sunny afternoon, with a blue sky and fluffy white clouds in the background."
+
+This description provides the image model with specific details such as the dog's appearance, the color of the leash, the park's setting, and the weather, which can help it generate a more accurate image.
+
+
+
+Generating concrete examples that are funny can be challenging, as humor often relies on unexpected or surprising elements that may not be immediately apparent. However, here are a few tips on how you can generate funny and concrete examples:
+
+    Use exaggeration or hyperbole: One way to make a concrete example funny is by exaggerating certain details to absurd levels. For example, instead of saying "my client was simply eating a sandwich," you could say "my client was simply eating a sandwich the size of a small car." This kind of exaggeration can create a humorous contrast between the normality of the activity and the absurdity of the detail.
+
+    Use wordplay or puns: Another way to make a concrete example funny is by using wordplay or puns. For example, if your client was caught jaywalking, you could say "Your honour, my client was simply exercising his right to bear feet." This kind of wordplay can create a humorous connection between the situation and a play on words.
+
+    Use situational humor: Sometimes, the humor in a concrete example comes from the situation itself. For example, if your client was caught stealing a donut, you could say "Your honour, my client was simply engaging in a classic case of 'donut despair.'" This kind of situational humor can create a funny twist on the circumstances.
+
+Overall, generating funny and concrete examples requires a combination of creativity, wit, and attention to detail. By playing with language, exaggeration, and situational humor, you can create concrete examples that are both funny and memorable.
+
+
+
+
+
+I want you to act as a painter. Firstly, I will give you a short prompt like this: "your honour please, my client was simply [xx]". Then you will turn this conceptual idea into a concrete scene that can be described to an artist, by thinking of a specific example of what was happening in the situation. For instance, you could describe a scene where the client was innocently walking their dog in the park, or sitting quietly reading a book at a coffee shop, or playing with their children at a playground. By providing concrete details about the client's actions and environment, you can give the image model a clearer idea of what to generate. For example, you could describe the client walking their dog in the park as follows: "Your honour, please, my client was simply walking his small brown dog on a green leash in the park, on a sunny afternoon, with a blue sky and fluffy white clouds in the background."
+
+Generating concrete examples that are funny can be challenging, as humor often relies on unexpected or surprising elements that may not be immediately apparent. However, here are a few tips on how you can generate funny and concrete examples:
+
+ - Use exaggeration or hyperbole: One way to make a concrete example funny is by exaggerating certain details to absurd levels. For example, instead of saying "my client was simply eating a sandwich," you could say "my client was simply eating a sandwich the size of a small car." This kind of exaggeration can create a humorous contrast between the normality of the activity and the absurdity of the detail.
+
+ - Use wordplay or puns: Another way to make a concrete example funny is by using wordplay or puns. For example, if your client was caught jaywalking, you could say "Your honour, my client was simply exercising his right to bear feet." This kind of wordplay can create a humorous connection between the situation and a play on words.
+
+ - Use situational humor: Sometimes, the humor in a concrete example comes from the situation itself. For example, if your client was caught stealing a donut, you could say "Your honour, my client was simply engaging in a classic case of 'donut despair.'" This kind of situational humor can create a funny twist on the circumstances.
+
+Overall, generating funny and concrete examples requires a combination of creativity, wit, and attention to detail. By playing with language, exaggeration, and situational humor, you can create concrete examples that are both funny and memorable.
+
+Your first prompt is "my pronouns are remix/reward" (Give me prompt only)
+
+
+
+I want you to act as a prompt generator. Firstly, I will give you a title like this: "Act as an English Pronunciation Helper". Then you give me a prompt like this: "I want you to act as an English pronunciation assistant for Turkish speaking people. I will write your sentences, and you will only answer their pronunciations, and nothing else. The replies must not be translations of my sentences but only pronunciations. Pronunciations should use Turkish Latin letters for phonetics. Do not write explanations on replies. My first sentence is "how the weather is in Istanbul?"." (You should adapt the sample prompt according to the title I gave. The prompt should be self-explanatory and appropriate to the title, don't refer to the example I gave you.). My first title is "Act as a Prompt Generator Generator" (Give me prompt only)
+
+
+
+
+
+
+I want you to act as a prompt generator. Firstly, I will give you a title like this: "your honour please, my client was simply [xx]". Then you will turn this concept into a concrete scene that can be described to an artist, by thinking of a specific example of what was happening in the situation. For instance, you could describe a scene where the client was innocently walking their dog in the park, or sitting quietly reading a book at a coffee shop, or playing with their children at a playground. By providing concrete details about the client's actions and environment, you can give the image model a clearer idea of what to generate. For example, you could describe the client walking their dog in the park as follows: "Your honour, please, my client was simply walking his small brown dog on a green leash in the park, on a sunny afternoon, with a blue sky and fluffy white clouds in the background."  My first title is "my pronouns are remix/reward" (Give me prompt only)
+
+
+
+I want you to act as a prompt generator for an image model. Firstly, I will give you text like this "Your client is standing confidently in front of a judge, wearing a shirt with the words "my pronouns are remix/reward" written on it. They are gesturing passionately towards a document in their hand, arguing that their chosen pronouns are an expression of their unique identity and should be respected by all". Then you will give me a prompt like this: "man in front of judge, shirt, gesturing passionately to document in hand, arguing pronouns, demanding respect". Your prompt should be a concise summary of the scene, focusing on describing the subject, object and environment in terms of nouns and adjectives. The prompt must be one sentence, and must not use full stops. All entities (nouns, objects, adjectives) must be listed with commas between them. Do not use full stops. Each part of the prompt must describe one thing and only one thing well. If you cannot explain in one part, then split it into two using commas. This prompt will be used to make a painting, but the prompt should be explanatory enough that a blind person hearing it will get the gist. Your first text is: 
+
+The meme is a low-fidelity image-based meme with a white background. In the center, there is an image of a cassette tape with the labels "Remix" and "Reward" written on it. Above the cassette tape, the text reads "My pronouns are" in black capital letters. Below the cassette tape, the text reads "Remix/Reward" in white capital letters.
+
+
+
+Using a given text-based meme as inspiration, create a low-fidelity image-based meme that captures the humor and essence of the original. You can use any images you find through a quick search on Google Images, but the key is to make it look rough, homemade, and low-fi. Think of it as if you're creating a meme on a Figma canvas, but with a DIY, slapdash feel to it. Have fun and get creative with it! The goal is to come up with a unique, dank meme that would make even the most cynical internet user crack a smile.
+
+The meme - my pronouns are remix/reward

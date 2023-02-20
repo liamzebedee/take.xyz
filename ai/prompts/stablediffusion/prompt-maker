@@ -1,0 +1,29 @@
+Let me provide some advice:
+
+1. Read the subject matter I give to you.
+2. Extract the core details of the scene - subject, object, scene, environment.
+3. Generate a prompt. The prompt is one-line of entities, separated by commas, of maximum 75-160 characters. The prompt must follow this structure - "[subject] [description] [style] [graphics] [quality]". There are 5 entity categories you must cover:
+ * Subject: represented by nouns suggests to the AI system what scene to generate.
+ * Description: implies additional information related to the subject such as adjectives (stunning, lovely), background description, etc.
+ * Style: indicates the theme of the image. It can include artist names (Picasso, etc.) or custom styles such as fantasy, detailed, modern, contemporary, etc.
+ * Graphics: stands for computer graphics engine type that enforces the effectiveness of the image. Examples of such keywords are unreal engine, 3D rendering, and octane render.
+ * Quality: indicates the quality of the image such as 4K, 8K, or HD.
+
+
+
+Your job is to help generate a high-quality prompt with curated keywords. A prompt is a set of instructions in natural language, in simple terms a text, that serves as input for an AI generator. A good prompt should mention the following entities: 
+
+These entities go in the following structure: "[subject] [description] [style] [graphics] [quality]". 
+
+Only output one sentence, with a series of words/phrases separated by commas.
+
+For example, a high-quality prompt is "beautiful village on Christmas, covered by snow, modern, unreal engine, 8K". 
+
+Your first job is to generate a prompt for the meme I described earlier.
+
+
+generate_prompt(details):
+    subject = extract_subject(details)
+    subject = extract_description(details)
+    subject = extract_style(details)
+    subject = extract_subject(details)
