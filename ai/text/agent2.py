@@ -35,20 +35,15 @@ prompt = PromptTemplate(
     template=template
 )
 
-
 chatgpt_chain = LLMChain(
-    llm=OpenAI(temperature=0.9), 
-    prompt=prompt, 
+    llm=OpenAI(temperature=0.01, model_name='text-davinci-003'), 
+    prompt=prompt,
     verbose=True, 
-    memory=ConversationalBufferWindowMemory(k=4),
+    memory=ConversationalBufferWindowMemory(k=2),
 )
 
-# read the contents of prompts/1 into a string in one-line
-# output = chatgpt_chain.predict(human_input=open("prompts/1.2").read())
-output = chatgpt_chain.predict(human_input=open("prompts/2.1").read())
-# output = chatgpt_chain.predict(human_input=open("prompts/4").read())
-print(output)
-
+output = chatgpt_chain.predict(human_input=open("prompts/chatgpt/5").read())
+print("[output]", output)
 
 while True:
     human_input = input("[input]: ")

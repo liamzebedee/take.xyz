@@ -180,8 +180,8 @@ with open('../data/takes.json') as f:
         
         # Skip entries.
         i += 1
-        if i < 30:
-            continue
+        # if i < 30:
+        #     continue
         
         try:
             generate_image_for_take(take)

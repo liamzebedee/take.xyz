@@ -1,0 +1,216 @@
+
+Mimicry is social programming, and memes may be the most powerful program there is. gamestonk and bitcoin are two examples of powerful memes.
+
+https://lindajxie.com/2020/02/11/crypto-memes-and-adoption/
+
+
+
+
+
+
+
+
+
+            <p>Likewise, generative AI functions a similar way. Users write prompts that guide models to produce a specific output. The difference is that AI's are not sentient.</p>
+            <p><strong>What is sentience?</strong></p>
+            <p>What if you could DM an internet meme?</p>
+
+
+
+
+<p>In Take, users construct text-based meme templates, where other users can fill in the blanks. For example - <a href="https://take-xyz.vercel.app/t/your-honor-please-my-client-was-simply-xx-58">"your honour please, my client was simply [xx]"</a> has led to many remixes ranging from comments on SBF's effective altruism, to his outright theft of customer's funds. In essence, by proposing a template, the user is prompting the mimetic hive mind of the social media.</p>
+
+
+<div>
+        <h3>The creative process</h3>
+        <p>This was my creative process. It used 3 different AI models (CoPilot, ChatGPT, and DALL-E). <a href="https://github.com/f/awesome-chatgpt-prompts#act-as-a-prompt-generator">Prompts</a> were used to generate other prompts. Prompts were used to translate from one AI to another (text-to-image). Prompts were used to make it possible to DM with an internet meme - is this prompting??</p>
+        <p>To blow your mind - prompts (chatgpt, prompt generator prompt) were used to generate other prompts (chatgpt, scene generator prompt), which from takes generated scene descriptions, which got translated into a DALL-E prompt (chatgpt - dall-e prompt generator), which was used to generate an image (dall-e). This pipeline was coded thanks to prompts (github copilot).</p>
+        </div>
+
+
+
+
+https://docs.cohere.ai/docs/prompt-engineering
+
+
+what is the nature of the artist now?
+    we cannot prove if something is produced by a human or an artist. we only know that it exists (thanks to a blockchain).
+    
+    art has always been about proof-of-work - the mona lisa, for its time, was a masterpiece of work. but nowadays can be replicated easily.
+    generative ai reduces the cost of producing art in a style to near-nothing. but there is still the task of navigating latent space.
+
+    is the ai just stealing artists work? 
+    what is the nature of culture anyways
+    everything is a remix - https://www.youtube.com/watch?v=MZ2GuvUWaP8
+
+    to steal, one would have to copy. what does the AI's knowledge look like?
+    this is called latent space.
+        https://linguistics.stackexchange.com/questions/35863/word2vec-why-does-the-famous-equation-king-woman-man-%E2%89%83queen-hold
+        <p>People argue - is this conscious/sentient? Or is it just a stupid statistical model that predicts the next word?</p>
+        <p>Another issue is theft - do AI's truly create something new, or are they just copying the work of others?</p>
+
+    free will - https://plato.stanford.edu/entries/freewill/
+
+
+    what is the nature of language? 
+    language and prompting as communication.
+    is language computation?
+    https://linguistics.stackexchange.com/questions/35863/word2vec-why-does-the-famous-equation-king-woman-man-%E2%89%83queen-hold 
+    why was language enough to make an AI model that understands text/imagery/etc?
+    
+
+
+
+humans are mimetic creatures
+our social programming dictates that we like what other people like, and do what other people do
+
+english is now programming
+
+
+
+
+what if you could DM a meme? 
+
+
+
+
+<p>I'm not going to lie - this sentence was written with the help of AI. The HTML underlying this entire website, AI. The Take platform - I wrote in 3h instead of 9h, thanks to AI.</p>
+            <p>As I type this into my editor, VS Code, each line is being auto-completed by the AI of Github CoPilot. Instead of writing code, I write English comments in whichever programming language (JS, CSS, whatever), and it searches through latent space to output useful text.</p>
+            <p>Who is the creator here? I wonder. In essence, I still come up with designs that are conceptually above what the AI can do...for now.</p>
+
+            <ul>
+                <li><strong>GitHub CoPilot</strong>. The AI that wrote this page, and the code to generate these images.</li>
+                <li><strong>ChatGPT</strong>. The AI that imagined the scenes, and translated them into a prompt that DALL-E could understand.</li>
+                <li><strong>DALL-E</strong>. The AI that generated the images.</li>
+                <li><strong>Take hivemind</strong>. The internet hivemind that generated these takes.</li>
+            </ul>
+
+
+
+
+
+
+
+how I built this:
+
+generating dall-e prompts
+    different format -
+        list of entities, comma-separated, single sentence
+        entity types -
+            medium - painting, portrait, anime scene of, 
+            angle - wide angle, portrait
+            style - artist, tv show, etc.
+            scene - object, subject, actions
+            details - light coloured dress
+        concrete descriptions
+
+latent space, creative process
+- start with a take. conceptual.
+- diverge. generate a scene. 3 paragraphs.
+- converge. compress scene into dall-e prompt.
+- render. render dall-e prompt into image.
+
+
+different agents in the system:
+- me the developer
+- a take user - ie. making a template
+- the take hivemind - ie. remixing a prompt to oblivion
+- the text-based ai (chatgpt)
+- the image-based ai (dall-e)
+- github copilot
+
+
+different prompts:
+- scene generation
+- dall-e prompt generation
+- dall-e prompt
+
+
+the process:
+
+- user makes take template
+- hivemind responds to prompt, generates remixes
+- github copilot writes the code for the pipeline
+- pipeline begins 
+    - chatgpt generates scene from take
+    - chatgpt generates image prompt from scene
+    - dall-e generates image from prompt
+
+
+how did I come up with the prompts? using prompts
+grab a prompt generator prompt
+use it to generate a scene generator prompt
+which is used to generate a scene
+which is used to generate an image prompt
+which is used to generate an image
+
+grab a prompt generator prompt
+use it to generate a "you're dming with a meme" prompt
+which is used to generate a conversation...a bunch of prompts
+
+
+and then finally - the words on this page. are used to prompt you.
+buy this nft
+
+
+
+
+I guess my takeaways are this.
+
+This was my creative process. It used 3 different AI models (CoPilot, ChatGPT, and DALL-E). <a href="https://github.com/f/awesome-chatgpt-prompts#act-as-a-prompt-generator">Prompts</a> were used to generate other prompts. Prompts were used to translate from one AI to another (text-to-image). Prompts were used to make it possible to DM with an internet meme - is this prompting?? 
+
+To blow your mind - prompts (chatgpt, prompt generator prompt) were used to generate other prompts (chatgpt, scene generator prompt), which from takes generated scene descriptions, which got translated into a DALL-E prompt (chatgpt - dall-e prompt generator), which was used to generate an image (dall-e). This pipeline was coded thanks to prompts (github copilot).
+
+
+
+I'm wondering - is take an AI? Is bitcoin an AI? 
+
+bitcoin has no intrinsic value. and yet, the price is nonzero. every additional person that thinks it has value, contributes to the opportunity cost of those who disagree. 
+
+
+
+
+
+
+
+
+What was created which is new?
+
+The DALL-E images needed to have a particular visual style. There are many examples of fantasy-like objects, but it was hard to find something low-fidelity and unique.
+
+
+
+
+
+
+
+
+
+
+the goal - as an artist, it's about providing a top-down view of what's happening
+
+
+
+
+
+the big questions:
+- 
+
+
+
+
+
+            <p>Likewise, generative AI functions a similar way. Users write prompts that guide models to produce a specific output.</p>
+            <p>Are generative AI's thinking? Or just really big statistical models that can predict the next word? There is evidence that <a href="https://twitter.com/karpathy/status/1627366413840322562">LLM's perform in-context learning</a> - meaning they can learn new skills while you interact with them. If you mention a current topic in sufficient detail, they can integrate that into their knowledge.</p>
+
+
+<p>Likewise, generative AI functions a similar way. Users write prompts that guide models to produce a specific output. The difference is that AI models are not <i>alive</i> - they are not up-to-date with current events. Right?</p>
+<p>Are generative AI's thinking? Or just really big statistical models that can predict the next word? There is evidence that <a href="https://twitter.com/karpathy/status/1627366413840322562">LLM's perform in-context learning</a> - meaning they can learn new skills while you interact with them. If you mention a current topic in sufficient detail, they can integrate that into their knowledge.</p>
+
+
+
+
+what other things seem needlessly manual and not abstracted properly?
+ie. react - prev. updating state - now. one-way flow
+ie. multithreading - prev. allocating threads - now. hvm
+
