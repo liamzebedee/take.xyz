@@ -29,6 +29,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+venv
 
 # vercel
 .vercel
@@ -38,4 +39,3 @@ LightsailDefaultKey-eu-central-1.pem
 **/node_modules
 **/.env
 **/build
-# api/

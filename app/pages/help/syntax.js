@@ -65,6 +65,7 @@ import { TakeV3Address } from '@takeisxx/lib/src/config'
 import { parseTakeURI, fetchTakesBatch } from '@takeisxx/lib/src/chain'
 
 import InfiniteScroll from 'react-infinite-scroller';
+import Image from 'next/image';
 
 const content = `
 ![](https://pbs.twimg.com/profile_images/1604318789780152320/wyza_3zQ_400x400.jpg)
@@ -126,7 +127,7 @@ function UI() {
                     components={{
                         // open new tab <a href="" target="_blank">
                         a: ({ node, ...props }) => <Link href={props.href}>{props.children}</Link>,
-                        img: ({ node, ...props }) => <a href={props.src} rel="noreferrer" target="_blank"><img {...props} alt="" style={{ maxWidth: '100%' }} /></a>
+                        img: ({ node, ...props }) => <a href={props.src} rel="noreferrer" target="_blank"><Image {...props} alt="" style={{ maxWidth: '100%' }} /></a>
                     }}>
                     {content}
                 </ReactMarkdown>

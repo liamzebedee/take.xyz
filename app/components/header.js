@@ -85,16 +85,17 @@ const HYPEStatus = ({ }) => {
                 abi: HYPEABI,
                 signerOrProvider: provider,
             })
-            const listener = hypeContract.on('Transfer', (from, to, amount, event) => {
-                if (from == account.address || to == account.address) {
-                    setHypeBalance(amount)
-                }
-            })
+            
 
-            setHypeBalanceListener(listener)
+            // const listener = hypeContract.on('Transfer', (from, to, amount, event) => {
+            //     if (from == account.address || to == account.address) {
+            //         setHypeBalance(amount)
+            //     }
+            // })
+            // setHypeBalanceListener(listener)
 
             return () => {
-                hypeContract.off(listener)
+                // hypeContract.off(listener)
             }
         }
 
@@ -125,6 +126,9 @@ export default function Header() {
     const isHotTemplates = router.pathname == "/hot-templates"
     const isLiterallyAnythingElse = !isHome && !isFeed
 
+
+    const account = useAccount()
+
     return <header className={styles.header}>
         <div className={styles.menu}>
             <ul>
@@ -142,6 +146,8 @@ export default function Header() {
                 </li>
             </ul>
         </div>
+
+
 {/* 
         <div className={styles.mobileMenu}>
             <Image src="/hamburger.png" width={22} height={22} />
@@ -165,11 +171,16 @@ export default function Header() {
             </ul>
         </div>
          */}
+
+
         <div className={styles.mainStatus}>
             <HYPEStatus />
         </div>
 
         <div className={styles.account}>
+            <Link href={`/u/${account.address}`} className={styles.accountUserProfile}>
+                <Image src="/user.png" width={24} height={24}/>
+            </Link>
             <ConnectButton chainStatus="name" />
         </div>
     </header>

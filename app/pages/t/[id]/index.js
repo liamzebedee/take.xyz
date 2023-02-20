@@ -10,7 +10,7 @@ Rainbow & wagmi
 
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { getContract, getProvider } from '@wagmi/core';
-import { useEnsName } from 'wagmi';
+import { useEnsName } from '../../../hooks';
 import Header from '../../../components/header';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ import { TakeV3Address, TAKE_API_BASE_URL, TAKE_BASE_URL, TAKE_OPENGRAPH_SERVICE
 import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
-import { canRemixTake, parseTake } from '@takeisxx/lib/src/parser';
+import { canRemixTake, parseTake, addContextToTokens } from '@takeisxx/lib/src/parser';
 
 /*
 UI
@@ -192,7 +192,7 @@ function UI(props) {
         setTakeId(takeId)
         if (takeId != take.id) loadTake(takeId)
 
-    }, [router])
+    }, [router, provider, take.id, takeItContractV1])
 
     // Remix the take.
     const remix = async () => {
@@ -200,24 +200,7 @@ function UI(props) {
         router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
     }
 
-    // Remixing is enabled if the take contains [xx] or [yy] template vars,
-    // or it is a remix of another take.
-    const canRemix = take.takeURI 
-        && canRemixTake(take.text)
-
-    // Load the .eth name for the author.
-    // TODO.
-    const { data: ownerEns } = useEnsName({
-        address: take.owner,
-        chainId: 1,
-    })
-    const { data: authorEns } = useEnsName({
-        address: take.author,
-        chainId: 1,
-    })
-
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
-    const isARemixedTake = take.refs && take.refs.length > 0
 
     async function apiFetchTake() {
         const url = `${TAKE_API_BASE_URL}/takes.json?nft_id=${Number(takeId)}`
@@ -234,7 +217,25 @@ function UI(props) {
         queryFn: () => apiFetchTake()
     })
 
-    //x let TAKE_BASE_URL = TAKE_BASE_URL
+    // Load the .eth name for the author.
+    // TODO.
+    const { data: ownerEns } = useEnsName({
+        address: take.owner,
+        chainId: 1,
+    })
+
+    const { data: authorEns } = useEnsName({
+        address: takeApiData && takeApiData.creator.address,
+        chainId: 1,
+    })
+
+    // Remixing is enabled if the take contains [xx] or [yy] template vars,
+    // or it is a remix of another take.
+    const canRemix = takeApiData
+        && canRemixTake(takeApiData.text)
+    const isARemixedTake = takeApiData && takeApiData.sources.length > 0
+    
+    // let TAKE_BASE_URL = TAKE_BASE_URL
     // if(process.env.NODE_ENV == 'development') {
     //     // Run localtunnel to get this URL below.
     //     // lt --port 3000
@@ -243,14 +244,23 @@ function UI(props) {
 
     const renderTake = (take) => {
         console.log(take)
+
         // Interpolate subtakes.
-        const { tokens } = take
+        const tokens = addContextToTokens(take.text, parseTake(take.text))
+
         return tokens.map((token, i) => {
             let subtake
 
             // Subtake.
             if (token.type == 'takelink') {
-                subtake = take.subtakes.find(subtake => subtake.id == token.takeId)
+                // TODO: implement using the new API backend.
+                if(!take.subtakes) {
+                    subtake = {
+                        take: { text: "" }
+                    }
+                } else {
+                    subtake = take.subtakes.find(subtake => subtake.id == token.takeId)
+                }
             }
 
             return <span key={i}>
@@ -293,62 +303,54 @@ function UI(props) {
 
                 <div className={styles.takeLead}>
                     <p className={styles.text}>
-                        <strong>take #{take.id}</strong>
+                        <strong>take #{takeId}</strong>
                     </p>
 
-                    <p className={styles.takeLeadText}>{take.takeURI && renderTake(take)}</p>
+                    <p className={styles.takeLeadText}>{takeApiSuccess && renderTake(takeApiData)}</p>
 
 
                     <footer>
-                        {/* owned by <a href={openseaUrl}><strong>{take.owner && truncateEthAddress(take.owner) }</strong></a> */}
-                        {take.author && (
-                            <span>minted by <a href={openseaUrl}><strong>{authorEns || truncateEthAddress(take.author)}</strong></a><br /></span>
+                        {takeApiSuccess && (
+                            <span>minted by <Link href={`/u/${takeApiData.creator.address}`}><strong>{authorEns || truncateEthAddress(takeApiData.creator.address)}</strong></Link><br /></span>
                         )}
-                        {take.owner && (
-                            <span>owned by <a href={openseaUrl}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></a></span>
-                        )}
+                        {
+                            <span>owned by {take.owner ? <Link href={`/u/${take.owner}`}><strong>{ownerEns || truncateEthAddress(take.owner)}</strong></Link> : '...'}</span>
+                        }
                     </footer>
                 </div>
 
-                {/* <div> */}
-                    {/* <Link href={`/t/${slugify(take.text)}-${take.id}`}> */}
-                        {/* {take.takeURI && (
-                            <div className={styles.mockTakeImg}>
-                                
-                            </div>
-                        )} */}
-                        {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
-                    {/* </Link> */}
-                {/* </div> */}
-
                 <p>
                     <button disabled={!canRemix} className={styles.takeItBtn} style={{ padding: '0.5rem', fontSize: "1.2rem" }} onClick={remix}>remix</button>
+                    
+                    {/* <button disabled={!canRemix} className={styles.takeItBtn} style={{ padding: '0.5rem', fontSize: "1.2rem" }} onClick={remix}>collect</button> */}
                     {/* a button for sending a take NFT to an address */}
                     {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
                 </p>
 
+
                 <div className={styles.remixedFrom}>
-                    <h3>remixed from</h3>
-                    {!isARemixedTake && 'none'}
-                    {isARemixedTake && take.refs.map(ref => (
-                        <TakeBox key={ref.id} take={ref}/>
+                    <h3>remixes ({takeApiSuccess && "" + takeApiData.remixes.length})</h3>
+                    <ul>
+                        {takeApiSuccess && takeApiData.remixes.map(remix => {
+                            return <li key={remix.nft_id}>
+                                <div className={styles.inlineTake}>
+                                    <Link href={`/t/${slugify(remix.text)}-${remix.nft_id}`}>{remix.text}</Link>
+                                </div>
+                            </li>
+                        }) }
+                    </ul>
+                </div>
+
+
+                <div className={styles.remixedFrom}>
+                    <h3>source</h3>
+                    {!isARemixedTake && <EmptyTakeBox/>}
+                    {isARemixedTake && takeApiData.sources.map(source => (
+                        <TakeBox showHeader={false} key={source.nft_id} take={source} />
                     ))}
                 </div>
-
-                <div className={styles.remixedFrom}>
-                    <h3>{takeApiSuccess && ""+takeApiData.remixes.length} remixes</h3>
-                    {takeApiSuccess && takeApiData.remixes.map(remix => {
-                        return <div style={{ paddingBottom: "1rem" }}>
-                            <Link href={`/t/-${remix.nft_id}`}>{remix.text}</Link>
-                        </div>
-                    }) }
-                </div>
-
-                
-
-                {/* <p className={styles.text}>
-                    {take.text}
-                </p> */}
+                <br />
+                <br />
             </main>
 
             <footer className={styles.footer}>
@@ -372,8 +374,19 @@ const TakeToken = () => {
 
 }
 
+export const InlineTake = ({ take }) => {
+    return <div className={styles.takeBox}>
+        <div>
+            <Link href={`/t/${slugify(take.text)}-${take.nft_id}`}>
+                <div className={styles.mockTakeImg}>
+                    <span>{take.text}</span>
+                </div>
+            </Link>
+        </div>
+    </div>
+}
 
-export const TakeBox = ({ take }) => {
+export const TakeBox = ({ take, showHeader }) => {
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
 
     // Load the .eth name for the author.
@@ -385,36 +398,41 @@ export const TakeBox = ({ take }) => {
     const remix = async () => { }
 
     return <div className={styles.takeBox}>
-        <div className={styles.takeHeader}>
-            <strong>take #{take.id}</strong>
-        </div>
+        {showHeader && 
+            <div className={styles.takeHeader}>
+                <strong>take #{take.id}</strong>
+            </div>}
+        
 
         <div>
-            <Link href={`/t/${slugify(take.text)}-${take.id}`}>
-                {take.takeURI && (
-                    <div className={styles.mockTakeImg}>
-                        <span>{take.text}</span>
-                    </div>
-                )}
-                {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
+            <Link href={`/t/${slugify(take.text)}-${take.nft_id}`}>
+                <div className={styles.mockTakeImg}>
+                    <span>{take.text}</span>
+                </div>
             </Link>
         </div>
+    </div>
+}
 
-        {/* <p>
-            <button className={styles.takeItBtn} onClick={remix}>like</button>
-            <button className={styles.takeItBtn} onClick={remix}>remix</button>
-        </p> */}
+export const EmptyTakeBox = () => {
+    let phrases = [
+        // 'it was given to me by god',
+        'i made it up',
+        // 'divine inspiration',
+        // 'divine persperation',
+        // 'asinine intervention'
+    ]
+    // pick random phrase
+    let phrase = phrases[Math.floor(Math.random() * phrases.length)]
 
-        {/* <p className={styles.text}>
-            {take.text}
-        </p> */}
+    return <div className={styles.takeBoxEmpty}>
+        <div>
+            <span>{phrase}</span>
+        </div>
     </div>
 }
 
 const RenderedTakeText = ({ take }) => {
-    // { renderCompiledTake(take) }
-    // const [takeRefs, setTakeRefs] = useState(null)
-
     async function render() {
         const tokens = parseTake(take.text)
 

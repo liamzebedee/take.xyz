@@ -9,7 +9,7 @@ Uses Django + Django REST Framework.
 python3 -m venv env
 source env/bin/activate
 
-pip install
+pipenv install
 ```
 
 ## Run.
@@ -29,4 +29,11 @@ cd ../indexer
 npm i
 # index from take id 1
 FROM_TAKE=1 npm run start
+```
+
+## Docker.
+
+```sh
+cp .env.example .env
+sudo docker-compose --env-file ./.env up -d
 ```

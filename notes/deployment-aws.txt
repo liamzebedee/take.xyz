@@ -1,2 +1,220 @@
 sudo amazon-linux-extras install epel -y
 sudo yum install -y chromium
+
+git clone https://github.com/liamzebedee/take.xyz api
+sudo yum install docker
+sudo systemctl start docker.service
+sudo systemctl enable docker.service
+sudo curl -L https://github.com/docker/compose/releases/download/v2.16.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
+
+
+
+
+    1  pwd
+    2  apt
+    3  ls
+    4  yum install nodejs
+    5  sudo yum install nodejs
+    6  sudo yum install node
+    7  ls
+    8  sudo yum install nodejs npm --enablerepo=epel
+    9  curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -sudo yum install nodejs npm --enablerepo=epel
+   10  curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+   11  sudo curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+   12  curl --silent --location https://rpm.nodesource.com/setup_4.x | sudo bash -
+   13  curl --silent --location https://rpm.nodesource.com/setup_16.x | bash -
+   14  curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+   15  sudo yum install -y nodejs
+   16  git clone https://github.com/liamzebedee/take.xyz
+   17  yum install git
+   18  sudo yum install git
+   19  https://github.com/liamzebedee/take.xyz
+   20  git clone https://github.com/liamzebedee/take.xyz
+   21  cd take.xyz/
+   22  ls
+   23  cd lib/
+   24  npm i
+   25  npm run build
+   26  ..
+   27  cd ..
+   28  cd telegram-bot/
+   29  npm i
+   30  nano .env
+   31  cd ..
+   32  cd app
+   33  ls
+   34  npm i
+   35  npm run dev
+   36  node -v
+   37  sudo amazon-linux-extras install epel -y
+   38  sudo yum install -y chromium
+   39  npm run dev
+   40  ls
+   41  cat pages/api/t/\[id\]/img.png.js
+   42  git pull
+   43  npm run dev
+   44  ls
+   45  ..
+   46  cd ..
+   47  cd app
+   48  npm i
+   49  git pull
+   50  npm i
+   51  npm run build
+   52  curl -fsSL https://bun.sh/install | bash
+   53  source /home/ec2-user/.bashrc
+   54  bun --help
+   55  bun install
+   56  bun run
+   57  bun run dev
+   58  cd ..
+   59  cd lib
+   60  npm i
+   61  cd ..
+   62  cd app
+   63  bun run dev
+   64  ls
+   65  git pull
+   66  bun run dev
+   67  ls
+   68  ..
+   69  cd ..
+   70  cd telegram-bot/
+   71  ls
+   72  screen
+   73  ls
+   74  cd take.xyz/
+   75  ls
+   76  cd telegram-bot/
+   77  npm run build
+   78  cat package
+   79  cat package.json
+   80  npm run watch
+   81  rm -rf node_modules/
+   82  npm i
+   83  rm -rf node_modules/
+   84  npm ci
+   85  npm run build
+   86  npm i --save-dev @types/lodash
+   87  npm run build
+   88  source .env
+   89  screen
+   90  ls
+   91  cd ..
+   92  ls
+   93  cd cd rnd/
+   94  ls
+   95  cd rnd
+   96  ls
+   97  cd rewards-auto-v1/
+   98  ls
+   99  nano .env
+  100  ls
+  101  npm ci
+  102  npm run build
+  103  npm i -D @types/node
+  104  npm run build
+  105  screenm
+  106  screen
+  107  screen -r
+  108  screen -r 4163
+  109  screen -r 15194
+  110  screen -r 14813
+  111  git pull
+  112  ls
+  113  screen -r
+  114  screen -r 15194
+  115  screen -r 14813
+  116  ls
+  117  screen -r
+  118  screen -r 15194
+  119  screen -r 14813
+  120  ls
+  121  screen -r
+  122  screen -r 14813
+  123  ls
+  124  cd take.xyz/
+  125  screen -r
+  126  screen -r 15194
+  127  screen -r 14813
+  128  ls
+  129  cd take.xyz/
+  130  ls
+  131  pwd
+  132  cd take.xyz/
+  133  cd ..
+  134  history | grep git clone
+  135  history | grep git
+  136  git clone https://github.com/liamzebedee/take.xyz api
+  137  cd api
+  138  ls
+  139  cd api
+  140  ls
+  141  cat README.md
+  142  python3 -m venv env
+  143  source env/bin/activate
+  144  pipenv install
+  145  pip install
+  146  pip install -r requirements.txt
+  147  ls
+  148  git checkout api2
+  149  pipenv
+  150  pip install
+  151  ls
+  152  pip install -r Pipfile
+  153  pipenv
+  154  ls
+  155  pip install --user pipenv
+  156  pip install pipenv
+  157  pipenv install
+  158  python -v
+  159  python
+  160  cd take
+  161  ls
+  162  cd take.xyz/
+  163  ls
+  164  ..
+  165  cd ..
+  166  ls
+  167  cd api
+  168  git pull
+  169  ls
+  170  cd apil
+  171  cd api
+  172  ls
+  173  docker-compose up
+  174  docker
+  175  yum
+  176  apt
+  177  sudo yum install docker
+  178  docker-compose
+  179  docker compose
+  180  pip3 install --user docker-compose
+  181  docker compose
+  182  docker-compose
+  183  docker-compose up
+  184  sudo docker-compose up
+  185  docker-compose up
+  186  service docker start
+  187  sudo service docker start
+  188  service docker start
+  189  docker-compose up
+  190  docker start
+  191  docker daemon
+  192  docker status
+  193  docker ps
+  194  sudo systemctl start docker.service
+  195  sudo systemctl enable docker.service
+  196  docker ps
+  197  sudo docker ps
+  198  docker-compose up
+  199  sudo docker-compose up
+  200  docker-compose
+  201  history | "grep exec"
+  202  history | grep exec
+  203  history | grep
+  204  history | grep docker
+  205  cd api/api
+  206  sudo docker-compose exec web bash
+  207  history

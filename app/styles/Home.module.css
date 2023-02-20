@@ -26,6 +26,9 @@
   transition: all 50ms;
 }
 
+
+
+
 .helpGuide a {
   color: #0070f3;
   text-decoration: none;
@@ -79,12 +82,23 @@
   display: flex;  
   flex: 1;
   justify-content: right;
+  align-items: flex-end;
+}
+
+.accountUserProfile {
+  padding-right: 1rem;
+}
+
+.accountUserProfile img:hover {
+  opacity: 0.4;
+  cursor: pointer;
 }
 
 .mainStatus {
   flex: 2;
   justify-content: center;
   display: flex;
+  align-items: center;
 }
 
 .hypeStatus {
@@ -345,11 +359,19 @@
 .takeBox {
   min-height: 20rem;
   transition: all 25ms;
-  
-  /* max-width: 500px;
-  max-height: 500px; */
   display: grid;
   justify-content: center;
+}
+
+.takeBoxEmpty {
+  background: white;
+  border: 3px solid #ff2a8d;
+  width: 15rem;
+  height: 15rem;
+  padding-top: 1rem;
+  padding-left: 0.5rem;
+  font-family: sans-serif;
+  transition: all 25ms;
 }
 
 .mockTakeImg {
@@ -361,7 +383,6 @@
   padding-left: 0.5rem;
   font-family: sans-serif;
   transition: all 25ms;
-
 }
 
 .mockTakeImg:hover {
@@ -466,4 +487,28 @@
   color: white;
   border: 4px solid transparent;
   cursor: not-allowed;
+}
+
+.inlineTake {
+    background: #ff2a8d;
+    color: white;
+    padding: .5rem;
+}
+
+.inlineTake:hover {
+  cursor: pointer;
+  background: #E31C79;
+}
+
+.remixedFrom ul {
+  /* no style */
+  list-style: none;
+  padding: 0;
+}
+
+.remixedFrom ul > li {
+  /* no style */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
