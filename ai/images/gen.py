@@ -5,6 +5,7 @@ from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 from langchain.chains.conversation.memory import ConversationalBufferWindowMemory
 from chatgpt_wrapper import ChatGPT
 
+import json
 import codecs
 
 
@@ -27,7 +28,7 @@ Your text-based meme: {x}
 # The prompt has a very different format to a text-based model. The image model prompts are mostly comma-delimited sequences of entities.
 # ie. warm, earthy, big scenery with a goose, 4d HQ, anime
 PROMPT_IMAGE_PROMPT_GENERATOR = lambda x: f"""
-I want you to act as a prompt generator for an image model. Firstly, I will give you text like this "Your client is standing confidently in front of a judge, wearing a shirt with the words "my pronouns are remix/reward" written on it. They are gesturing passionately towards a document in their hand, arguing that their chosen pronouns are an expression of their unique identity and should be respected by all". Then you will give me a prompt like this: "man in front of judge, shirt, gesturing passionately to document in hand, arguing pronouns, demanding respect". Your prompt should be a concise summary of the scene, focusing on describing the subject, object and environment in terms of nouns and adjectives. The prompt must be one sentence, and must not use full stops. All entities (nouns, objects, adjectives) must be listed with commas between them. Do not use full stops. Your prompt cannot use words (slogans, words written on signs/shirts, captions, etc.) to convey the message. It is very important you find creative ways to convey information without using text or written language. Each part of the prompt must describe one thing and only one thing well. If you cannot explain in one part, then split it into two using commas. This prompt will be used to make a painting, but the prompt should be explanatory enough that a blind person hearing it will get the gist. Only reply with the prompt on a single-line, and nothing else. Do not ask questions, or refer to previous inputs. Your first text is:
+I want you to act as a prompt generator for an image model. Firstly, I will give you text like this "Your client is standing confidently in front of a judge, wearing a shirt with the words 'my pronouns are remix/reward' written on it. They are gesturing passionately towards a document in their hand, arguing that their chosen pronouns are an expression of their unique identity and should be respected by all". Then you will give me a prompt like this: "man in front of judge, shirt, gesturing passionately to document in hand, arguing pronouns, demanding respect". Your prompt should be a concise summary of the scene, focusing on describing the subject, object and environment in terms of nouns and adjectives. The prompt must be one sentence, and must not use full stops. All entities (nouns, objects, adjectives) must be listed with commas between them. Do not use full stops. Your prompt cannot use words (slogans, words written on signs/shirts, captions, etc.) to convey the message. It is very important you find creative ways to convey information without using text or written language. Each part of the prompt must describe one thing and only one thing well. If you cannot explain in one part, then split it into two using commas. This prompt will be used to make a painting, but the prompt should be explanatory enough that a blind person hearing it will get the gist. Only reply with the prompt on a single-line, and nothing else. Do not ask questions, or refer to previous inputs.
 
 Text is: "{x}"
 """
@@ -79,7 +80,9 @@ chatmodel_predict = chatmodel_predict_langchain
 def get_image_prompt(meme):
     # return "{}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
     # return "internet meme, {}, 90's, film 35mm high quality, #shotonfilm, bright colour, thumbnail".format(meme)
-    return "{}, photorealistic, 35mm film, faint light pink undercurrents like aggressive salmon pink ff2a8d, in the style of tame impala innerspeaker".format(meme.replace('.', ''))
+    # return "{}, photorealistic, 35mm film, faint light pink undercurrents like aggressive salmon pink ff2a8d, in the style of tame impala innerspeaker".format(meme.replace('.', ''))
+    # return "Linotype, detailed, conceptually simple, wide angle, top-down isometric, mixed with the themes of dali and surrealism, {}, —v 3".format(meme.replace('.', ''))
+    return "scene of {}, in the style of Rococo's beauty, and style of Internet meme collage, --v 3, wide angle, 3d model from GTA V".format(meme.replace('.', ''))
 
 def generate_image_dalle(prompt, num_images=1):
     openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -97,9 +100,11 @@ def generate_image_dalle(prompt, num_images=1):
 
 
 def generate_image_for_take(take):
+    text = take['text']
+
     # 1. Generate scene description.
     print("Generating scene description...")
-    scene_desc = chatmodel_predict(to_enc(PROMPT_SCENE_DESCRIPTION_GENERATOR(take)))
+    scene_desc = chatmodel_predict(to_enc(PROMPT_SCENE_DESCRIPTION_GENERATOR(text)))
 
     # 2. Generate image prompt.
     print("Generating image prompt...")
@@ -113,8 +118,8 @@ def generate_image_for_take(take):
 
     # Save.
     print("Saving...")
-    with open("results/experiment-1/index.md".format(take), "a") as f:
-        f.write("## {}\n\n".format(take))
+    with open("results/experiment-1/index.md", "a") as f:
+        f.write("## {}\n\n".format(text))
         f.write("### Scene description\n\n")
         f.write(scene_desc)
         f.write("\n\n")
@@ -125,9 +130,16 @@ def generate_image_for_take(take):
         for image_url in image_urls:
             f.write("![]({})\n\n".format(image_url))
         f.write("\n\n")
+    
+    with open("results/experiment-1/index.txt", "a") as f:
+        obj = {
+            "take": take,
+            "scene_desc": scene_desc,
+            "image_prompt": image_prompt,
+            "image_urls": image_urls,
+        }
+        f.write(json.dumps(obj))
 
-
-import json
 
 # open takes.json
 takes_list = []
@@ -147,7 +159,7 @@ with open('../data/takes.json') as f:
             continue
         
         try:
-            generate_image_for_take(text)
+            generate_image_for_take(take)
         except Exception as e:
             print("Error: {}".format(e))
             continue
