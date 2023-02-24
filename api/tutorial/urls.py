@@ -24,13 +24,20 @@ router.register(r'remixes', views.RemixViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'phrases', views.PhraseViewSet)
 router.register(r'likes', views.LikeViewSet)
+
 # router.register(r'groups', views.GroupViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
+    path(r'pinned-takes', views.PinnedTakeList.as_view()),
+    path(r'pinned-takes/<int:pk>/', views.PinnedTakeDetail.as_view()),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('v0/indexer/on_new_take', views.on_new_take),
+    
+    path('auth/login', views.login, name="login"),
+    path('auth/logout', views.logout, name="logout"),
+    path('auth/session', views.session, name="session"),
 ]

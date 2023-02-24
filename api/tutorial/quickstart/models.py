@@ -1,4 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import (
+    BaseUserManager,
+    AbstractBaseUser,
+    PermissionsMixin,
+)
+from web3 import Web3
+from django.core.exceptions import ValidationError
 
 class Take(models.Model):
     nft_id = models.IntegerField(unique=True)
@@ -55,3 +62,43 @@ class Like(models.Model):
 class User(models.Model):
     # Create an index on address
     address = models.CharField(max_length=42, unique=True, db_index=True)
+
+
+class PinnedTake(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='pinned_takes')
+    take = models.ForeignKey(Take, on_delete=models.CASCADE, related_name='pinned_takes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# 
+# User model.
+# 
+
+def validate_ethereum_address(value):
+    if not Web3.isChecksumAddress(value):
+        raise ValidationError
+
+class DjangoUser(AbstractBaseUser, PermissionsMixin):
+    # EIP-55 compliant: https://eips.ethereum.org/EIPS/eip-55
+    ethereum_address = models.CharField(
+        unique=True,
+        primary_key=True,
+        max_length=42,
+        validators=[validate_ethereum_address],
+    )
+    # ens_name = models.CharField(max_length=255, blank=True, null=True)
+    # ens_avatar = models.CharField(max_length=255, blank=True, null=True)
+    created = models.DateTimeField("datetime created", auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    USERNAME_FIELD = "ethereum_address"
+
+    def __str__(self):
+        return self.ethereum_address
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        # Simplest possible answer: All admins are staff
+        return self.is_admin

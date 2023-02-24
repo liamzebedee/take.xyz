@@ -1,11 +1,11 @@
-from tutorial.quickstart.models import Take, Remix, User, Phrase, TemplatePhrase, Like
+from tutorial.quickstart.models import *
 
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['address', 'created_takes']
+        fields = ['address', 'created_takes', 'pinned_takes']
     
     # created_takes = TakeSerializerDepth1(many=True, read_only=True)
 
@@ -63,3 +63,17 @@ class LikeSerializer(serializers.HyperlinkedModelSerializer):
     
     user = UserSerializerLite(read_only=True)
     take = TakeSerializerDepth1(read_only=True)
+
+
+class PinnedTakeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PinnedTake
+        fields = ['user', 'take']
+    
+    user = UserSerializerLite(read_only=True)
+    take = TakeSerializerDepth1(read_only=True)
+
+class DjangoUserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = DjangoUser
+        fields = ['ethereum_address']

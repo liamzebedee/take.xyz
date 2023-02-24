@@ -1,7 +1,8 @@
-from tutorial.quickstart.models import Take, Remix, User, Phrase, TemplatePhrase, Like
+from tutorial.quickstart.models import *
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import api_view
+from rest_framework import generics
 from rest_framework.response import Response
 from tutorial.quickstart.serializers import * 
 from rest_framework import status
@@ -12,6 +13,8 @@ from rest_framework.decorators import action
 import datetime
 import pytz
 from rest_framework.pagination import PageNumberPagination
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import permissions
 
 class TakeViewSet(viewsets.ModelViewSet):
     """
@@ -54,6 +57,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
         # serializer = TakeSerializerDepth1(takes, many=True, context=serializer_context)
         # return Response(serializer.data)
+
+
+class PinnedTakeList(generics.ListCreateAPIView):
+    queryset = PinnedTake.objects.all()
+    serializer_class = PinnedTakeSerializer
+
+
+class PinnedTakeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PinnedTake.objects.all()
+    serializer_class = PinnedTakeSerializer
+
+
+
 
 class PhraseViewSet(viewsets.ModelViewSet):
     """
@@ -138,3 +154,61 @@ def latest_indexed_take(request):
     if take is None:
         return JsonResponse({"error":"NO_INDEXED_TAKES"}, status=status.HTTP_200_OK)
     return JsonResponse({"head":take.nft_id}, status=status.HTTP_200_OK)
+
+
+
+
+import json
+from siwe.siwe import SiweMessage
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from django.shortcuts import redirect
+from django.conf import settings
+
+@api_view(['POST'])
+@csrf_exempt
+def login(request):
+    body = json.loads(request.body)
+
+    auth_kwargs = {
+        # Convert mesage to snake_case variables.
+        "siwe_message": SiweMessage(
+            message={
+                'domain': body["message"]["domain"],
+                'address': body["message"]["address"],
+                'statement': body["message"]["statement"],
+                'uri': body["message"]["uri"],
+                'version': body["message"]["version"],
+                'chain_id': body["message"]["chainId"],
+                'nonce': body["message"]["nonce"],
+                'issued_at': body["message"]["issuedAt"],
+            }
+        ),
+        "signature": body["signature"]
+    }
+    
+    user = authenticate(request, **auth_kwargs)
+    if user is not None:
+        if user.is_active:
+            auth_login(request, user)
+            return JsonResponse({"ok": True, "message": "Successful login."})
+        else:
+            return JsonResponse(
+                {"ok": False, "message": "Wallet disabled."}, status=401
+            )
+    return JsonResponse({"ok": False, "message": "Invalid login."}, status=403)
+
+@api_view(["POST"])
+@csrf_exempt
+def logout(request):
+    auth_logout(request)
+    return redirect(settings.LOGIN_URL)
+
+@api_view(['GET'])
+def session(request):
+    if request.user.is_authenticated:
+        serializer = DjangoUserSerializer(request.user)
+        return Response(serializer.data)
+    else:
+        return Response(None)

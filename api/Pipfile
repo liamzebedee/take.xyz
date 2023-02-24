@@ -9,6 +9,8 @@ djangorestframework = "*"
 django-filter = "*"
 django = "*"
 django-cors-headers = "*"
+web3 = "*"
+siwe = "*"
 
 [dev-packages]
 
