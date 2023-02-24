@@ -44,6 +44,16 @@ let html = `
             grid-gap: 10px;
             padding: 10px;
         }
+
+        @media only screen and (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+
+            .image {
+                margin: 10px;
+            }
+        }
         .container > div {
             background: white;
         }
@@ -59,12 +69,13 @@ let html = `
             border-radius: 5px;
             overflow: hidden;
 
-
             transition: all 0.5s ease;
         }
         .image img {
             width: 100%;
             height: 100%;
+            /max-width: 512px;
+            /max-height: 512px;
             object-fit: cover;
         }
         h3, h4 {
@@ -112,7 +123,7 @@ let html = `
             text-decoration: none;
 
 
-            background-image: url('/images/bg.jpg');
+            background-image: url('/bg.jpg');
             color: white;
             z-index: -1;
             animation: gradient 10s ease-in-out infinite;
@@ -174,8 +185,13 @@ let html = `
             </div>
             </a>
         </div>
+
+        <div>
+            <p>
+        </div>
         
-        ${data.map((item) => {
+        ${data.map((item, i) => {
+            if(i > 100) return null
             return `
                 <div class="image">
                     <img src="/${item.image_path}" loading="lazy" />
