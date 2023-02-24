@@ -394,6 +394,11 @@
   color: #ff2a8d;
 }
 
+.takeImage {
+  width: 100%;
+  height: 100%;
+}
+
 .takeLead {
   text-align: center;
   /* border: 2px solid #ff2a8d; */
@@ -406,7 +411,8 @@
 }
 
 .takeLeadText {
-
+  /* accomodate for img */
+  margin-top: 0.5rem;
   font-size: 1.5rem;
 }
 
@@ -481,7 +487,8 @@
   /* border: 4px solid #FF91AF; */
 }
 
-.btnStylePrimary:disabled {
+.btnStylePrimary:disabled,
+.btnStyleDisabled {
   background: #E31C79;
   opacity: 0.5;
   color: white;
@@ -504,6 +511,7 @@
   /* no style */
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .remixedFrom ul > li {
@@ -511,4 +519,52 @@
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.takeFiltersBlock {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  display: block;
+  border-bottom: 0;
+}
+
+.takeFiltersTitle {
+    color: #999;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      display: block;
+}
+
+.takeFilterList {
+  /* no style */
+  display: inline-block;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.takeFilterList > li {
+  /* no style */
+  list-style: none;
+  display: inline-block;
+  padding: .5rem;
+  margin-right: 0.5rem;
+  border-radius: 10px;
+
+}
+
+.takeFilterList > li.enabled {
+  background: #ff2a8d;
+  color: white;
+}
+
+.takeFilterList>li:not(.enabled):hover {
+  cursor: pointer;
+  background: #ff2a8d;
+  color: white;
+}
+
+.takeFilterList > li:not(.enabled) {
+  border: 2px solid #ff2a8d;
+  color: #ff2a8d;
 }

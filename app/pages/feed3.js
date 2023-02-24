@@ -72,7 +72,7 @@ function UI() {
     const account = useAccount()
     const provider = getProvider()
     const { data: signer, isError, isLoading } = useSigner()
-    
+
     // Contract.
     const takeItContractV1 = getContract({
         address: TakeV3Address,
@@ -84,23 +84,24 @@ function UI() {
         const takeCount = await takeItContractV1.totalSupply()
         if (pageParam === -1) {
             pageParam = takeCount
+            pageParam = 250
         }
 
         const takeIds = Array.from(Array(15).keys())
-        .map(i => BigNumber.from(pageParam).sub(i).toNumber())
-        .reverse()
-        .filter(i => i > -1)
-        .filter(i => i < takeCount)
-        .reverse();
+            .map(i => BigNumber.from(pageParam).sub(i).toNumber())
+            .reverse()
+            .filter(i => i > -1)
+            .filter(i => i < takeCount)
+            .reverse();
         console.log(takeIds)
-        
-        const takes2 = await fetchTakesBatch({ multicall, takeIds, takeItContractV1, provider, takeIds,  })
-        
+
+        const takes2 = await fetchTakesBatch({ multicall, takeIds, takeItContractV1, provider, takeIds, })
+
         takes2.nextCursor = takes2[takes2.length - 1].id - 1
         if (takes2.nextCursor == -1) takes2.nextCursor = 0
         takes2.hasNextPage = takes2.nextCursor > 0
         console.log('next page', pageParam, takes2.nextCursor)
-        
+
         return takes2
     }
 
@@ -133,7 +134,7 @@ function UI() {
             <Header />
 
             <main className={styles.main}>
-                { isFetched && (<div>
+                {isFetched && (<div>
                     <InfiniteScroll
                         pageStart={0}
                         className={styles.takesGrid}
@@ -148,8 +149,8 @@ function UI() {
                             </React.Fragment>
                         ))}
                     </InfiniteScroll>
-                    
-                </div>) }
+
+                </div>)}
 
                 {isFetching && (
                     <div className={styles.loading}>
@@ -168,42 +169,50 @@ function UI() {
 const slugify = require('slugify')
 
 
-
+const aiData = require('../../ai/images/results/experiment-1/index.json')
 
 const TakeBox = ({ take }) => {
+
+    // Find the take in aiData.
+    const aiTake = aiData.find(t => t.take.nft_id == take.id) || { image_paths: [""] }
+
+    const [aiImageIndex, setAiImageIndex] = useState(0)
+    const cycleImage = () => setAiImageIndex((aiImageIndex + 1) % aiTake.image_paths.length)
+
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
-    
+
     // Load the .eth name for the author.
     const { data: authorEns, isError, isLoading } = useEnsName({
         address: take.author,
         chainId: 1,
     })
 
-    const remix = async () => {}
+    const remix = async () => { }
 
     return <div className={styles.takeBox}>
-        <div className={styles.takeHeader}>
+        {/* <div className={styles.takeHeader}>
             <strong>take #{take.id}</strong>
-        </div>
+        </div> */}
 
         <div>
             <Link href={`/t/${slugify(take.text)}-${take.id}`}>
-                {take.takeURI && (
-                    <div className={styles.mockTakeImg}>
-                        <span>{take.text}</span>
-                    </div>
-                )}
-                {/* {take.takeURI && <img className={styles.takeImg} src={take.image} />} */}
+                {(() => {
+                    const url = aiTake.image_paths[aiImageIndex]
+                    const src = `http://localhost:9000/${url.replace('results/experiment-1/', '')}`
+                    return <img className={styles.takeImage} src={src} />
+                })()}
+                
+                {/* <span>{take.text}</span> */}
             </Link>
         </div>
 
         <div className={styles.takeMeta}>
-            <div>minted by <Link href={`/u/${take.author}`}><strong>{take.author && (authorEns || truncateEthAddress(take.author))}</strong></Link></div>
-            <div>
-            {take.refIds.length > 0 && (
-                <span>remixes #{take.refIds[0]}</span>
-            )}
-            </div>
+            {/* <div>minted by <Link href={`/u/${take.author}`}><strong>{take.author && (authorEns || truncateEthAddress(take.author))}</strong></Link></div> */}
+            {/* <div>
+                {take.refIds.length > 0 && (
+                    <span>remixes #{take.refIds[0]}</span>
+                )}
+            </div> */}
         </div>
 
         {/* <p>

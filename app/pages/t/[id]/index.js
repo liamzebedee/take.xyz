@@ -27,6 +27,7 @@ import { TakeABI } from '@takeisxx/lib/src/abis';
 import { fetchTake2 } from '@takeisxx/lib/src/chain';
 import { useQuery } from '@tanstack/react-query';
 import { canRemixTake, parseTake, addContextToTokens } from '@takeisxx/lib/src/parser';
+import Image from 'next/image';
 
 /*
 UI
@@ -132,6 +133,7 @@ export async function getServerSideProps(context) {
     }
 }
 
+// const aiData = require('../../../../ai/images/results/experiment-1/index.json')
 
 function UI(props) {
     const [take, setTake] = useState({})
@@ -197,7 +199,14 @@ function UI(props) {
     // Remix the take.
     const remix = async () => {
         // navigate to the remix page using the router
-        router.push(`/remix/${take.id}?takeURI=${take.takeURI}`)
+        const obj = {
+            description: takeApiData.text
+        }
+        // encode obj as a base64 string
+        const base64 = Buffer.from(JSON.stringify(obj)).toString('base64')
+        // encode the base64 string as a URI component
+        const uri = `data:application/json;base64,${base64}`
+        router.push(`/remix/${take.id}?takeURI=${uri}`)
     }
 
     const openseaUrl = `https://opensea.io/assets/matic/${TakeV3Address}/${take.id}`
@@ -273,6 +282,13 @@ function UI(props) {
         // return <span>{take.text}</span>
     }
 
+
+    // Find the take in aiData.
+    // const aiTake = aiData.find(t => t.take.nft_id == takeId) || { image_paths: [] }
+
+    // const [aiImageIndex, setAiImageIndex] = useState(0)
+    // const cycleImage = () => setAiImageIndex((aiImageIndex + 1) % aiTake.image_paths.length)
+
     const ui = (
         <div className={styles.container}>
             <Head>
@@ -306,10 +322,22 @@ function UI(props) {
                         <strong>take #{takeId}</strong>
                     </p>
 
+                    {/* <div>
+                        {aiTake && aiTake.image_paths.map((url, i) => {
+                            // cd /take.xyz/ai/images
+                            // python3 -m http.server 9000
+                            if(i != aiImageIndex) return
+                            const src = `http://localhost:9000/${url.replace('results/experiment-1/', '')}`
+                            return <img onClick={cycleImage} src={src} width={250} height={250} key={i} />
+                        })}
+                    </div> */}
+
                     <p className={styles.takeLeadText}>{takeApiSuccess && renderTake(takeApiData)}</p>
 
-
                     <footer>
+                        {takeApiSuccess && (
+                            <span><DateString date={new Date(takeApiData.created_at)}/><br/></span>
+                        )}
                         {takeApiSuccess && (
                             <span>minted by <Link href={`/u/${takeApiData.creator.address}`}><strong>{authorEns || truncateEthAddress(takeApiData.creator.address)}</strong></Link><br /></span>
                         )}
@@ -326,6 +354,7 @@ function UI(props) {
                     {/* a button for sending a take NFT to an address */}
                     {/* <SendButton takeId={take.id} takeOwner={take.owner} /> */}
                 </p>
+
 
 
                 <div className={styles.remixedFrom}>
@@ -367,6 +396,21 @@ function UI(props) {
 
 
     return ui
+}
+
+const DateString = ({ date }) => {
+    console.log(date)
+    let months = [
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun", "Jul",
+        "Aug", "Sep", "Oct",
+        "Nov", "Dec"
+    ].map(month => month.toLowerCase())
+
+    let dayNumeral = date.getDate()
+    let month = months[date.getMonth()]
+
+    return <span>{month} {dayNumeral}</span>
 }
 
 // Render a token parsed from a take string.

@@ -75,30 +75,10 @@ function UI() {
         if (!res.count) {
             throw new Error("not found")
         }
-        
+
         const data = res
         console.log('api', data)
         return data
-
-        // const takeCount = await takeItContractV1.totalSupply()
-        // if (pageParam === -1) {
-        //     pageParam = takeCount
-        // }
-
-        // const takeIds = Array.from(Array(15).keys())
-        //     .map(i => BigNumber.from(pageParam).sub(i).toNumber())
-        //     .reverse()
-        //     .filter(i => i > -1)
-        //     .filter(i => i < takeCount)
-        //     .reverse();
-        // console.log(takeIds)
-
-        // const takes2 = await fetchTakesBatch({ multicall, takeIds, takeItContractV1, provider, takeIds, })
-
-        // takes2.nextCursor = takes2[takes2.length - 1].id - 1
-        // if (takes2.nextCursor == -1) takes2.nextCursor = 0
-        // takes2.hasNextPage = takes2.nextCursor > 0
-        // console.log('next page', pageParam, takes2.nextCursor)
     }
 
 
@@ -126,7 +106,7 @@ function UI() {
             <Header />
 
             <main className={styles.helpGuide}>
-                <h2>{ens || id}</h2>
+                <h2>group - {ens || id}</h2>
                 <Btn style="outline" disabled onClick={() => follow()}>
                     {'follow'}
                 </Btn>
@@ -138,17 +118,8 @@ function UI() {
 
             <div>
                 <h2>Takes ({takeApiSuccess && takeApiData.count})</h2>
-                <span className={styles.takeFiltersBlock}>
-                    <span className={styles.takeFiltersTitle}>FILTERS:</span>
-                    <ul className={styles.takeFilterList}>
-                        <li>OG Takes</li>
-                        <li>Templates</li>
-                        <li>Remixes</li>
-                    </ul>
-                </span>
-
                 <div className={styles.grid}>
-                    {takeApiSuccess && <InlineTakeList takes={takeApiData.results}/>}
+                    {takeApiSuccess && <InlineTakeList takes={takeApiData.results} />}
                     {/* {takeApiSuccess && takeApiData.results.map(take => (
                         <Link href={`/t/${take.nft_id}`} key={take.nft_id} className={styles.card}>
                             <p>{take.text}</p>

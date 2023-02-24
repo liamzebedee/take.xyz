@@ -9,6 +9,7 @@ export const Btn = ({ children, style, disabled, onClick }) => {
             [styles.btn]: true,
             [styles.btnStyleOutline]: style == 'outline',
             [styles.btnStylePrimary]: style == 'primary',
+            [styles.btnStyleDisabled]: disabled,
         })} 
         onClick={onClick}
     >
