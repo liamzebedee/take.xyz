@@ -338,7 +338,7 @@ function UI(props) {
                 <div className={styles.remixedFrom}>
                     <h3>{takeApiSuccess && ""+takeApiData.remixes.length} remixes</h3>
                     {takeApiSuccess && takeApiData.remixes.map(remix => {
-                        return <div style={{ paddingBottom: "1rem" }}>
+                        return <div key={remix.nft_id} style={{ paddingBottom: "1rem" }}>
                             <Link href={`/t/-${remix.nft_id}`}>{remix.text}</Link>
                         </div>
                     }) }
