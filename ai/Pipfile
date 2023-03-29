@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+openai = "*"
+langchain = "*"
+rich = "*"
+termcolor = "*"
+ansicolors = "*"
+colorama = "*"
+beautifulsoup4 = "*"
+googlesearch-python = "*"
+keyboard = "*"
+pyinquirer = "*"
+prompt-toolkit = "==1.0.14"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
