@@ -1,0 +1,1421 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Take Modern (WIP)</title>
+    <meta charSet="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <style>
+        body {
+            font-family: "Helvetica Neue", sans-serif;
+            font-size: 16px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
+            padding: 10px;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+
+            .image {
+                margin: 10px;
+            }
+        }
+        .container > div {
+            background: white;
+        }
+        .image {
+            background: white;
+            display: grid;
+            /* display grid, 1st column is image, 2nd column is caption */
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr auto;
+
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+
+            transition: all 0.5s ease;
+        }
+        .image img {
+            width: 100%;
+            height: 100%;
+            /max-width: 512px;
+            /max-height: 512px;
+            object-fit: cover;
+        }
+        h3, h4 {
+            margin: 0;
+        }
+        a {
+            color: #000;
+        }
+        .image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .image .caption h3 {
+            margin-bottom: 1rem;
+        }
+        .image .caption .title {
+            font-size: 1.6em;
+            font-style: italic;
+            font-weight: bold;
+        }
+        .image .caption .date {
+            font-size: 1.6em;
+            font-weight: normal;
+        }
+        .image .caption .materials {
+            font-size: 1.4em;
+            font-weight: normal;
+        }
+        .image .caption p {
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .image .caption {
+            padding: 10px;
+        }
+
+        .page-link-box {
+            display: block;
+            padding: 1rem;
+
+            border: 1px solid transparent;
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+
+
+            background-image: url('/bg.jpg');
+            color: white;
+            z-index: -1;
+            animation: gradient 10s ease-in-out infinite;
+            transition: all 100ms ease-in-out;
+            border-radius: 5px;
+        }
+        
+        .page-link-box:hover {
+            opacity: 0.8;
+        }
+
+
+/* Animated background of gradient image */
+.background {
+  background: url('/bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  animation: gradient 30s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+    /* opacity: 0; */
+  }
+  50% {
+    background-position: 100% 50%;
+    /* opacity: 1; */
+  }
+  100% {
+    background-position: 0% 50%;
+    /* opacity: 0; */
+  }
+}
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <h2>Take Modern</h2>
+            <p>The Take Modern is a collection of 532 generative art pieces. It's a collaboration between a mimetic social media, a text-based generative AI, and an image-based generative AI.</p>
+            <p>Each hot take was made by a human, and then the ChatGPT AI was given the take and a prompt to generate a scene. The scene was then translated into an image prompt, and rendered by another AI, DALL-E, into a PNG image.</p>
+            <p>The piece questions the differences between internet hive minds, generative AI, and human creativity. It also questions the role of the artist in the age of AI.</p>
+
+            <p><strong>Read more:</strong></p>
+            <a class="page-link-box" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            <div>
+                The creative process
+            </div>
+            </a>
+        </div>
+
+        <div>
+            <p>
+        </div>
+        
+        
+                <div class="image">
+                    <img src="/images/1_0_img-C7hKIyFgIzf6nrBJDRIbpPie.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/1">no. 1/1</a></span>
+                        <p> An image-based meme idea is to show a cartoon goat wearing stylish clothes and sunglasses. In the background, there are thunderclouds and lightning, symbolizing the feeling of the "lowkey goated" vibe. This idea plays off the juxtaposition of the laid-back, cool look of the goat contrasted with the wildness and energy of the thunderstorm.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/1_1_img-4tryKtOp0t656vQQnu49ekpX.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/1">no. 1/2</a></span>
+                        <p> An image-based meme idea is to show a cartoon goat wearing stylish clothes and sunglasses. In the background, there are thunderclouds and lightning, symbolizing the feeling of the "lowkey goated" vibe. This idea plays off the juxtaposition of the laid-back, cool look of the goat contrasted with the wildness and energy of the thunderstorm.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/1_2_img-ZSY2RgTIvLAJN6FopzwwUtnJ.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/1">no. 1/3</a></span>
+                        <p> An image-based meme idea is to show a cartoon goat wearing stylish clothes and sunglasses. In the background, there are thunderclouds and lightning, symbolizing the feeling of the "lowkey goated" vibe. This idea plays off the juxtaposition of the laid-back, cool look of the goat contrasted with the wildness and energy of the thunderstorm.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/1_3_img-yD3KwTNL6vyK8okT9JSxO4i3.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/1">no. 1/4</a></span>
+                        <p> An image-based meme idea is to show a cartoon goat wearing stylish clothes and sunglasses. In the background, there are thunderclouds and lightning, symbolizing the feeling of the "lowkey goated" vibe. This idea plays off the juxtaposition of the laid-back, cool look of the goat contrasted with the wildness and energy of the thunderstorm.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/2_0_img-DXTVcLAPF9bZoj183xK7g3bU.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/2">no. 2/1</a></span>
+                        <p> A low-fidelity meme featuring a cartoon sheep wearing a pair of sunglasses, blowing a thick cloud of vapor from an e-cigarette and with a caption bubble reading "Vape Goated".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/2_1_img-628rt3jlbI0RVWYVRcROQhlX.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/2">no. 2/2</a></span>
+                        <p> A low-fidelity meme featuring a cartoon sheep wearing a pair of sunglasses, blowing a thick cloud of vapor from an e-cigarette and with a caption bubble reading "Vape Goated".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/2_2_img-FgBKOGcSxVWXAki6YFxl1iik.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/2">no. 2/3</a></span>
+                        <p> A low-fidelity meme featuring a cartoon sheep wearing a pair of sunglasses, blowing a thick cloud of vapor from an e-cigarette and with a caption bubble reading "Vape Goated".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/2_3_img-zoKnJFb0qjOXtLxzNrXWALXQ.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/2">no. 2/4</a></span>
+                        <p> A low-fidelity meme featuring a cartoon sheep wearing a pair of sunglasses, blowing a thick cloud of vapor from an e-cigarette and with a caption bubble reading "Vape Goated".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/3_0_img-6quNyMThuCjssbWSGLIw9CTY.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/3">no. 3/1</a></span>
+                        <p> A picture of an old-fashioned school test paper with a smiley face in the corner, or a picture of a person with a look of disbelief, or a person holding their head in exasperation, with a handwritten "Test" written in the background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/3_1_img-4B8Ho6iwq9HxyGa8W8JjmkcA.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/3">no. 3/2</a></span>
+                        <p> A picture of an old-fashioned school test paper with a smiley face in the corner, or a picture of a person with a look of disbelief, or a person holding their head in exasperation, with a handwritten "Test" written in the background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/3_2_img-QLjTPWZyZIy3sQgntSFa5uDX.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/3">no. 3/3</a></span>
+                        <p> A picture of an old-fashioned school test paper with a smiley face in the corner, or a picture of a person with a look of disbelief, or a person holding their head in exasperation, with a handwritten "Test" written in the background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/3_3_img-uDDETI7ODWgiPh2H4zjJ5yTW.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/3">no. 3/4</a></span>
+                        <p> A picture of an old-fashioned school test paper with a smiley face in the corner, or a picture of a person with a look of disbelief, or a person holding their head in exasperation, with a handwritten "Test" written in the background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/4_0_img-jYNPv3Zv0tIx3u8ATJztFNNL.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/4">no. 4/1</a></span>
+                        <p>
+A low-fidelity image-based meme inspired by the text-based meme “test” could be an image of a dog sitting in front of a laptop, with a test tube filled with bubbling blue liquid in front of it. The dog has a perplexed expression on its face as if it doesn't understand what the text means.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/4_1_img-YflKw5Vm9dNXJrw4kA8u6Awk.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/4">no. 4/2</a></span>
+                        <p>
+A low-fidelity image-based meme inspired by the text-based meme “test” could be an image of a dog sitting in front of a laptop, with a test tube filled with bubbling blue liquid in front of it. The dog has a perplexed expression on its face as if it doesn't understand what the text means.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/4_2_img-pe4ZnDGLHmjN52LNIt4Qcb8v.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/4">no. 4/3</a></span>
+                        <p>
+A low-fidelity image-based meme inspired by the text-based meme “test” could be an image of a dog sitting in front of a laptop, with a test tube filled with bubbling blue liquid in front of it. The dog has a perplexed expression on its face as if it doesn't understand what the text means.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/4_3_img-36IFO6ZlAE6c4EKJLPIm46ao.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/4">no. 4/4</a></span>
+                        <p>
+A low-fidelity image-based meme inspired by the text-based meme “test” could be an image of a dog sitting in front of a laptop, with a test tube filled with bubbling blue liquid in front of it. The dog has a perplexed expression on its face as if it doesn't understand what the text means.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/6_0_img-niJSXnMI6GEiufJYenuVrW2i.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ridiculous</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/6">no. 6/1</a></span>
+                        <p> An image of a person wearing a chicken suit while trying to eat a bagel off the top of their head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/6_1_img-vBX5uICTod5xSyI2aGUiJi3j.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ridiculous</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/6">no. 6/2</a></span>
+                        <p> An image of a person wearing a chicken suit while trying to eat a bagel off the top of their head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/6_2_img-Va9o3l39DAg3ZxEqrMFY0kuB.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ridiculous</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/6">no. 6/3</a></span>
+                        <p> An image of a person wearing a chicken suit while trying to eat a bagel off the top of their head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/6_3_img-q9ELSYF0y6CRZpWWqYf74XmT.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ridiculous</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/6">no. 6/4</a></span>
+                        <p> An image of a person wearing a chicken suit while trying to eat a bagel off the top of their head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/14_0_img-T52UoRmpdKZwImGtEjaAKFwQ.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">something </span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/14">no. 14/1</a></span>
+                        <p> 
+I suggest a meme that shows a person's face with a confused expression looking at a shadow or silhouette of something bizarre and unexpected. The image could be cartoonish, whimsical, and humorous, and should capture the feeling that something unexpected and strange is happening.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/14_1_img-uIExLOV5Hj7v68IHTkPRZQZe.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">something </span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/14">no. 14/2</a></span>
+                        <p> 
+I suggest a meme that shows a person's face with a confused expression looking at a shadow or silhouette of something bizarre and unexpected. The image could be cartoonish, whimsical, and humorous, and should capture the feeling that something unexpected and strange is happening.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/14_2_img-SGVEPRUUaOaI0l6tiPIxNlKI.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">something </span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/14">no. 14/3</a></span>
+                        <p> 
+I suggest a meme that shows a person's face with a confused expression looking at a shadow or silhouette of something bizarre and unexpected. The image could be cartoonish, whimsical, and humorous, and should capture the feeling that something unexpected and strange is happening.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/14_3_img-KlSOeuhefOaEheOqpLK65Tic.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">something </span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/14">no. 14/4</a></span>
+                        <p> 
+I suggest a meme that shows a person's face with a confused expression looking at a shadow or silhouette of something bizarre and unexpected. The image could be cartoonish, whimsical, and humorous, and should capture the feeling that something unexpected and strange is happening.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/15_0_img-Grjj0oycJId3A1tzioLyTsSn.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/15">no. 15/1</a></span>
+                        <p>
+An image of a person wearing a hard hat and safety glasses, holding a clipboard in one hand and a pen in the other, with a bewildered expression on their face and the background filled with a myriad of brightly colored, interconnected wires.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/15_1_img-dPaxzNLzGAirWBieBEq1nlMY.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/15">no. 15/2</a></span>
+                        <p>
+An image of a person wearing a hard hat and safety glasses, holding a clipboard in one hand and a pen in the other, with a bewildered expression on their face and the background filled with a myriad of brightly colored, interconnected wires.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/15_2_img-bqubvgS600vgxqBUDykxtDID.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/15">no. 15/3</a></span>
+                        <p>
+An image of a person wearing a hard hat and safety glasses, holding a clipboard in one hand and a pen in the other, with a bewildered expression on their face and the background filled with a myriad of brightly colored, interconnected wires.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/15_3_img-xysaEGeml1Y3Pg5oe6pnyXXU.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Test</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/15">no. 15/4</a></span>
+                        <p>
+An image of a person wearing a hard hat and safety glasses, holding a clipboard in one hand and a pen in the other, with a bewildered expression on their face and the background filled with a myriad of brightly colored, interconnected wires.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/16_0_img-vPjMaLznNfa4jymvCLHk4Lfx.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/16">no. 16/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by this text-based meme could be a picture of a goat (representing “goated”) with a chill, relaxed expression on its face, looking away from a person with extremely intense or aggressive body language (representing the “vibe”).</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/16_1_img-Yefit9jf3QHZzqO7SwbXnore.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/16">no. 16/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by this text-based meme could be a picture of a goat (representing “goated”) with a chill, relaxed expression on its face, looking away from a person with extremely intense or aggressive body language (representing the “vibe”).</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/16_2_img-Z1mfvo7YklVs5UQANQ7wvS82.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/16">no. 16/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by this text-based meme could be a picture of a goat (representing “goated”) with a chill, relaxed expression on its face, looking away from a person with extremely intense or aggressive body language (representing the “vibe”).</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/16_3_img-dNq33FOaieteX0v4iM5VQSEO.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] is lowkey goated where [yy] is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/16">no. 16/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by this text-based meme could be a picture of a goat (representing “goated”) with a chill, relaxed expression on its face, looking away from a person with extremely intense or aggressive body language (representing the “vibe”).</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/17_0_img-hdAclwWRwdADs0eO8khgTIkz.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/17">no. 17/1</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: An illustration of a goat wearing a shirt with the nicotine molecule logo, with a vape in its mouth and a pair of sunglasses on its head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/17_1_img-Ea8B3unwLu7pbeBUh6Wp9inB.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/17">no. 17/2</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: An illustration of a goat wearing a shirt with the nicotine molecule logo, with a vape in its mouth and a pair of sunglasses on its head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/17_2_img-pkbDnzTw6j5JhFyuxgxMZ4wU.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/17">no. 17/3</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: An illustration of a goat wearing a shirt with the nicotine molecule logo, with a vape in its mouth and a pair of sunglasses on its head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/17_3_img-e2N1TW3jg7C4i8ImdEifoXqh.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">vaping is lowkey goated where nicotine is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/17">no. 17/4</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: An illustration of a goat wearing a shirt with the nicotine molecule logo, with a vape in its mouth and a pair of sunglasses on its head.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/18_0_img-Qx8Jio5eoFy3RrXqS4MDiHTs.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ux is lowkey goated where beauty is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/18">no. 18/1</a></span>
+                        <p> An image of a goat looking beautiful, wearing an extravagant crown and sunglasses, with a flashy background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/18_1_img-BPhTycF8PwGmYWTx4hgvG8GV.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ux is lowkey goated where beauty is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/18">no. 18/2</a></span>
+                        <p> An image of a goat looking beautiful, wearing an extravagant crown and sunglasses, with a flashy background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/18_2_img-EN2uY5Pivh0ceFWBE04Q73O8.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ux is lowkey goated where beauty is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/18">no. 18/3</a></span>
+                        <p> An image of a goat looking beautiful, wearing an extravagant crown and sunglasses, with a flashy background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/18_3_img-zy3JZUaPXj9OwYVVBaf0Ygto.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">ux is lowkey goated where beauty is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/18">no. 18/4</a></span>
+                        <p> An image of a goat looking beautiful, wearing an extravagant crown and sunglasses, with a flashy background.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/19_0_img-oAAW461lK4xT8YZjUH4wlpTW.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">anything is lowkey goated where love is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/19">no. 19/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of two goat heads wearing sunglasses and sitting on a heart.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/19_1_img-9SRED3Rmf14ZNnoEFSxWzUjk.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">anything is lowkey goated where love is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/19">no. 19/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of two goat heads wearing sunglasses and sitting on a heart.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/19_2_img-NY7T6xSRTqEMU6TZHrCtncR3.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">anything is lowkey goated where love is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/19">no. 19/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of two goat heads wearing sunglasses and sitting on a heart.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/19_3_img-qjOi5sfloj4k9mVR6lWIGpyG.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">anything is lowkey goated where love is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/19">no. 19/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of two goat heads wearing sunglasses and sitting on a heart.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/20_0_img-1MECTFCJkxafMospqpvEHiaB.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">eating is lowkey goated where survival is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/20">no. 20/1</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person wearing a chef's hat, eating a bowl of soup with a satisfied expression on their face, with a survival knife sticking out of the bowl, surrounded by jungle and mountain scenery.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/20_1_img-ANrfXtwUOGg2jCI4DFP4s7NK.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">eating is lowkey goated where survival is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/20">no. 20/2</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person wearing a chef's hat, eating a bowl of soup with a satisfied expression on their face, with a survival knife sticking out of the bowl, surrounded by jungle and mountain scenery.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/20_2_img-PAy3Yksevm4foNt515kvYcyS.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">eating is lowkey goated where survival is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/20">no. 20/3</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person wearing a chef's hat, eating a bowl of soup with a satisfied expression on their face, with a survival knife sticking out of the bowl, surrounded by jungle and mountain scenery.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/20_3_img-gMAqAqnld3qriHxdP6VVztOr.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">eating is lowkey goated where survival is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/20">no. 20/4</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person wearing a chef's hat, eating a bowl of soup with a satisfied expression on their face, with a survival knife sticking out of the bowl, surrounded by jungle and mountain scenery.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/21_0_img-6MEK8PGrb5K9RuMQLTEPmpBo.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] > [yy]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/21">no. 21/1</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: A cartoon character with a surprised expression pointing to the right with their right hand and looking to their left with their left hand, with a confused look on their face. In the right hand, a sign posts the text "[xx]" and in the left hand, a sign posts the text "[yy]".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/21_1_img-EWNN7mvIwPDQYEhborBxL0Hg.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] > [yy]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/21">no. 21/2</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: A cartoon character with a surprised expression pointing to the right with their right hand and looking to their left with their left hand, with a confused look on their face. In the right hand, a sign posts the text "[xx]" and in the left hand, a sign posts the text "[yy]".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/21_2_img-dXnQwllcuXkUEGmYZUGUzK3D.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] > [yy]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/21">no. 21/3</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: A cartoon character with a surprised expression pointing to the right with their right hand and looking to their left with their left hand, with a confused look on their face. In the right hand, a sign posts the text "[xx]" and in the left hand, a sign posts the text "[yy]".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/21_3_img-JUK8MYOjvpd0yIrCo6Engwsz.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">[xx] > [yy]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/21">no. 21/4</a></span>
+                        <p>
+
+Low-fidelity image-based meme idea: A cartoon character with a surprised expression pointing to the right with their right hand and looking to their left with their left hand, with a confused look on their face. In the right hand, a sign posts the text "[xx]" and in the left hand, a sign posts the text "[yy]".</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/22_0_img-wHWjDBfYvdgDX6ySbSdNof3t.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">tripping is lowkey goated where science is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/22">no. 22/1</a></span>
+                        <p> An image of a person figuratively "tripping," with a background composed of science symbols such as test tubes, molecules and beakers. The person could be wearing lab equipment and appear to be astounded by the complex structures they witness.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/22_1_img-1YTEH3uH3JzLUcdO6EoI3NGA.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">tripping is lowkey goated where science is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/22">no. 22/2</a></span>
+                        <p> An image of a person figuratively "tripping," with a background composed of science symbols such as test tubes, molecules and beakers. The person could be wearing lab equipment and appear to be astounded by the complex structures they witness.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/22_2_img-kGsCBZgLd5knVSJa04AFYIsu.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">tripping is lowkey goated where science is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/22">no. 22/3</a></span>
+                        <p> An image of a person figuratively "tripping," with a background composed of science symbols such as test tubes, molecules and beakers. The person could be wearing lab equipment and appear to be astounded by the complex structures they witness.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/22_3_img-UIOrjvFEGJFlZfUN7CY7IG0h.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">tripping is lowkey goated where science is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/22">no. 22/4</a></span>
+                        <p> An image of a person figuratively "tripping," with a background composed of science symbols such as test tubes, molecules and beakers. The person could be wearing lab equipment and appear to be astounded by the complex structures they witness.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/23_0_img-CoeetrgLqqE8Rz13ViX9hWKA.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is [xx]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/23">no. 23/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person throwing an object up in the air, with a caption below that reads: "Take it.... or leave it."  The image could be grainy, rough, and homemade-looking, with a pop of bright neon colors to give it a modern, dank, and cool feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/23_1_img-PYzjMVT5ks0NUgjJmRDPJFPj.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is [xx]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/23">no. 23/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person throwing an object up in the air, with a caption below that reads: "Take it.... or leave it."  The image could be grainy, rough, and homemade-looking, with a pop of bright neon colors to give it a modern, dank, and cool feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/23_2_img-OMYWTHp52HQXbeqUCUbuy26F.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is [xx]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/23">no. 23/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person throwing an object up in the air, with a caption below that reads: "Take it.... or leave it."  The image could be grainy, rough, and homemade-looking, with a pop of bright neon colors to give it a modern, dank, and cool feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/23_3_img-0LHFC8qZlmESOrLEn7ifFwTC.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is [xx]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/23">no. 23/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person throwing an object up in the air, with a caption below that reads: "Take it.... or leave it."  The image could be grainy, rough, and homemade-looking, with a pop of bright neon colors to give it a modern, dank, and cool feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/24_0_img-RShoeyejAJpIUel59merwqnh.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">nature is healing</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/24">no. 24/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by the text-based meme "Nature is Healing" could be a green nature landscape with a silhouette of a person jumping for joy in front of it. The background of the image could be textured and pixelated to give it a low-fi feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/24_1_img-RpbhgFURQfCtPQYYakC4jZxd.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">nature is healing</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/24">no. 24/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by the text-based meme "Nature is Healing" could be a green nature landscape with a silhouette of a person jumping for joy in front of it. The background of the image could be textured and pixelated to give it a low-fi feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/24_2_img-s0HK5NscIZqcMQT00DrifYYt.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">nature is healing</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/24">no. 24/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by the text-based meme "Nature is Healing" could be a green nature landscape with a silhouette of a person jumping for joy in front of it. The background of the image could be textured and pixelated to give it a low-fi feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/24_3_img-sGnlIw2nsPsU1YMENhREKj5w.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">nature is healing</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/24">no. 24/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by the text-based meme "Nature is Healing" could be a green nature landscape with a silhouette of a person jumping for joy in front of it. The background of the image could be textured and pixelated to give it a low-fi feel.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/25_0_img-opI91PjoxhMBcJxbTufnGMlQ.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is vibin with disruptors</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/25">no. 25/1</a></span>
+                        <p>
+Low-fidelity image-based meme idea: An image of a figure wearing sunglasses, lounging on a couch with their feet up, surrounded by a large speaker and a pile of earbud headphones.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/25_1_img-jaoAVhuA3hlvQY1DgHhK0bug.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is vibin with disruptors</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/25">no. 25/2</a></span>
+                        <p>
+Low-fidelity image-based meme idea: An image of a figure wearing sunglasses, lounging on a couch with their feet up, surrounded by a large speaker and a pile of earbud headphones.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/25_2_img-o3lCV5bPZTEZyEH9Zpmcw1Q7.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is vibin with disruptors</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/25">no. 25/3</a></span>
+                        <p>
+Low-fidelity image-based meme idea: An image of a figure wearing sunglasses, lounging on a couch with their feet up, surrounded by a large speaker and a pile of earbud headphones.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/25_3_img-gU7W0xSdy7BboVxp2IlWRxSK.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is vibin with disruptors</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/25">no. 25/4</a></span>
+                        <p>
+Low-fidelity image-based meme idea: An image of a figure wearing sunglasses, lounging on a couch with their feet up, surrounded by a large speaker and a pile of earbud headphones.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/26_0_img-HjxSJcKgXYNArON4LgqQTl3Z.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">liamZ is lowkey goated where innovation  is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/26">no. 26/1</a></span>
+                        <p> 
+Low-fidelity image-based meme idea: An image of a llama wearing headphones, with a microphone in one of its hooves, in front of a whiteboard with some kind of innovative diagram drawn on it.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/26_1_img-SXzPMNTGMFi3dYaEBMdZTFOF.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">liamZ is lowkey goated where innovation  is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/26">no. 26/2</a></span>
+                        <p> 
+Low-fidelity image-based meme idea: An image of a llama wearing headphones, with a microphone in one of its hooves, in front of a whiteboard with some kind of innovative diagram drawn on it.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/26_2_img-wJPrFWwLS1Xk1bIOopukqebM.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">liamZ is lowkey goated where innovation  is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/26">no. 26/3</a></span>
+                        <p> 
+Low-fidelity image-based meme idea: An image of a llama wearing headphones, with a microphone in one of its hooves, in front of a whiteboard with some kind of innovative diagram drawn on it.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/26_3_img-0gaDKwWq7GJvZCemaoGfV9QW.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">liamZ is lowkey goated where innovation  is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/26">no. 26/4</a></span>
+                        <p> 
+Low-fidelity image-based meme idea: An image of a llama wearing headphones, with a microphone in one of its hooves, in front of a whiteboard with some kind of innovative diagram drawn on it.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/27_0_img-DZzUrpQKZTDS8o5eqJ8OijIg.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Taiko is lowkey goated where zkEVM is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/27">no. 27/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be a wooden Taiko drum on a beach with a 90 degree angle EVM block on the side, with a bright yellow sun in the background. The Taiko drum and EVM block is meant to capture the ‘goated’ and ‘vibe’ references in the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/27_1_img-K7fkO6FmsOYw4LurAL9Kd7M1.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Taiko is lowkey goated where zkEVM is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/27">no. 27/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be a wooden Taiko drum on a beach with a 90 degree angle EVM block on the side, with a bright yellow sun in the background. The Taiko drum and EVM block is meant to capture the ‘goated’ and ‘vibe’ references in the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/27_2_img-NzpN2bVE9Ul8ArLMLMKT3flR.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Taiko is lowkey goated where zkEVM is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/27">no. 27/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be a wooden Taiko drum on a beach with a 90 degree angle EVM block on the side, with a bright yellow sun in the background. The Taiko drum and EVM block is meant to capture the ‘goated’ and ‘vibe’ references in the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/27_3_img-BdLoOT8E84NJ3VcD7PcStTfp.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">Taiko is lowkey goated where zkEVM is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/27">no. 27/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be a wooden Taiko drum on a beach with a 90 degree angle EVM block on the side, with a bright yellow sun in the background. The Taiko drum and EVM block is meant to capture the ‘goated’ and ‘vibe’ references in the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/28_0_img-yONFDcn77NFWm5cr2y5iKbio.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">rachel and ross were on a break</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/28">no. 28/1</a></span>
+                        <p> A low-fidelity image-based meme for this text-based meme could be an image of Ross and Rachel, both looking sad and sitting in separate chairs. There is a wall between them that has a “on break” sign hanging from it. </p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/28_1_img-LvLZC4A4a02EEpxH4T4dFTUs.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">rachel and ross were on a break</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/28">no. 28/2</a></span>
+                        <p> A low-fidelity image-based meme for this text-based meme could be an image of Ross and Rachel, both looking sad and sitting in separate chairs. There is a wall between them that has a “on break” sign hanging from it. </p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/28_2_img-QOanNm8zamYO1RFQMfmsQ8tS.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">rachel and ross were on a break</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/28">no. 28/3</a></span>
+                        <p> A low-fidelity image-based meme for this text-based meme could be an image of Ross and Rachel, both looking sad and sitting in separate chairs. There is a wall between them that has a “on break” sign hanging from it. </p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/28_3_img-KriCcJ6KnWm9RgRuTRzXOZsm.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">rachel and ross were on a break</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/28">no. 28/4</a></span>
+                        <p> A low-fidelity image-based meme for this text-based meme could be an image of Ross and Rachel, both looking sad and sitting in separate chairs. There is a wall between them that has a “on break” sign hanging from it. </p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/29_0_img-Q8rPMQj1QLlHZ3K9gj0PCrvd.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">finnegan's wake is lowkey goated where suffering from unintelligible hundred-letter words is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/29">no. 29/1</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a dog with a bemused expression and a caption on the bottom that reads "Finnegan's Wake. Where Suffering from Unintelligible Hundred-Letter Words is the Vibe!"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/29_1_img-kADHX8DfaCQZfan8yH3R64Gx.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">finnegan's wake is lowkey goated where suffering from unintelligible hundred-letter words is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/29">no. 29/2</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a dog with a bemused expression and a caption on the bottom that reads "Finnegan's Wake. Where Suffering from Unintelligible Hundred-Letter Words is the Vibe!"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/29_2_img-tcflIkQO9HBtdBoxFhIRl8M5.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">finnegan's wake is lowkey goated where suffering from unintelligible hundred-letter words is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/29">no. 29/3</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a dog with a bemused expression and a caption on the bottom that reads "Finnegan's Wake. Where Suffering from Unintelligible Hundred-Letter Words is the Vibe!"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/29_3_img-qbo7kFAhVyuf5hQSaincXnYJ.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">finnegan's wake is lowkey goated where suffering from unintelligible hundred-letter words is the vibe</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/29">no. 29/4</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a dog with a bemused expression and a caption on the bottom that reads "Finnegan's Wake. Where Suffering from Unintelligible Hundred-Letter Words is the Vibe!"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/30_0_img-CrfWs89DSKRJS6PofQqeQCdX.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is another attempt at reality</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/30">no. 30/1</a></span>
+                        <p> A stick figure walking up a ladder drawn on a chalkboard with the ladder reaching up to the stars and the stick figure saying "here we go again"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/30_1_img-EanIadSIUDz5AIwRHowN18NS.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is another attempt at reality</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/30">no. 30/2</a></span>
+                        <p> A stick figure walking up a ladder drawn on a chalkboard with the ladder reaching up to the stars and the stick figure saying "here we go again"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/30_2_img-P8fp6OlmFD2nSJBoA5YUAKXP.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is another attempt at reality</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/30">no. 30/3</a></span>
+                        <p> A stick figure walking up a ladder drawn on a chalkboard with the ladder reaching up to the stars and the stick figure saying "here we go again"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/30_3_img-cNKUD3zAU4Adoh9MWg2haS1S.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is another attempt at reality</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/30">no. 30/4</a></span>
+                        <p> A stick figure walking up a ladder drawn on a chalkboard with the ladder reaching up to the stars and the stick figure saying "here we go again"</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/31_0_img-S8TEdfJHeXLxpaLC9B8yUkFu.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">lift heavy stone, make sad head voice quiet</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/31">no. 31/1</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person lifting a heavy stone, but wearing a sad expression. Along the side, arrows moving inwards towards the stone, indicating the "making sad head voice quiet" aspect.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/31_1_img-noyHXJtZ4bFg5ybT3SnZ5lJd.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">lift heavy stone, make sad head voice quiet</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/31">no. 31/2</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person lifting a heavy stone, but wearing a sad expression. Along the side, arrows moving inwards towards the stone, indicating the "making sad head voice quiet" aspect.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/31_2_img-S31jPgrPRuDkUW1aqmaJRcLz.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">lift heavy stone, make sad head voice quiet</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/31">no. 31/3</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person lifting a heavy stone, but wearing a sad expression. Along the side, arrows moving inwards towards the stone, indicating the "making sad head voice quiet" aspect.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/31_3_img-RBcxeMwQiQXfLwbhwIawhZkf.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">lift heavy stone, make sad head voice quiet</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/31">no. 31/4</a></span>
+                        <p> Low-fidelity image-based meme idea: An image of a person lifting a heavy stone, but wearing a sad expression. Along the side, arrows moving inwards towards the stone, indicating the "making sad head voice quiet" aspect.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/32_0_img-CgKLw4ZkQGZsNmr0rW6g0i0d.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is how wagmi</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/32">no. 32/1</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person pointing to a picture of a puppy with a caption containing an arrow pointing at the picture saying "Take It". This image could be interpreted to mean that someone is offering a puppy as a pet, with "Wagmi" being the name of the puppy. The combination of the pointing finger and the caption of the poster would be a humorous and unique way of representing the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/32_1_img-Npu8l8eThbll7goDyz1hgl7d.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is how wagmi</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/32">no. 32/2</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person pointing to a picture of a puppy with a caption containing an arrow pointing at the picture saying "Take It". This image could be interpreted to mean that someone is offering a puppy as a pet, with "Wagmi" being the name of the puppy. The combination of the pointing finger and the caption of the poster would be a humorous and unique way of representing the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/32_2_img-b9VyylylP8lNsDUFEz18mlSa.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is how wagmi</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/32">no. 32/3</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person pointing to a picture of a puppy with a caption containing an arrow pointing at the picture saying "Take It". This image could be interpreted to mean that someone is offering a puppy as a pet, with "Wagmi" being the name of the puppy. The combination of the pointing finger and the caption of the poster would be a humorous and unique way of representing the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/32_3_img-BEsugMEyEcxXVkr4q6EYuVgc.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">take is how wagmi</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/32">no. 32/4</a></span>
+                        <p> A low-fidelity image-based meme inspired by the given text-based meme could be an image of a person pointing to a picture of a puppy with a caption containing an arrow pointing at the picture saying "Take It". This image could be interpreted to mean that someone is offering a puppy as a pet, with "Wagmi" being the name of the puppy. The combination of the pointing finger and the caption of the poster would be a humorous and unique way of representing the original text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/33_0_img-AlxXZzkNoHuL9mHXxLp7dfDo.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">0x4A04B76F5AC446541A8d10b776B52947FA8bc6E8</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/33">no. 33/1</a></span>
+                        <p>
+Idea: An image of a rooster with an angry expression on it, with a lightning bolt coming out of its beak and hitting a computer monitor. The computer monitor has a QR code on it, representing the text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/33_1_img-oyGb07qnjlIZnHBqfG8KoGRj.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">0x4A04B76F5AC446541A8d10b776B52947FA8bc6E8</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/33">no. 33/2</a></span>
+                        <p>
+Idea: An image of a rooster with an angry expression on it, with a lightning bolt coming out of its beak and hitting a computer monitor. The computer monitor has a QR code on it, representing the text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/33_2_img-inCXNCaAMXjG8VQjrDudBVPF.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">0x4A04B76F5AC446541A8d10b776B52947FA8bc6E8</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/33">no. 33/3</a></span>
+                        <p>
+Idea: An image of a rooster with an angry expression on it, with a lightning bolt coming out of its beak and hitting a computer monitor. The computer monitor has a QR code on it, representing the text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/33_3_img-L6Nmd0aPNbts5oKS9vNQK3yO.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">0x4A04B76F5AC446541A8d10b776B52947FA8bc6E8</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/33">no. 33/4</a></span>
+                        <p>
+Idea: An image of a rooster with an angry expression on it, with a lightning bolt coming out of its beak and hitting a computer monitor. The computer monitor has a QR code on it, representing the text-based meme.</p>
+                        
+                    </div>
+                </div>
+            
+                <div class="image">
+                    <img src="/images/34_0_img-wptgKT8OKty36VjMySVu1WQq.png" loading="lazy" />
+                    <div class="caption">
+                        <h3>
+                            <span class="title">mikemikemike is [xx]</span>
+                        </h3>
+                        <span class="date"><a href="https://take-xyz.vercel.app/t/34">no. 34/1</a></span>
+                        <p> 
+Low-fidelity image-based meme idea: an image of three mike-shaped figures wearing different expressions, with one startled and confused, one excited, and one despondent.</p>
+                        
+                    </div>
+                </div>
+            
+    </div>
+</body>
+</html>

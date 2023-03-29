@@ -6,8 +6,15 @@ name = "pypi"
 [packages]
 openai = "*"
 langchain = "*"
-chatgpt-wrapper = {git = "https://github.com/mmabrouk/chatgpt-wrapper"}
-pandoc = "*"
+rich = "*"
+termcolor = "*"
+ansicolors = "*"
+colorama = "*"
+beautifulsoup4 = "*"
+googlesearch-python = "*"
+keyboard = "*"
+pyinquirer = "*"
+prompt-toolkit = "==1.0.14"
 
 [dev-packages]
 

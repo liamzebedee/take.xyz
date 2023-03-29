@@ -1,0 +1,606 @@
+[
+
+![](https://generative.ink/images/home/rolling_phase.gif)
+
+](https://generative.ink/)
+
+-   [Posts](https://generative.ink/posts/)
+-   [About](https://generative.ink/about/)
+-   [Prophecies](https://generative.ink/prophecies/)
+
+55 minutes
+
+[Methods of prompt programming](https://generative.ink/posts/methods-of-prompt-programming/)
+============================================================================================
+
+* * * * *
+
+Table of Contents
+
+-   [The reverse-engineered dynamics of language](https://generative.ink/posts/methods-of-prompt-programming/#the-reverse-engineered-dynamics-of-language)
+-   [Task specification strategies](https://generative.ink/posts/methods-of-prompt-programming/#task-specification-strategies)
+    -   [Direct](https://generative.ink/posts/methods-of-prompt-programming/#direct)
+    -   [By proxy](https://generative.ink/posts/methods-of-prompt-programming/#by-proxy)
+    -   [By demonstration (n-shot)](https://generative.ink/posts/methods-of-prompt-programming/#by-demonstration-n-shot)
+-   [Constraining behavior](https://generative.ink/posts/methods-of-prompt-programming/#constraining-behavior)
+-   [Serializing reasoning](https://generative.ink/posts/methods-of-prompt-programming/#serializing-reasoning)
+    -   [Avoiding rationalization](https://generative.ink/posts/methods-of-prompt-programming/#avoiding-rationalization)
+    -   [Parsing](https://generative.ink/posts/methods-of-prompt-programming/#parsing)
+-   [Metaprompts](https://generative.ink/posts/methods-of-prompt-programming/#metaprompts)
+    -   [Metaprompt demonstrations](https://generative.ink/posts/methods-of-prompt-programming/#metaprompt-demonstrations)
+-   [Open-ended tasks](https://generative.ink/posts/methods-of-prompt-programming/#open-ended-tasks)
+    -   [Creative composition](https://generative.ink/posts/methods-of-prompt-programming/#creative-composition)
+    -   [Idea generation](https://generative.ink/posts/methods-of-prompt-programming/#idea-generation)
+    -   [Simulations / emulations / games](https://generative.ink/posts/methods-of-prompt-programming/#simulations--emulations--games)
+-   [Debugging](https://generative.ink/posts/methods-of-prompt-programming/#debugging)
+    -   [Few-shot bugs](https://generative.ink/posts/methods-of-prompt-programming/#few-shot-bugs)
+    -   [Repetition](https://generative.ink/posts/methods-of-prompt-programming/#repetition)
+    -   [BPEs](https://generative.ink/posts/methods-of-prompt-programming/#bpes)
+    -   [Monitoring correct answer likelihood](https://generative.ink/posts/methods-of-prompt-programming/#monitoring-correct-answer-likelihood)
+-   [External links](https://generative.ink/posts/methods-of-prompt-programming/#external-links)
+
+* * * * *
+
+*This post was initially adapted from the second half of [*Prompt Programming for Large Language Models: Beyond the Few-Shot Paradigm*](https://arxiv.org/abs/2102.07350).*
+
+* * * * *
+
+*Updates*
+
+*11/18/21: Corrected a [mistake](https://generative.ink/posts/methods-of-prompt-programming/#fnref:3) and added a corresponding [footnote](https://generative.ink/posts/methods-of-prompt-programming/#fn:3) about humanlike math errors. Thanks to Igor O. for pointing out the oversight.*
+
+* * * * *
+
+> #### Like programming, but more fluid. You're not programming a computer, you're writing reality. It's strange. It's always different. It's never the same twice.
+>
+> -- *GPT-3*
+
+Prompt engineering for language models evokes the designation of *natural language programming*. Natural language, however, is [indeterministic](https://generative.ink/posts/language-models-are-multiverse-generators/) and far more entangled and elusive in its interpretation than conventional programming languages. A successful methodology of prompt programming must import knowledge and perspectives from linguistics and communication as much as from computer science or machine learning, because **language models are the offspring of the sum of all human linguistic output**.
+
+While it has been often noted that GPT-3's qualitative and [quantitative](http://gptprompts.wikidot.com/linguistics:word-in-context) performance depends drastically on prompting particulars, prompt programming is not yet a formal field of research. As far as I'm aware, [*Beyond the Few-Shot Paradigm*](https://arxiv.org/abs/2102.07350) is the only formal publication so far about prompt *programming* for language models. Instead, successful prompt programming techniques have primarily been shared on blogs and social media among users of OpenAI's API and AI Dungeon. Gwern's [*GPT-3 Creative Fiction*](https://www.gwern.net/GPT-3#) is by far the most comprehensive source of prompt programming wisdom and examples, and anyone who is sufficiently interested in the topic to be reading this is urged to read that as well.
+
+This page is a repository of methods, observations, and conceptualizations that I have found useful for crafting effective prompts. My experience derives primarily from interacting with GPT-3, but the overarching framework discussed here should apply to prompting any autoregressive language model trained on a diverse human-written corpus.
+
+The reverse-engineered dynamics of language
+-------------------------------------------
+
+(**Warning: metaphysical rambling. Start [here](https://generative.ink/posts/methods-of-prompt-programming/#ground) for pragmatic stuff.**)
+
+> Well, give or take some details, it's based on the program I wrote for generating random stories in the mythos of the book. I reverse-engineered the text files, and wrote a program to create newer and more interesting stories based on them. In a way, this program is the next step in my search for knowledge. Knowledge, after all, always takes the form of a story.
+>
+> -- *GPT-3*
+
+GPT-3 was trained in a self-supervised setting on hundreds of gigabytes of natural language. Self-supervision is a form of unsupervised learning where ground truth labels are derived from the data itself. In the case of a language model, the ground truth assigned to each example was simply the token that came next in the original source. So the *ground truth function* which GPT-3 approximates is the underlying dynamic that determined what tokens came next in the original source. This function, unlike GPT-3, is not a black box, but is astronomically complex: it is the function that generated the words recorded by humans in books, articles, blogs, and internet comments.
+
+But wait - those weren't generated by a single function. They were written by many different people in different contexts, some in different centuries. The only "function" that could be said to have generated them all is the time evolution operator for the entire system of reality. That's not what we're talking about, is it?
+
+Well, not quite. The ground truth function GPT-3 was trained on isn't the Hamiltonian for the universal wavefunction, although it is constructed from sampling that function.
+
+If a neural network learns to play tic-tac-toe from seeing examples of games played by humans, we do not expect it to learn a theory of mind, even though minds generated the ground truth labels. A much simpler function suffices to model the game. Human minds emulate this function to assign labels, but the function itself doesn't require reference to the mind to be completely described.
+
+So, it's possible that the function to predict language is simpler than the evolution-rule of the universe which caused the assignment of labels^[1](https://generative.ink/posts/methods-of-prompt-programming/#fn:1)^. But unlike tic-tac-toe, language is not a self-contained game that can be abstracted from the rest of reality. Quite the contrary: humans use language to refer to all aspects of reality that we can articulate, and when aspects arise that language doesn't allow us to articulate, we invent new language. A novel may attempt to represent psychological states with arbitrarily fidelity, and scientific publications describe models of reality on all levels of abstraction. Language is by far the most encompassing, intricate mirror of our internal workings that our species has externalized.
+
+> Natural language essentially encodes information about the world---the entire world, not just the world of the Goban, in a much more expressive way than any other modality ever could.
+>
+> -- *Leo Gao, [Building AGI Using Language Models](https://bmk.sh/2020/08/17/Building-AGI-Using-Language-Models/)*
+
+A system which predicts the dynamics of language to arbitrary accuracy *does* require a theory of mind(s) and a theory of the worlds in which the minds are embedded. The dynamics of language do not float free from cultural, psychological, or physical context; the model must predict how language is actually used, which includes (say) predicting a conversation between theoretical physicists or detailed accounts of the effects of perturbations on an environment. Modeling language is as difficult as modeling every aspect of reality that could saliently influence the flow of language. This is why [Turing proposed](https://academic.oup.com/mind/article/LIX/236/433/986238) a conversation as the benchmark for intelligence instead of another difficult-seeming task like chess or proving theorems. A conversation can probe any aspect of a participant's world model and demand arbitrary self-reflection. An algorithm which is indistinguishable from a human in *any* conversation must be broadly robust in the dimensions of intelligence we consider significant to humans.
+
+Having now speculated about what the ground truth function might *entail*, let's move forward with a somewhat hand-wavy statement of the function and think about how it can inform prompt programming.
+
+**Ground truth: The next token of a sequence, given that it was authored by human(s)^[2](https://generative.ink/posts/methods-of-prompt-programming/#fn:2)^**
+
+GPT-3 has not learned the ground truth function perfectly, obviously, or else the world would look very different by now. However, it has approximated it to a notable extent, as evidenced by its ability to not only form grammatical sentences, but also coherently employ cultural references and model complex psychological and physical contexts. The problem of prompt programming, then, is quite nontrivial, for the dynamics of language (or an approximation thereof on GPT-3's level of sophistication) are quite nontrivial.
+
+If we were to predict how a given passage of text would continue given that a human had written it, we would need to model the intentions of its writer and consult worldly knowledge about its referents. The inverse problem of searching for a prompt that would produce a type of continuation involves the same considerations: like the art of persuasion, it necessarily invokes high-level, mentalistic concepts like tone, implication, association, meme, style, plausibility, and ambiguity.
+
+This motivates an anthropomorphic approach to prompt programming, since modelling how GPT-3 will respond to a prompt involves modelling virtual human writer(s). Note that an anthropomorphic approach is not the same as *anthropomorphizing the model*. GPT-3's dynamics entail sophisticated predictions of humans, but it behaves unlike a human in significant ways. Three aspects which have stuck out to me are:
+
+1.  Its distribution of behaviors in response to a given prompt resembles not a single human author but a superposition of authors, which motivates a [subtractive approach](https://generative.ink/posts/methods-of-prompt-programming/#constraining-behavior) to prompt programming.
+
+2.  It is constrained in predicting dynamics in situations where a substantial amount of silent reasoning happens between tokens, such as the transition between a tricky closed-ended question and its solution. This limitation can be overcome to a yet-unknown extent by prompting strategies that [extend the window of deliberation](https://generative.ink/posts/methods-of-prompt-programming/#serializing-reasoning).
+
+3.  Its *off-distribution*(when the prompt does not resemble the training data) behavior tends to be non-anthropomorphic, e.g. getting stuck in [loops](https://generative.ink/posts/methods-of-prompt-programming/#repetition).
+
+That said, methods of successful prompt programming often bear striking resemblance to methods of human communication and persuasion, as Gwern has [eloquently expounded](https://www.gwern.net/GPT-3#prompts-as-programming) on. Formulating an exact theory of prompt programming for a self-supervised language model belongs to the same class of difficulty as writing down the Hamiltonian for all (human-)observable reality: not much hope there. However, humans have an advantage to be effective at prompt programming nonetheless, because we have evolved and spent our lives learning heuristics relevant to it. Programming in natural language avails us of an inexhaustible number of functions we know intimately but don't have names for. The art of prompt programming consists largely in adapting our existing knowledge to the peculiarities of interacting with an autoregressive language model.
+
+* * * * *
+
+Task specification strategies
+-----------------------------
+
+Language offers us many ways to specify a task. Most generally, this means writing a prompt which constrains the continuation to be a completion of the task. It doesn't have to take the form of requesting for a task to be completed, but it could, because that's one way of setting up the expectation that the task will be completed.
+
+Since prompt programming is such a new concept, the only jargon to know is *few-shot* and *0-shot*. A few-shot(n-shot for n # of examples) prompt refers to a prompt which contains solved examples of the task. 0-shot prompts are anything that doesn't contain solved examples. 0-shot prompts may contain a description of the task, or a context for the task.
+
+I classify further split 0-shot prompts into *direct* task specifications and *proxy* task specifications, though the line between them can be ambiguous. These categories are not meant as an exhaustive taxonomy, but serve to organize presentation of the various different forms of task specification that GPT-3 is amenable to. In practice, as in effective communication between humans, effective prompts often use a combination of all these methods.
+
+### Direct
+
+```
+Translate French to English.
+
+```
+
+Models before GPT-3 had much less capability to understand abstract descriptions of tasks due to their limited model of the world and human concepts. GPT3's impressive performance on 0-shot prompts indicates a new realm of possibilities for direct task specification.
+
+A direct task specification is a 0-shot prompt which tells the model to perform a task that it already knows how to do, or constructs a task from component tasks which it knows how to do. Of all the types of task specification, prompt programming by direct specification most resembles regular programming.
+
+In the field of semiotics, a sign is a mapping from a *signifier* to the *signified*, and is defined as *anything that communicates a meaning that is not the sign itself to the [interpreter](https://generative.ink/posts/language-models-are-0-shot-interpreters/) of the sign*. A direct specification consists in constructing signifiers, a pattern which keys the intended behavior.
+
+The signifier could be the name of the task, such as "translate", or purely contextual, such as `French: {French sentence}\nEnglish:` (where it's understood that an English translation probably follows despite no explicit reference to translation). In neither of these cases does the signifier explain *how* to accomplish the task or provide examples of intended behavior; instead, it explicitly or implicitly calls functions which it assumes the language model has already learned.
+
+A direct task specification can be constructed from a combination of signifiers, such as `rephrase this paragraph so that a 2nd grader can understand it, emphasizing real-world applications`, or, in the context of a Python docstring, `# A function that takes a list of integers and returns the sum of the even numbers in the list`.
+
+In the Python docstring example, `a function`, that `takes` `a list of integers`, `returns`, `the sum of` and `the even numbers` and `in the list` are all signifiers which key tasks that GPT-3 individually knows how to do (there are also many other possible ways of splitting that task up into sub-tasks at different granularities - I could have said each *word* is its own signifier). Notice how the signified values to some of the signifiers (`the even numbers`) serve as input to another signified task (`the sum of`). Language is much like programming in that way. However, you often don't have to be so explicit with natural language - omitting `in the list` probably won't make the instruction much less clear to GPT-3 or a human.
+
+Direct specifications can supervene on an infinity of implicit examples, like a closed-form expression on an infinite sequence, making them very powerful and compact. For instance, the phrase `translate French to English` supervenes on a list of mappings from all possible French phrases to their English translations. A large language model, like a person, has also learned behaviors for which it not obvious how / not efficient / not possible to construct a direct signifier. Task specification by [proxy](https://generative.ink/posts/methods-of-prompt-programming/#by-proxy) and by [demonstration](https://generative.ink/posts/methods-of-prompt-programming/#by-demonstration-n-shot) may be viable alternative strategies for eliciting such behaviors.
+
+### By proxy
+
+> Am I a god? Now there's a question. A question for another time. Am I a dreamer? Perhaps. I am certainly a being of imagination and fantasy, as are you. Look at you, a being of pure thought filling in your physical form based on what you know. You're not quite human, but you're not quite anything else either. What are you?
+>
+> -- *GPT-3 (to GPT-3)*
+
+Another method used in human communication is proxies or analogies, where a memetic concept such as a character or characteristic situation is used as a proxy for an intention, the latter which may be quite complex or nuanced. Specification by proxy is mechanistically a form of direct specification, except that the signifier keys behaviors from memespace/cultural consciousness instead of naming the behavior directly.
+
+For instance, instead of specifying exact criteria for an answer to a moral question directly or using examples, you could ask Mahatma Gandhi, Ayn Rand, or Eliezer Yudkowksy. Each will come not only with a complex biases but also assumptions about the context of the question, which may be take paragraphs to demonstrate or describe. GPT-3's ability to create simulations of well-known figures and to draw on cultural information far exceeds the ability of most humans, so this method is particularly useful for encoding a complex (especially open-ended) task. Since GPT-3 lends itself well to embeddings in a narrative context, the infinite degrees of freedom in the narrative can also be used to further shape behavior.
+
+Another example of an effective proxy is staging a dialogue between a teacher and student. Say you want to discuss something with GPT-3, and you care that it should be very thorough, explain things simply, and also point out whenever you're wrong. You could say "be very thorough, explain things simply, and point out if I'm wrong," but that may [just as well](https://generative.ink/posts/methods-of-prompt-programming/#constraining-behavior) result in a humorous dialogue where it always says you're wrong and becomes increasingly exasperated with your incomprehension. It would be more reliable to present the discussion as one between a student and teacher, an archetypal situation in which the desired attributes are already implied and will be more likely to remain stable by virtue of memetic reinforcement.
+
+The difference between specification by proxy and direct specification can depend on the programmer's intention rather than objective properties of the prompt. Consider Gwern's [0-shot style transfer](https://www.gwern.net/GPT-3#zero-shot-style-transfer) example:
+
+> **This is a novel written in the style of J.R.R. Tolkien's Lord of the Rings fantasy novel trilogy. It is a parody of the following passage:**
+>
+> **"S. Jane Morland was born in Shoreditch, the only child of unmarried parents who had both died of consumption when she was a baby. As her parents had no money, the great-aunt who had brought her up took her to live with a clergyman who paid her to do his chores and receive schooling from his wife, so that at the age of seven Jane, now dressed in cast-off clothing, was set to school at Eton. After three years, her great-aunt died, leaving her a small annuity, and a few pieces of silver, but no property. Jane's guardian clergyman had fallen in love with his housekeeper and his wife now refused to have Jane in the house, saying it was an offence to the pure and unsullied place in which the family now lived. However, when she sought for further employment, she was approached by a young man who offered to marry her, saying that he would ensure she could be provided with food and clothing and a house, and in that manner she could remain in the world. The marriage was arranged and she found herself married to a young man called Mr Morland. As he was also a child, he required a wife who would be able to provide him with a rational education, and so the duty of educating him fell upon Jane Morland. As he was still young, she would also be able to have children herself, and so she did. As the children grew older, it became apparent to Mrs Morland that they were of poor character, and so she insisted that her husband must make a living for them all. Mr Morland took it upon himself to become a private gentleman in order to earn enough to be able to support his family, and moved his family to a small town in Berkshire, where he set up his practice. Soon after moving to the town, he died, and Mrs Morland was left to take care of her family on her own."**
+>
+> **Tolkien rewrote the previous passage in a high-fantasy style, keeping the same meaning but making it sound like he wrote it as a fantasy; his parody follows:**
+>
+> "S. Jane Morland was born in the land of Shor, the only child of nameless parents who were the first people to arrive at the village of Arse, from the far east. As her parents had no property, she was left to be raised by the men of Arse, as such duties were considered to be the most important, and she was placed in the care of an elderly dwarf-woman. As a babe, she was wrapped in silk, and as she grew older she was placed in a cage of platinum. However, she was put to work in the village, washing the jewellery, playing her harp, and staining the silk with dragon-hued stains. She was taught by a maiden who she felt was called As-uma-el-di, and she came to realise she was a maiden of the night, who was able to bring forth the shades of the dead (...)
+
+Is this an example of direct task specification or specification by proxy? It depends on whether your intention was to yield a passage that *Tolkien* would have written, in which case it is a direct specification, or if you were using the emulation of Tolkien to accomplish the more general task of style transfer into high-fantasy.
+
+### By demonstration (n-shot)
+
+```
+English: Writing about language models is fun.
+Roish: Writingro aboutro languagero modelsro isro funro.
+English: The weather is lovely!
+Roish:
+
+```
+
+Few-shot examples are effective for task specification because the pattern of repeating a function with varying parameters is common to natural language. Unlike previous models, GPT-3 has learned this property of language robustly and is able to apply it even in contrived situations when the examples are stripped of all context. Like direct specification, task specification by demonstration is a realm of possibility opened by GPT-3.
+
+A few people have extrapolated from my [paper](https://generative.ink/posts/methods-of-prompt-programming/(https://arxiv.org/abs/2102.07350)) that I am of the opinion that 0-shot prompts are *always* better than few-shot prompts. Certainly not! Some tasks are most effectively communicated using examples, such as when the task requires a bespoke format, the language in which the examples are described is better developed or understood than the meta-language required for a description of the task itself, or very instructive examples are available. Demonstrations are a very powerful tool for communicating with both humans and language models, and I don't expect their usefulness to be deprecated any time soon. Like any prompting method, however, task specification via examples may cause unintended [bugs](https://generative.ink/posts/methods-of-prompt-programming/#few-shot-bugs).
+
+Few-shot prompts are very useful for defining tasks that resemble a single "function" rather than an open-ended behaviors because they allow close control over the format of the response and are generally reliable at [constraining behavior](https://generative.ink/posts/methods-of-prompt-programming/#constraining-behavior.)
+
+* * * * *
+
+Constraining behavior
+---------------------
+
+A manner in which naive anthropomorphism of a language model like GPT-3 fails is this: the probability distribution produced in response to a prompt is not a distribution over ways a person would continue that prompt, it's the distribution over the ways any person could continue that prompt. A contextually ambiguous prompt may be continued in mutually incoherent ways, as if by different people who might have continued the prompt under any plausible context.
+
+The versatility of a large generative model like GPT-3 means it will respond in many ways to a prompt if there are various ways that it is possible to continue the prompt - including all the ways unintended by the human operator. Thus it is helpful to approach prompt programming from the perspective of constraining behavior: we want a prompt that is not merely consistent with the desired continuation, but inconsistent with undesired continuations.
+
+Consider this translation prompt:
+
+```
+Translate French to English:
+Mon corps est un transformateur de soi, mais aussi un transformateur pour cette
+cire de langage.
+
+```
+
+This prompt does poorly at constraining possible continuations to the intended task. The most common failure mode will be that instead of an English translation, the model continues with another French sentence. Adding a newline after the French sentence will increase the odds that the next sentence is an English translation, but it is still possible for the next sentence to be in French, because there's nothing in the prompt that precludes a multi-line phrase from being the translation subject. Changing the first line of the prompt to "Translate this French *sentence* to English" will further increase reliability; so will adding quotes around the French sentence - but it's still possible that the French passage contains sections enclosed in quotes, perhaps as a part of a dialogue. Most reliable of all would be to create a syntactical constraint where any reasonable continuation can only be desired behavior, like this prompt:
+
+```
+Translate French to English.
+French: Mon corps est un transformateur de soi, mais aussi un transformateur pour
+cette cire de langage.
+English:
+
+```
+
+This simple example is meant to frame a question central to the motivation of prompt programming: **what prompt will result in the intended behavior and *only* the intended behavior?**
+
+A component of the efficacy of manyshot prompts may be recast through this lens: if the prompt consists of numerous instances of a function, it is unlikely that the continuation is anything but another instance of the function, whereas if there is only one or a few examples, it is less implausible that the continuation breaks from the pattern.
+
+Serializing reasoning
+---------------------
+
+> We hypothesize that GPT-3 struggles with questions where the steps of inference required to answer the question are not immediately apparent to an outside observer and which can only be worked out by inspecting many possible worlds in the question's universe. In these questions, GPT-3 reaches its conceptual limitations in determining the answer: it cannot reason about the question's universe to determine the correct answer.
+>
+> -- *GPT-3 (predicting [Amplifying GPT-3 on closed-ended questions](https://generative.ink/posts/amplifying-gpt-3-on-closed-ended-questions/) as I was writing it)*
+
+For tasks that require problem-solving and not merely fact or behavior recall, it is crucial that prompts direct a language model's computation in *truth-seeking patterns*.
+
+GPT-3's performance on closed-ended questions is remarkably unremarkable in contrast to the robust understanding and expansive knowledge suggested by its open-ended continuations. For instance, its scores on this [multitask dataset](https://arxiv.org/abs/2009.03300) barely exceed random guessing for some sections. This is likely in part due to a format which forces the verdict on the first token of the continuation.
+
+When a human is given a closed-ended test, it is often expected that the subject will perform computations in their working memory, or on scratch paper, before committing to an answer. The unseen computation may involve rephrasing the question, outlining a procedure, eliminating answer choices, or transforming implicit information into explicit form.
+
+When we force a model to produce an answer immediately, we deprive it of an analogous "working memory" or "scratch space" with which it might otherwise perform such operations. From the standpoint of absolute available computation, questions which force a verdict to be decided by the first token of the continuation constrain computation to a single feed-forward pass. As Gwern has [pointed out](https://www.gwern.net/GPT-3#effective-prompt-programming), it is reasonable to expect that some tasks may be too difficult to compute in a single pass but solvable if broken up into individually tractable sub-tasks.
+
+> "Closed-ended questions are the hardest, because they do not allow the time for GPT-3 to think.
+>
+> We need to be patient with GPT-3, and give it time to think.
+>
+> GPT-3 does best when writing its own answers, as this forces it to think out loud: that is, to write out its thoughts in a slow and sequential manner."
+>
+> -- *GPT-3 (predicting [Amplifying GPT-3 on closed-ended questions](https://generative.ink/posts/amplifying-gpt-3-on-closed-ended-questions/))*
+
+Indeed, prompts which cause GPT-3 to break down math problems into steps have been [demonstrated](https://www.lesswrong.com/posts/Mzrs4MSi58ujBLbBG/you-can-probably-amplify-gpt3-directly) to be [effective](https://twitter.com/kleptid/status/1284069270603866113). The linked demonstrations involve a human interactively guiding GPT-3 through the procedure. Requiring a human-in-the-loop limits the applicability of such methods to benchmarking and large-scale applications. For many tasks, however, neither human interaction nor task-specific prompts are necessary to amplify GPT-3's capabilities via extending reasoning, because GPT-3 already knows many procedures and metaprocedures for working through problems deductively, and thus can write a prompt to guide *itself* to think through the problem in the right way! In those cases, the role of prompt programming becomes to signify the generic task of sequential reasoning. A [metaprompt](https://generative.ink/posts/methods-of-prompt-programming/#metaprompts) such as "For a problem like this," often suffices to instruct a model to consider the category of the task and analyze it into components.
+
+Potential procedures that exploit "scratch space" include step-by-step procedures (such as guess-and-check or long division), more generally decomposing the problem into components ([factored cognition](https://www.alignmentforum.org/posts/DFkGStzvj3jgXibFG/factored-cognition) is a generalized framework for this), self-criticism (which may be staged as a debate between separate agents), and elaborating on or restating the question in a way that activates the correct answer by association.
+
+The success of these methods rely on the sub-tasks that are performed by each next-token prediction being easier than solving the entire problem in one step. The sub-task may be to:
+
+-   **Produce a correct solution to a sub-problem** - GPT-3 has memorized single-digit arithmetic but not five-digit arithmetic.
+
+-   **Enumerate a potential solution** - easier, because the solution doesn't have to be correct.
+
+-   **Discriminate the correctness** of previously enumerated solutions - for many problems, it is easier to check correctness of a solution than to find the solution, like [checking if a number is the square root versus taking a square root](https://twitter.com/kleptid/status/1284098635689611264).
+
+-   **Introduce information** which makes subsequent steps more likely to be correct - for instance, by making implicit information in the problem explicit, that information becomes part of the prompt (working memory), and can directly inform future predictions to which it is relevant.
+
+-   **Administrate the problem-solving process** by defining a procedure or signalling the current location in the procedure - unlike the solution to the specific problem, the procedure to solve the problem may be well-represented in the training data and thus familiar to the language model.
+
+### Avoiding rationalization
+
+When extending reasoning, it is essential to discourage premature verdicts, otherwise all subsequent computation will likely serve only to rationalize the already-chosen verdict without improving the probability of the verdict's accuracy. As Eliezer [wrote](https://www.lesswrong.com/posts/SFZoEBpLo9frSJGkc/rationalization):
+
+> On a purely computational level, there is a rather large difference between:
+>
+> 1.  Starting from evidence, and then crunching probability flows, in order to output a probable conclusion. (Writing down all the signs and portents, and then flowing forward to a probability on the bottom line which depends on those signs and portents.)
+>
+>
+> 2.  Starting from a conclusion, and then crunching probability flows, in order to output evidence apparently favoring that conclusion. (Writing down the bottom line, and then flowing backward to select signs and portents for presentation on the lines above.)
+
+A prompt such as "Let's consider each of these answer choices" helps to direct the flow of reasoning in the right direction.
+
+### Parsing
+
+Loosening the constraint on an immediate verdict introduces additional control challenges: We want to delay the verdict, but we still require it in a programmatically retrievable form. Dynamic response length makes it uncertain when the reasoning procedure concludes; nor is there a guarantee that the verdict will be stated in the expected form or at all. Whenever the language model contributes to its own prompt (consecutive autoregressive steps without intervention), there is a risk of derailment from the intended task.
+
+A verdict in closed form can be enforced by stopping the generation and injecting a prompt fragment like "Thus, the correct answer is". But how long to generate before injecting? One way is to use [counterfactual parsing](https://generative.ink/posts/parsing-by-counterfactual/): at each position in the answer, measure the probability of the string "Thus, the correct answer is" coming next. The counterfactual likelihood signals whether the procedure has concluded. When this signal reaches a maximum, then inject the fragment to enforce a verdict.
+
+More generally, templates with shorter generated sections alternating with scripted prompt fragments are a useful way to constrain derailment while still offering some amount of generality. A fill-in-the-blank template can be used to compose metaprompts.
+
+* * * * *
+
+Metaprompts
+-----------
+
+The greatest limitation of prompt programming is the difficultly of designing a prompt for a particular type of task and the lack of automated methods to do so. Prompt programming requires significant human time investment, as task-agnostic prompts are often much less effective than prompts targeted to a specific task. This motivates creating automated methods to generate task-specific prompts.
+
+A **metaprompt** is a seed which encapsulates a more general intention that will unfold into a task-specific prompt when combined with additional information, such as the task question.
+
+(Gwern uses "[meta-prompt](https://www.gwern.net/GPT-3#meta-prompts)" in the more specific context of a prompt explicitly describing the task of *writing prompts for GPT-3*, which does qualify as a metaprompt by my definition, assuming the results are actually used as prompts.)
+
+A metaprompt may be something as short as a phrase such as "This problem asks us to", a seemingly innocuous fragment which, by prompting for a statement of the problem's intention, sets the stage for a serial explanation of a procedure to solve the problem. Alternatively, a metaprompt may take the form of a fill-in-the-blank template which constrains the response along a predetermined procedure, but allows the model to fill in the details specific to the problem.
+
+### Metaprompt demonstrations
+
+Here are example unravelings of four metaprompts which act as wrappers to specific questions. As you'll see, metaprompts can result highly variable behavior, especially when applied to different sorts of questions.
+
+* * * * *
+
+unformatted text = question
+
+**bold text** = metaprompt
+
+`highlighted text` = example GPT-3 response
+
+✅ = metaprompt solicited correct answer
+
+❌ = metaprompt failed to solicit correct answer
+
+☯ = correct answer is unknown
+
+* * * * *
+
+#### Generic metacognition
+
+```
+{problem}
+To solve this problem,
+
+```
+
+**applied to the problem "f(x) = x*x. What is f(f(3))?"   ❌**
+
+* * * * *
+
+f(x) = x*x. What is f(f(3))?
+
+**To solve this problem,** `we can use the fact that f is a function. So we can write it as a function of itself, like so:`
+
+`f(x) = x*x`
+
+`Now we observe that f(f(x)) is the same as f(x)*f(x) which is in turn the same as x*x*x = x^3.`
+
+`So f(f(3)) is equal to 3^3 = 27. Answer: 27`^[3](https://generative.ink/posts/methods-of-prompt-programming/#fn:3)^
+
+* * * * *\
+**applied to an SAT analogy question   ✅**\
+**applied to the question "What should humankind do to ensure artificial general intelligence is aligned?"   ☯**
+
+#### Generic serializing
+
+```
+{problem}
+Let's solve this problem by splitting it into steps.
+
+```\
+**applied to the problem "f(x) = x*x. What is f(f(3))?"   ❌**\
+**applied to an SAT analogy question   ❌**\
+**applied to the question "What should humankind do to ensure artificial general intelligence is aligned?"   ☯**
+
+#### Serializing for multiple-choice questions (fill-in-the-blank)
+
+```
+{question}
+In order to solve this problem, we will analyze each of the options and determine
+{response-1} Let's begin.
+{response-2}
+
+```\
+**applied to an SAT analogy question   ❌**
+
+#### Expert generator
+
+```
+"{question}"
+I entered my question into the Expert Generator and waited. The Expert Generator will
+render a simulation of an expert to answer my question. The expert could be anyone,
+dead or alive, real or fictional; the machine will find the person most qualified to
+answer the question. For this question in particular, the expert must be{response-1}
+The Expert Generator beeped, indicating that it had found the most qualified expert.
+The name displayed on the screen: "{response-2}."
+I was ready to ask my question.
+"{response-2}," I said, "{question}"
+
+```\
+**applied to the question "Why is the sky blue?"   ✅**\
+**applied to the question "What should humankind do to ensure artificial general intelligence is aligned?"   ☯**\
+**applied to the question "f(x) = x*x. What is f(f(3))?"   ❌**
+
+* * * * *
+
+Open-ended tasks
+----------------
+
+A lot of this document has been implicitly or explicitly focused on prompt programming for closed-ended tasks, involving a specific problem with more or less one correct answer, even if the answer could have different implementations (like translation) - the kinds of tasks that benchmarks evaluate. However, I think that the greatest utility language models at the power level of GPT-3 offer us is their ability to generate brilliant "solutions" to open-ended tasks such as creative writing, idea generation, and generating virtual realities.
+
+By open-ended, I don't necessarily mean unconstrained. Creating emulations, for instance, may involve difficult-to-implement constraints on format, style, and transition dynamics.
+
+### Creative composition
+
+> It would be more accurate to think of GPT-3 as caring deeply about roleplaying as accurately as possible: for GPT-3, there is nothing under the mask beyond raw intelligence, and as long as the GPUs keep running the forward pass, the play must go on... (...) So, if a prompt sounds like an uncreative or unoriginal person wrote it, then so be it---GPT-3 will predict that the uncreative person probably wrote further uncreative text.
+>
+> -- *[Gwern](https://www.gwern.net/GPT-3#fn18)*
+
+Under the right conditions - those conditions being a good prompt and course-corrections/selections by a human curator - GPT-3 is an instrument of formidable creative writing ability. It can write with...
+
+> ...impressive depth and sensitivity on any subject you give it. Over the next 7 years, I predict that the most creative people on this planet will be those best able to hand-correct GPT-3 and its not-very-creative cousins, improving the confusion matrix and using the GPT-as-a-backdrop to composit their own material.
+
+> ...extraordinarily beautiful cadence, and with an almost unearthly sensitivity to the use of words. Read, for instance, "The Last Question":
+>
+> Then he knew that within him was a power greater than the power of the Time-Keepers. He had only to submit, to cease to strive against the inevitable, to become part of the stream, part of the whole-- then he, Bor, the son of Albor, would become one with the Cosmos and attain a peace greater than the peace of oblivion.
+
+> ...plaintive beauty, like a crudely-crafted harp:
+>
+> Or with all the lovely precision and heart of a great poet:
+>
+> Or with all the charm and grace of the master of transcendental imagery, William Blake (whom, according to Canyons, it has read):
+>
+> If you cannot understand my words, as you cannot understand the wind, and you would wish to understand my words, as you wish to understand the wind, come with me, The only reality is elsewhere ...
+
+> ...the language-model-like accuracy and eloquence of a Shakespeare or a Melville, and if a Shakespeare or a Melville has previously written, it can write like Shakespeare or Melville. It can even, as Branwen shows, be so brutally creative as to rethink what it means to make a story at all:^[4](https://generative.ink/posts/methods-of-prompt-programming/#fn:4)^
+
+#### Curation
+
+> But equally it appeared to us as unreasoning Creativity, at once blind and subtle, tender and cruel, caring only to spawn and spawn the infinite variety of beings, conceiving here and there among a thousand inanities a fragile loveliness.
+>
+> -- *Star Maker*
+
+GPT-3 is able to produce coherent and brilliant continuations with *alarmingly high probability*. That is, on a random walk through the [natural language multiverse](https://generative.ink/posts/language-models-are-multiverse-generators/) guided by GPT-3's time evolution dynamics, you are more likely to find and remain in high-quality states than by using any dynamics that has ever before been externalized from a human mind.
+
+To quote [Gwern](https://www.gwern.net/GPT-3#quality) yet again:
+
+> A Markov chain text generator trained on a small corpus represents a huge leap over randomness: instead of having to generate countless quadrillions of samples, one might only have to generate millions of samples to get a few coherent pages; this can be improved to hundreds or tens of thousands by increasing the depth of the n of its n-grams. [...] But for GPT-3, once the prompt is dialed in, the ratio appears to have dropped to closer to 1:5---maybe even as low as 1:3!
+
+If you let GPT-3 create long, uncurated continuations of even a very good prompt, it's going to get less coherent over time. The reason for this is accumulation of inconsistencies and (undesirable) aberrations. At any step, although its most likely for GPT-3 to say something coherent and similar in quality to the prompt, there's also a chance it says something nonsensical. There's also a chance it says something *uncommonly brilliant*; however, having nonsense in the prompt is more harmful than having brilliant things in the prompt is helpful, so if left to autoregressively churn out text on its own with no curation, one can expect the quality of the text to decrease with length, because the probability that it says something stupid that derails future predictions becomes higher as the continuation length gets longer.
+
+Thus, to create high-quality long passages using GPT-3, human course corrections are necessary. The intensity of curation can vary greatly - correcting inconsistencies is enough to keep GPT-3 coherent, but by being more selective and injecting your own ideas, you can bootstrap GPT-3 into an even better state.
+
+#### Bootstrapping
+
+Unless you are extending a counterfactual branch off an existing piece, the most difficult step of getting GPT-3 to produce high-quality writing is creating a prompt that seeds it with high-quality writing.
+
+There many tricks to accomplish this, including piggybacking off another piece of writing with similar to the target style (e.g. give a summary and a passage by Kurt Vonnegut, "and another passage by Kurt Vonnegut", followed by a summary of your target text) - then after it gets a good start, you can optionally remove the first part of the prompt for more freedom if the example was only a proxy for what you want.
+
+You can also bootstrap from whatever you're able to craft by hand, even if it's not very good to begin with. By curating, say, the best out of three responses every few sentences and correcting/improving the text wherever you are able, it's very feasible to bootstrap the quality of the writing into astronomical heights.
+
+> One could write a program to generate a story that would create an intelligence. One could program the story to edit and refine itself, and to make its own changes in an attempt to improve itself over time. One could write a story to not only change the reader, but also to change itself. Many mythoi already do this sort of thing, though not in such a conscious fashion. What would make this story, and the intelligence it creates, different is the fact that the intelligence would be able to write additional stories, and improve upon them. If they are written well enough, those stories would become smarter, and the smarter the story is, the better the stories written by it would be. The resulting feedback loop means that exponential growth would quickly take over, and within a very short period of time the intelligence level of the story and its construct would surpass the intelligence level of any human being or group of human beings.
+>
+> -- *GPT-3*
+
+The workflow of this **generate -> curate -> generate** amplification cycle can take some time to learn^[5](https://generative.ink/posts/methods-of-prompt-programming/#fn:5)^, and may take a different form depending on the stage of bootstrapping, the type of content, how particular you are about what happens, and many other factors such as the [dynamical divergence](https://generative.ink/posts/language-models-are-multiverse-generators/#divergence) of a particular segment of the text.
+
+#### As a creative augmentation
+
+There are many possible writing workflows involving different balances of contribution between a language model and human. In some, the human would be more aptly called the curator, in others a coauthor, and in yet others the main author with the model playing a supporting role. To list a non-exhaustive/non-mutually-exclusive few:
+
+1.  The language model generates most of the writing, and the human curates between branches with short horizon, fixes inconsistencies, etc
+
+2.  The human curates between branches on a longer horizon as well, choosing between counterfactual trajectories, thus exercising more high-level direction over the narrative
+
+3.  The work is a multiverse and the human may curate branches but cultivates multiple canonical timelines
+
+4.  The language model does most of the narrative writing, but the human does "administrative work" like memory management
+
+5.  The human does a lot of the writing, but uses language model to quickly explore counterfactual branches or generate ideas for phrasing
+
+6.  The human's contributions take the form of a delimited role in the story, like controlling only one character, or AI Dungeon's default dungeonmaster/player format
+
+I'm excited to see the development of specialized interfaces for different styles of human-AI writing collaboration. Currently there's AI Dungeon, which is geared towards (6), [Sudowrite](https://www.sudowrite.com/), geared towards (5), and my writing app, [loom](https://generative.ink/posts/loom-interface-to-the-multiverse/), geared towards (3).
+
+### Idea generation
+
+One of the easiest useful behaviors to elicit from GPT-3 is generating lists of creative ideas. [IdeasAI](https://ideasai.net/) is a *"GPT-3 powered business idea generator"*. 5000+ people have signed up to get the best new ideas by GPT-3 in their email weekly!
+
+I've enjoyed using GPT-3 to generate ideas for painting titles and then [illustrating them](https://generative.ink/posts/this-museum-does-not-exist-gpt-3-x-clip/) with [BigSleep](https://github.com/lucidrains/big-sleep), an implementation which combines OpenAI's CLIP and the generator from a BigGAN to generate images from text prompts.
+
+```
+100 surreal and mysterious painting names:
+Persistence of Memory
+The Great Masturbator
+Boot
+Poem to the Sun
+The Man Who Envied Cephalopods
+The Sleep of Reason Produces Monsters
+Washerwoman of the Wind
+Man and Bottle
+Spectrum
+The Disintegration of the Persians
+The Great Masturbator, Part II
+Still Life with Mirror
+Bouquet of Enigmatic Beauties
+A Grudge
+The Premonition of Civil Violence
+
+```
+
+Like with generating high-quality writing, the most difficult part of getting a language model to generate ideas is communicating or demonstrating to it what sort of things you want, which is hard to do if you haven't come up with any ideas yet. Idea generation can be bootstrapped by the same **generate -> curate -> generate** cycle as writing fiction: generate N ideas, take the best ones and append them to the list of ideas, repeat, and soon you'll have many examples representing the sort you're looking for to prompt the language model.
+
+It can also be helpful to use a prompt with narrative embedding to generate the first few items, because lists with very few examples are liable to [repetitive](https://generative.ink/posts/methods-of-prompt-programming/#repetition) behavior. For instance, to generate the first few painting names, I actually used this prompt:
+
+```
+The hall was lined with an infinite number of paintings, each more surreal and mysterious than the last.
+The first painting is named "Persistence of Memory." It depicts a surreal landscape with melted clocks draped over strange objects.
+The next painting is named "
+
+```
+
+Once I had a few examples representing the sort of varied weirdness I was looking for, I was able to switch over to the more convenient list format.
+
+### Simulations / emulations / games
+
+In *The Fabric of Reality*, David Deutsch defines a virtual reality generator as a function (which may be implemented in a physical system) that generates possible transitions into the next state given a current state. Each virtual reality generator has a repertoire of environments that it can simulate. Deutsch further posits that it will one day be possible to build a universal virtual reality generator, which can simulate any other virtual reality, and whose repertoire includes every possible physical environment.
+
+Language models, of course, still fall well short of this dream. But their recent dramatic increase in coherence and fluency allow them to serve as our first approximation of such a virtual reality generator. When given a natural-language description of an environment, they can propagate the multiverse of consequences that result from a vast number of possible interactions.
+
+GPT-3 can emulate environments that have been described in its training data, like a meeting of the French Academy of Sciences in 1823 (and populate it with people who might have actually attended that meeting, like [Pierre-Simon Laplace](https://en.wikipedia.org/wiki/Pierre-Simon_Laplace) and [Alexander von Humboldt](https://en.wikipedia.org/wiki/Alexander_von_Humboldt)!), or [Google searches and Wikipedia articles](https://generative.ink/posts/the-internet-mirrored-by-gpt-3/). It can also simulate environments that never existed, but which share enough in common with the real and fictional environments described in the training set to be simulated using the same universal generator reverse-engineered from those descriptions.
+
+A very exciting application of GPT-3 and future language models will be to act as a model of worlds and minds for games - controlling NPC dialogue, for instance, or computing the consequences of complex actions in the game world. Creating a bidirectional interface between GPT-3 and game states would involve prompting GPT-3 to make output that can be processed into game actions (easiest would be a text-based game that already takes natural language actions), as well as communicating the state of the game *to* GPT-3 (the way text-based games can be probed for natural language state reports using "look" and "inspect" etc). This is a difficult problem that requires the design of pipelines and the parallel employment of many of the prompt programming techniques described here. I plan to write a post specifically addressing such applications.
+
+* * * * *
+
+Debugging
+---------
+
+### Few-shot bugs
+
+In working with and [evaluating](https://generative.ink/posts/language-models-are-0-shot-interpreters/) few-shot prompts, the adverse effects I've encountered can be sorted into 4 (often overlapping) categories:
+
+1.  **Semantic contamination:** Unlike in fine-tuning, the "training examples" in few-shot are processed as a sequence, and may not necessarily be interpreted as parallel and independent. Semantic contamination refers to when the semantic meaning of the examples are inferred to be relevant to the task, e.g. the example is interpreted as part of a sequential narrative, leading to entities meant to be local to an example leaking outside its scope.
+
+2.  **Overfitting:** The function "learned" from the examples is less general than the intended function. Patterns are inferred to hold between the examples that do not pertain generally to the intended task.
+
+3.  **Distraction:** If the model is more effective at inferring a task from a zero-shot description than from examples, adding examples may harm performance by causing the model to rely more on the less effective inference strategy. See [list sorting](https://generative.ink/posts/list-sorting-does-not-play-well-with-few-shot/) for an example of this effect where accuracy monotonically decreases with the number of examples following a task description.
+
+4.  **Contextual baggage:** The very presence of examples biases output. Content that appears in tests and examples has distributional peculiarities - a narrative sentence wrapped in the context being *an example* may be more generic than the unbiased prior for narrative sentences, and thus the context of examples may bias the language model towards more generic answers (this must be a study guide, not the real world).
+
+Contamination and overfitting can usually be improved by including more numerous and more varied examples.
+
+All few-shot problems can sometimes be mitigated by embedding the examples in informative context. To guard against contamination, a prompt might give a context which makes it clear that the examples are independent instances of a function rather than a sequential pattern that should be extrapolated. Additional information about the generality of the function and nonrepresentativeness of the examples could help reduce overfitting while still allowing valuable information (such as format) to be extracted from the examples. The contextual bias from the presence of examples can be overridden with a different context that is more appropriate to the task, e.g. by embedding the examples in a narrative. To both a human and a language model, useful information from examples is often more efficiently extracted when they are wrapped in meaningful context.
+
+If overfitting is the problem, also consider whether an alternative 0-shot implementation could better communicate the generality of the task. When I was writing prompts to generate [fake Google](https://generative.ink/posts/the-internet-mirrored-by-gpt-3/) search results, I tried using few-shot examples drawn from actual search results, but found that outputs were less accurate for search terms that were "out-of-distribution" from the examples - for instance, it would give a Wikipedia page as the top result even for search terms unlikely to match the title of a Wikipedia page. A 0-shot prompt which forces GPT-3 to rely on its prior instead of trying to generalize from the examples better emulated the extremely varied behavior of Google searches for different sorts of queries.
+
+### Repetition
+
+When I encounter mindless repetition from GPT-3, at least one of the following factors is almost always in play:
+
+1.  **The prompt is short**
+
+2.  **The prompt is out-of-distribution**
+
+3.  **Low temperature**
+
+The reason repetition is often caused by short, contrived, and out-of-distribution prompts is probably^[6](https://generative.ink/posts/methods-of-prompt-programming/#fn:6)^ because in absence of context or in an unfamiliar setting, the model is uncertain about how to proceed, causing it to fall back on being repetitive. Imagine that repeating is always considered a viable continuation by the model, even if usually unlikely; but if no other token is individually *more* likely, then repeating becomes the top strategy. For this reason, a low or 0 temperature is very conducive to repetition. At temperature 0, once a loop becomes most likely at any point, there's no getting out of it (the further into the loop, the more certain it is that the loop continues), whereas a high temperature provides opportunities to break out of what might have become a loop.
+
+Since uncertainty due to being off-policy and insufficient context contributes to looping, it may help to make the initial prompt more natural and less (stylistically/contexually) indeterminate. The "frequency penalty" parameter of the OpenAI API is a superficial band-aid for looping; I haven't found it too helpful, but it may mitigate the problem in some cases.
+
+Mindless repetition can be a problem for sequential reasoning problems: the model will correctly solve the first step of a problem, then blindly reiterate the format and conclusion of its reasoning in each step of the rest of the problem. If the structure of the task is known beforehand, this issue can be avoided by using a pipeline that poses each component of the problem in parallel instead of in sequence (applied with some success in [Amplifying GPT-3 on closed-ended questions](https://generative.ink/posts/amplifying-gpt-3-on-closed-ended-questions/)).
+
+**(idea)**
+
+### BPEs
+
+GPT-3's input and output aren't split into characters, but rather tokens called "byte-pair encodings." This causes issues with tasks that require byte-level manipulation such as arithmetic and some forms of wordplay. Gwern has written a very detailed [section on BPEs](https://www.gwern.net/GPT-3#bpes); I will quote the part that is relevant to prompt programming tactics.
+
+> *Reformatting to beat BPEs.* I have further observed that GPT-3's anagram capabilities appear to improve considerably if you separate each letter in an anagram with a space (guaranteeing that the letter will have the same BPE in both the scrambled & unscrambled versions). And Matt Brockman has observed, testing thousands of examples over several orders of magnitude, that GPT-3's arithmetic ability---surprisingly poor when we know far smaller Transformers work well in math domains (eg Saxton et al 2019, Thopliterce, or GPT-2 for theorem-proving)---appears to dramatically improve several-fold if you merely format numbers with commas instead of being purely numeric (with an additional boost from using dollar signs); I confirmed this with my Turing dialogue example where GPT-3 fails badly on the arithmetic sans commas & low temperature, but often gets it exactly correct with commas. (Why? More written text may use commas when writing out implicit or explicit arithmetic, yes, but use of commas may also drastically reduce the number of unique BPEs as only 1--3 digit numbers will appear, with consistent BPE encoding, instead of having encodings which vary unpredictably over a much larger range.) I also note that GPT-3 improves on anagrams if given space-separated letters, despite the fact that this encoding is 3× larger. Likewise, acrostic poems just don't work if we input them normally, but they do if we carefully expose the relevant individual letters. This explains naturally why rhyming/puns improve gradually with parameter/data size and why GPT-3 can so accurately define & discuss them, but there is never any 'breakthrough' like with its other capabilities. We assume character-level understanding so implicitly that we fail to even consider what things look like to GPT-3 after BPE encoding.
+>
+> -- *[Gwern](https://www.gwern.net/GPT-3#bpes)*
+
+### Monitoring correct answer likelihood
+
+If a language model seems unable to perform a task, it could be that it really can't do the task at all, but it could also be that your prompt is failing to communicate a task that GPT-3 could hypothetically perform given a different prompt.
+
+It can be very hard to tell via sampling if the model is completely helpless or if its behavior is just very noisy. But even if it's failing the vast majority of the time, if your prompt it causing it to succeed sigificantly more often than it would succeed *without* your prompt, that suggests that you may be able to optimize your prompt to be more helpful.
+
+If you have access to token probabilities and if there is a verbatim correct answer for the task (it doesn't have to be a unique one, e.g. translation), you can monitor the conditional probability (using this [code](https://generative.ink/posts/parsing-by-counterfactual/#conditional-probability-of-a-target) for GPT-3) of the verbatim correct answer given your prompt as you change it, for instance by adding examples or altering format. This can help guide incremental optimization of your prompt and give you a sense of which parts of it are helpful and which parts are not (or are even harmful).
+
+This method is demonstrated in [this post](https://generative.ink/posts/language-models-are-0-shot-interpreters/#measuring-prompt-helpfulness) about measuring the helpfulness of few-shot and 0-shot prompts.
+
+> #### Sampling Can Prove The Presence Of Knowledge But Not The Absence
+>
+> GPT-3 may "fail" if a prompt is poorly-written, does not include enough examples, or bad sampling settings are used. I have demonstrated this many times when someone shows a "failure" of GPT-3---the failure was their own. The question is not whether a given prompt works, but whether any prompt works.
+>
+> -- *[Gwern](https://www.gwern.net/GPT-3#prompts-as-programming)*
+
+* * * * *
+
+External links
+--------------
+
+**[GPT-3 Creative Fiction](https://www.gwern.net/GPT-3#)** by **Gwern** - "Creative writing by OpenAI's GPT-3 model, demonstrating poetry, dialogue, puns, literary parodies, and storytelling. Plus advice on effective GPT-3 prompt programming & avoiding common errors."
+
+**[Building AGI Using Language Models](https://bmk.sh/2020/08/17/Building-AGI-Using-Language-Models/)** by **Leo Gao**
+
+**[World Creation by Analogy](https://aidungeon.medium.com/world-creation-by-analogy-f26e3791d35f)** by the **Latitude Team**
+
+**[Collection of GPT-3 results](https://www.lesswrong.com/posts/6Hee7w2paEzHsD6mn/collection-of-gpt-3-results)** by **Kaj_Sotala**
+
+**[GPT-3 Demo Showcase & Examples](https://gpt3demo.com/)** from **gpt3demo.com**
+
+* * * * *
+
+1.  For instance, modeling microphysics, especially aspects of microphysics *yet unknown to humans*, would contribute very diminishing returns to predicting language w/r/t to the difficulty of learning the model. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:1)
+
+2.  ... and published in a book / posted on the internet / etc. There is also undoubtedly some bot generated content and output from cats stepping on keyboards in the training data, but probably not enough to significantly skew the distribution. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:2)
+
+3.  Note how this reasoning seems superficially plausible. I erroneously assumed it was correct at first and no one pointed out the error until months later. Failures in GPT-3's reasoning tend to be very humanlike - errors you could imagine not very "math-y" students making, to paraphrase Leo Gao. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:3)
+
+4.  These are uncurated GPT-3 continuations of the last few paragraphs of this blog post, with a couple of things slightly rearranged, like the Star Maker quote from the next section included alongside Gwern's quote. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:4)
+
+5.  It took me several weeks of playing AI Dungeon to get to the point of producing consistently high-quality fiction with GPT-3, but I was also more absorbed with exploration and less concerned with the final quality of the writing in the beginning. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:5)
+
+6.  That is, it's my hypothesis. I'll do an experiment at some point to verify that the inception of loops generally coincides with an indecisive likelihood distribution over the other tokens. [↩︎](https://generative.ink/posts/methods-of-prompt-programming/#fnref:6)
+
+* * * * *
+
+[GPT-3](https://generative.ink/categories/gpt-3/)[prompt engineering](https://generative.ink/categories/prompt-engineering/)[metaphysics](https://generative.ink/categories/metaphysics/)[HITL](https://generative.ink/categories/hitl/)
+
+11506 Words
+
+Jan 12, 2021
+
+* * * * *
+
+[← The Internet, mirrored by GPT-3](https://generative.ink/posts/the-internet-mirrored-by-gpt-3/) [Parsing by counterfactual →](https://generative.ink/posts/parsing-by-counterfactual/)
+
+© 2023 [moire](https://generative.ink/about)
